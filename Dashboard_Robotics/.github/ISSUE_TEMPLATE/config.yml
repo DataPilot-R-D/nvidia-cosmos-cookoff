@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "💬 Discord — ASH Team"
+    url: "https://discord.gg/ash-team"
+    about: "Real-time discussion and operational chat"
+  - name: "📖 Documentation"
+    url: "https://github.com/ASH-sus/Dashboard_Robotics/wiki"
+    about: "Project wiki and docs"

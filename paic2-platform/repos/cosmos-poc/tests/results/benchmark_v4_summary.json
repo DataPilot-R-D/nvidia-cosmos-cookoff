@@ -1,0 +1,515 @@
+{
+  "generated_at_utc": "2026-02-17T14:11:18+00:00",
+  "input_files": {
+    "v3": "tests/results/benchmark_v3_raw.json",
+    "v4": "tests/results/benchmark_v4_raw.json"
+  },
+  "run_config_v4": {
+    "model": "nvidia/Cosmos-Reason2-8B",
+    "context_tokens": 32768,
+    "benchmark_max_tokens": 1200,
+    "benchmark_json_max_tokens": 500,
+    "benchmark_timeout_seconds": 180,
+    "provider": "runpod",
+    "pod_id": "yzqs739vqufrv3",
+    "gpu": "NVIDIA L40S",
+    "api_base": "http://127.0.0.1:18899/v1"
+  },
+  "aggregate": {
+    "v3": {
+      "tests": 45,
+      "latency_avg_s": 8.25,
+      "latency_p95_s": 15.78,
+      "prompt_tokens_avg": 1118.8,
+      "completion_tokens_avg": 512.0,
+      "think_closed_count": 36,
+      "error_count": 0,
+      "finish_reason_counts": {
+        "stop": 34,
+        "length": 8
+      }
+    },
+    "v4": {
+      "tests": 45,
+      "latency_avg_s": 11.56,
+      "latency_p95_s": 27.04,
+      "prompt_tokens_avg": 1118.8,
+      "completion_tokens_avg": 497.7,
+      "think_closed_count": 40,
+      "error_count": 0,
+      "finish_reason_counts": {
+        "stop": 38,
+        "length": 4
+      }
+    },
+    "delta_v4_minus_v3": {
+      "latency_avg_s": 3.31,
+      "latency_p95_s": 11.26,
+      "completion_tokens_avg": -14.3,
+      "think_closed_delta": 4,
+      "stop_delta": 4,
+      "length_delta": -4
+    }
+  },
+  "by_category": {
+    "v3": {
+      "B1": {
+        "tests": 5,
+        "latency_avg_s": 7.55,
+        "stop": 4,
+        "length": 1,
+        "errors": 0
+      },
+      "B2": {
+        "tests": 6,
+        "latency_avg_s": 6.76,
+        "stop": 6,
+        "length": 0,
+        "errors": 0
+      },
+      "B3": {
+        "tests": 7,
+        "latency_avg_s": 7.38,
+        "stop": 6,
+        "length": 1,
+        "errors": 0
+      },
+      "B4": {
+        "tests": 10,
+        "latency_avg_s": 6.56,
+        "stop": 10,
+        "length": 0,
+        "errors": 0
+      },
+      "B5": {
+        "tests": 3,
+        "latency_avg_s": 8.52,
+        "stop": 3,
+        "length": 0,
+        "errors": 0
+      },
+      "B6": {
+        "tests": 4,
+        "latency_avg_s": 14.96,
+        "stop": 1,
+        "length": 3,
+        "errors": 0
+      },
+      "B7": {
+        "tests": 2,
+        "latency_avg_s": 2.9,
+        "stop": 2,
+        "length": 0,
+        "errors": 0
+      },
+      "B8": {
+        "tests": 1,
+        "latency_avg_s": 2.78,
+        "stop": 1,
+        "length": 0,
+        "errors": 0
+      },
+      "B9": {
+        "tests": 1,
+        "latency_avg_s": 15.76,
+        "stop": 0,
+        "length": 1,
+        "errors": 0
+      },
+      "B10": {
+        "tests": 2,
+        "latency_avg_s": 12.69,
+        "stop": 1,
+        "length": 1,
+        "errors": 0
+      },
+      "B11": {
+        "tests": 1,
+        "latency_avg_s": 15.78,
+        "stop": 0,
+        "length": 1,
+        "errors": 0
+      },
+      "B12": {
+        "tests": 3,
+        "latency_avg_s": null,
+        "stop": 0,
+        "length": 0,
+        "errors": 0
+      }
+    },
+    "v4": {
+      "B1": {
+        "tests": 5,
+        "latency_avg_s": 13.86,
+        "stop": 5,
+        "length": 0,
+        "errors": 0
+      },
+      "B2": {
+        "tests": 6,
+        "latency_avg_s": 7.17,
+        "stop": 6,
+        "length": 0,
+        "errors": 0
+      },
+      "B3": {
+        "tests": 7,
+        "latency_avg_s": 12.37,
+        "stop": 6,
+        "length": 1,
+        "errors": 0
+      },
+      "B4": {
+        "tests": 10,
+        "latency_avg_s": 7.44,
+        "stop": 10,
+        "length": 0,
+        "errors": 0
+      },
+      "B5": {
+        "tests": 3,
+        "latency_avg_s": 10.62,
+        "stop": 3,
+        "length": 0,
+        "errors": 0
+      },
+      "B6": {
+        "tests": 4,
+        "latency_avg_s": 24.04,
+        "stop": 2,
+        "length": 2,
+        "errors": 0
+      },
+      "B7": {
+        "tests": 2,
+        "latency_avg_s": 6.62,
+        "stop": 2,
+        "length": 0,
+        "errors": 0
+      },
+      "B8": {
+        "tests": 1,
+        "latency_avg_s": 5.85,
+        "stop": 1,
+        "length": 0,
+        "errors": 0
+      },
+      "B9": {
+        "tests": 1,
+        "latency_avg_s": 17.08,
+        "stop": 1,
+        "length": 0,
+        "errors": 0
+      },
+      "B10": {
+        "tests": 2,
+        "latency_avg_s": 10.51,
+        "stop": 2,
+        "length": 0,
+        "errors": 0
+      },
+      "B11": {
+        "tests": 1,
+        "latency_avg_s": 27.04,
+        "stop": 0,
+        "length": 1,
+        "errors": 0
+      },
+      "B12": {
+        "tests": 3,
+        "latency_avg_s": null,
+        "stop": 0,
+        "length": 0,
+        "errors": 0
+      }
+    }
+  },
+  "selected_cases": {
+    "B2.2": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 3.9,
+        "completion_tokens": 248,
+        "answer": "3"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 6.12,
+        "completion_tokens": 256,
+        "answer": "There are three balloons in the image, colored yellow, blue, and red.",
+        "error": null
+      }
+    },
+    "B2.6": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 4.27,
+        "completion_tokens": 266,
+        "answer": "The terrace/balcony door is open, framed by teal and sheer white curtains on either side, providing a view of the snowy outdoor scene."
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 8.2,
+        "completion_tokens": 348,
+        "answer": "The terrace/balcony door is **partially open**. The glass door with a black frame has a visible gap between the door and the frame, allowing a view of the snowy outdoor scene. The ",
+        "error": null
+      }
+    },
+    "B3.2": {
+      "v3": {
+        "finish_reason": "length",
+        "latency_s": 15.68,
+        "completion_tokens": 1000,
+        "answer": "<think> Okay, let's see. The user is asking if anything was added to or removed from the table between the two images provided. I need to compare the two images carefully to determ"
+      },
+      "v4": {
+        "finish_reason": "length",
+        "latency_s": 27.07,
+        "completion_tokens": 1200,
+        "answer": "<think> Okay, let's try to figure out if anything was added or removed from the table between the two images. The user provided a detailed description of both images, so I need to ",
+        "error": null
+      }
+    },
+    "B3.4": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 5.02,
+        "completion_tokens": 309,
+        "answer": "The bouquet of flowers was left in place. The video specifies that the bouquet of red roses in a glass vase is \"placed on the dining table,\" and there is no indication of it being "
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 9.94,
+        "completion_tokens": 426,
+        "answer": "The bouquet of red roses was moved. In the first image, the vase with red roses is on the **right side** of the table, while in the second image, it is positioned on the **left sid",
+        "error": null
+      }
+    },
+    "B3.6": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 3.65,
+        "completion_tokens": 228,
+        "answer": "The foam roller was removed from the green storage basket and placed inside the striped bag."
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 5.06,
+        "completion_tokens": 208,
+        "answer": "removed",
+        "error": null
+      }
+    },
+    "B4.1": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 10.25,
+        "completion_tokens": 590,
+        "answer": "The blue foam roller is positioned on the right side of the frame, angled slightly toward the left. This orientation implies it is moving in the direction opposite to its pointed o"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 8.98,
+        "completion_tokens": 361,
+        "answer": "The blue foam roller is moving **from left to right** across the wooden floor at a **steady pace**. The motion is smooth and consistent, with no indication of acceleration or decel",
+        "error": null
+      }
+    },
+    "B4.2": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 7.06,
+        "completion_tokens": 413,
+        "answer": "The foam roller rolls continuously from the foreground toward the right side of the frame, exiting the shot as it moves. Its trajectory is straight and uninterrupted, with no indic"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 7.22,
+        "completion_tokens": 299,
+        "answer": "The foam roller moves smoothly and steadily to the right across the wooden floor, maintaining a horizontal orientation. Its trajectory is straight and consistent, gradually rolling",
+        "error": null
+      }
+    },
+    "B4.3_1": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 4.37,
+        "completion_tokens": 266,
+        "answer": "Yes, there is a person in the image. They are sitting on the sofa, dressed in a light-colored sweater, and have their head resting on their hand."
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 7.99,
+        "completion_tokens": 335,
+        "answer": "No, there is no person visible in the image. The scene focuses on the living room's decor and layout, including a sofa, table, balloons, and sliding glass door, but no individuals ",
+        "error": null
+      }
+    },
+    "B4.3_3": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 6.88,
+        "completion_tokens": 427,
+        "answer": "Yes, there is a person in the image. The man has a beard and is wearing a dark green short-sleeved shirt with white dots. His posture is leaned against a wall, with his right elbow"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 8.21,
+        "completion_tokens": 345,
+        "answer": "Yes, there is a person in the image. A man is standing near a large window on the right side of the frame. He has short dark hair and a beard, wears a dark green T-shirt with small",
+        "error": null
+      }
+    },
+    "B4.3_4": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 5.19,
+        "completion_tokens": 319,
+        "answer": "Yes, there is a person in the image. They are seated on the sofa, wearing a black jacket and a white hat."
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 4.38,
+        "completion_tokens": 171,
+        "answer": "No, there is no person visible in the image.",
+        "error": null
+      }
+    },
+    "B5.1": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 9.07,
+        "completion_tokens": 575,
+        "answer": "The door/window appears insecure based on the provided details. While the fenced outdoor area suggests some level of restriction, the doorway's status is unclear-open or closed-wit"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 9.5,
+        "completion_tokens": 409,
+        "answer": "High risk",
+        "error": null
+      }
+    },
+    "B5.3": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 7.96,
+        "completion_tokens": 459,
+        "answer": "Yes, the door/window state changed significantly between the first and second frames. The first frame depicts an indoor living room with no mention of a door/window, while the seco"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 12.79,
+        "completion_tokens": 532,
+        "answer": "Yes, the door/window state changed. In Frame 3, the glass door is explicitly shown as open, revealing a snowy outdoor area with a gate. The prior frames (Frames 1 and 2) do not men",
+        "error": null
+      }
+    },
+    "B6.1": {
+      "v3": {
+        "finish_reason": "length",
+        "latency_s": 15.78,
+        "completion_tokens": 1000,
+        "answer": "<think> Okay, let's try to figure out the room dimensions based on the given information. The user mentioned that the sofa is approximately 2.5 meters long. First, I need to visual"
+      },
+      "v4": {
+        "finish_reason": "length",
+        "latency_s": 27.05,
+        "completion_tokens": 1200,
+        "answer": "<think> Okay, let's try to figure out the room dimensions based on the sofa's length. The user said the sofa is about 2.5 meters long. First, I need to visualize the room setup. Th",
+        "error": null
+      }
+    },
+    "B6.4": {
+      "v3": {
+        "finish_reason": "length",
+        "latency_s": 15.76,
+        "completion_tokens": 1000,
+        "answer": "<think> Okay, let's try to figure out the distances here. The user is asking for the distances between the camera, sofa, coffee table, and the far wall. The video shows a living ro"
+      },
+      "v4": {
+        "finish_reason": "length",
+        "latency_s": 27.05,
+        "completion_tokens": 1200,
+        "answer": "<think> Okay, let's try to figure out the distances between the camera, the sofa, the coffee table, and the far wall based on the image. First, the camera is positioned at eye leve",
+        "error": null
+      }
+    },
+    "B8.1": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 2.78,
+        "completion_tokens": 171,
+        "answer": "Four cushions/pillows"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 5.85,
+        "completion_tokens": 244,
+        "answer": "2",
+        "error": null
+      }
+    },
+    "B9.1": {
+      "v3": {
+        "finish_reason": "length",
+        "latency_s": 15.76,
+        "completion_tokens": 1000,
+        "answer": "<think> Okay, let's try to figure out the distance from the camera to the person in the video. The user provided a detailed description, so I need to parse that carefully. First, t"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 17.08,
+        "completion_tokens": 751,
+        "answer": "2.5",
+        "error": null
+      }
+    },
+    "B10.1": {
+      "v3": {
+        "finish_reason": "length",
+        "latency_s": 15.8,
+        "completion_tokens": 1000,
+        "answer": "<think> Okay, let's try to figure this out. The user is asking whether the coffee table is to the left or right of the sofa from the camera's perspective. Let me start by recalling"
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 8.21,
+        "completion_tokens": 351,
+        "answer": "right",
+        "error": null
+      }
+    },
+    "B10.2": {
+      "v3": {
+        "finish_reason": "stop",
+        "latency_s": 9.57,
+        "completion_tokens": 607,
+        "answer": "The window/terrace door is **behind the sofa** from the camera's perspective. ### Reasoning: - The ottoman and bouquet of roses are positioned **in front of the sofa**, indicating "
+      },
+      "v4": {
+        "finish_reason": "stop",
+        "latency_s": 12.81,
+        "completion_tokens": 559,
+        "answer": "behind",
+        "error": null
+      }
+    },
+    "B11.1": {
+      "v3": {
+        "finish_reason": "length",
+        "latency_s": 15.78,
+        "completion_tokens": 1000,
+        "answer": "<think> Okay, let's try to figure out the dimensions of this room. The user provided a detailed description, so I'll start by parsing that information step by step. First, the room"
+      },
+      "v4": {
+        "finish_reason": "length",
+        "latency_s": 27.04,
+        "completion_tokens": 1200,
+        "answer": "<think> Okay, let's try to figure out the length and width of the room based on the given information. The user provided a detailed description, so I need to parse that carefully. ",
+        "error": null
+      }
+    }
+  }
+}

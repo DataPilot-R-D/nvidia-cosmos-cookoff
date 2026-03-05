@@ -1,0 +1,26 @@
+temporal_memory_node:
+  ros__parameters:
+    output_dir: "/home/ubuntu/vlm_temporal/temporal_memory"
+
+    fps: 1.0
+    window_s: 2.0
+    stride_s: 2.0
+    summary_interval_s: 10.0
+    max_frames_per_window: 3
+
+    persistent_memory: true
+    clear_memory_on_start: false
+
+    # Moondream connector that returns a comma-separated object list and is converted
+    # to a minimal TemporalMemory JSON (so DimOS doesn't fail JSON parsing)
+    vlm_backend: "moondream_objects_local"
+
+    # Optional override
+    vlm_model_name: ""
+
+    max_tokens: 2000
+
+    camera_topic: "/robot0/front_cam/rgb"
+    query_topic: "/temporal_memory/query"
+    result_topic: "/temporal_memory/result"
+    entities_topic: "/temporal_memory/entities"

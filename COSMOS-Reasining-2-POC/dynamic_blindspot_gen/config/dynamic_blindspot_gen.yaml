@@ -1,0 +1,10 @@
+sras_dynamic_blindspot_gen:
+  ros__parameters:
+    zone_ids: [zone_a, zone_b, zone_c, zone_d, zone_e]
+    camera_ids: [cam_north, cam_south, cam_east, cam_west]
+    event_interval_s: 5.0
+    max_concurrent_occlusions: 3
+    severity_weights_json: '{"0": 0.3, "1": 0.3, "2": 0.25, "3": 0.15}'
+    occlusion_type_weights_json: '{"OBJECT_MOVED": 0.25, "LAYOUT_SHIFT": 0.20, "CAMERA_BLOCKED": 0.25, "LIGHTING_CHANGE": 0.15, "NEW_OBSTACLE": 0.15}'
+    generation_interval_s: 5.0
+    auto_generate: true

@@ -1,0 +1,10 @@
+{
+  "blob_len_max": 38168,
+  "blob_len_min": 33107,
+  "distinct_object_names": 16,
+  "distinct_timestamps": 6,
+  "row_count": 20,
+  "rows_with_blob": 20,
+  "timestamp_max": 1771429616.2139637,
+  "timestamp_min": 1771429579.3890905
+}

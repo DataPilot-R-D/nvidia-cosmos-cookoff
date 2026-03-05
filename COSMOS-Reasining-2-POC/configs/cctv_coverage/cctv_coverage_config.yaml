@@ -1,0 +1,18 @@
+sras_cctv_visibility_monitor:
+  ros__parameters:
+    cctv_image_topics:
+      - /cctv/cam1/image_raw
+      - /cctv/cam2/image_raw
+      - /cctv/cam3/image_raw
+      - /cctv/cam4/image_raw
+    check_interval_s: 2.0
+    blind_threshold_s: 5.0
+    coverage_warning_threshold: 0.3
+    blindspot_events_topic: /reasoning/blindspot_events
+    asset_states_topic: /perception/asset_states
+    zones:
+      - "{\"zone_id\":\"entrance_zone\",\"camera_ids\":[\"cam1\"],\"polygon\":[[0.2,-7.2],[3.1,-7.2],[3.1,-4.1],[0.2,-4.1]],\"min_coverage_ratio\":0.55,\"critical\":true,\"description\":\"Warehouse front entrance and guard checkpoint.\"}"
+      - "{\"zone_id\":\"loading_dock\",\"camera_ids\":[\"cam2\"],\"polygon\":[[9.3,-6.8],[13.0,-6.8],[13.0,-3.2],[9.3,-3.2]],\"min_coverage_ratio\":0.6,\"critical\":true,\"description\":\"Loading dock lanes and truck transfer area.\"}"
+      - "{\"zone_id\":\"main_aisle\",\"camera_ids\":[\"cam3\",\"cam1\"],\"polygon\":[[3.4,-2.4],[8.8,-2.4],[8.8,2.7],[3.4,2.7]],\"min_coverage_ratio\":0.5,\"critical\":false,\"description\":\"Primary movement corridor through the warehouse floor.\"}"
+      - "{\"zone_id\":\"shelf_zone\",\"camera_ids\":[\"cam3\",\"cam4\"],\"polygon\":[[7.1,0.6],[11.5,0.6],[11.5,4.4],[7.1,4.4]],\"min_coverage_ratio\":0.65,\"critical\":true,\"description\":\"High-value shelving and picker lanes.\"}"
+      - "{\"zone_id\":\"rear_area\",\"camera_ids\":[\"cam4\"],\"polygon\":[[9.4,2.2],[13.3,2.2],[13.3,5.8],[9.4,5.8]],\"min_coverage_ratio\":0.45,\"critical\":false,\"description\":\"Rear wall staging and maintenance area.\"}"

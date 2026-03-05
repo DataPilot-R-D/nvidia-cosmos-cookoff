@@ -1,0 +1,41 @@
+# go2rtc configuration for Dashboard Robotics
+# Unified video pipeline: RTSP (H.264) → go2rtc → WebRTC
+#
+# Source naming convention:
+#   sim.<scene>.<name>  — Isaac Sim cameras
+#   cctv.<site>.<name>  — Real CCTV cameras
+#
+# Deploy: docker run -v $(pwd)/go2rtc.yaml:/config/go2rtc.yaml \
+#   -p 1984:1984 -p 8554:8554 -p 8555:8555 \
+#   alexxit/go2rtc
+
+streams:
+  # ── Isaac Sim cameras (RTSP from isaac-rtsp-exporter on :8557) ──
+  sim.warehouse.entrance:
+    - rtsp://localhost:8557/isaac/entrance
+  sim.warehouse.dock:
+    - rtsp://localhost:8557/isaac/dock
+  sim.warehouse.aisle1:
+    - rtsp://localhost:8557/isaac/aisle1
+  sim.warehouse.overview:
+    - rtsp://localhost:8557/isaac/overview
+
+  # ── Real CCTV cameras (uncomment and configure) ──
+  # cctv.office.lobby:
+  #   - rtsp://admin:password@192.168.1.100:554/stream1
+  # cctv.office.parking:
+  #   - rtsp://admin:password@192.168.1.101:554/stream1
+
+api:
+  listen: ":1984"
+
+rtsp:
+  listen: ":8554"
+
+webrtc:
+  listen: ":8555"
+  candidates:
+    - stun:stun.l.google.com:19302
+
+log:
+  level: info

@@ -1,0 +1,28 @@
+[submodule "repos/dashboard"]
+	path = repos/dashboard
+	url = git@github.com:DataPilot-R-D/Dashboard_Robotics.git
+	branch = feature/msgpack-integration
+[submodule "repos/planner"]
+	path = repos/planner
+	url = git@github.com:DataPilot-R-D/sras_ros2_robot_task_planner.git
+	branch = main
+[submodule "repos/executor"]
+	path = repos/executor
+	url = git@github.com:DataPilot-R-D/sras_ros2_robot_task_executor.git
+	branch = main
+[submodule "repos/bringup"]
+	path = repos/bringup
+	url = git@github.com:DataPilot-R-D/sras_ros2_bringup.git
+	branch = main
+[submodule "repos/dimos-bridge"]
+	path = repos/dimos-bridge
+	url = git@github.com:DataPilot-R-D/sras_ros2_dimos_bridge.git
+	branch = main
+[submodule "repos/cosmos-poc"]
+	path = repos/cosmos-poc
+	url = git@github.com:DataPilot-R-D/cosmos-hackathon.git
+	branch = main
+[submodule "repos/go2-omniverse"]
+	path = repos/go2-omniverse
+	url = git@github.com:DataPilot-R-D/go2_omniverse.git
+	branch = master

@@ -1,0 +1,15 @@
+# Build artifacts
+**/*.tsbuildinfo
+
+# Playwright/Jest artifacts (generated)
+apps/web-client/playwright-artifacts/**
+apps/web-client/test-results/**
+
+# Local memory/notes (not part of product source)
+memory/**
+USER.md
+TOOLS.md
+
+# Temporary scripts
+apps/web-client/tmp-*.mjs
+infra/isaac-rtsp-exporter/.pytest_cache

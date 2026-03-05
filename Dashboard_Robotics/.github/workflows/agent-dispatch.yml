@@ -1,0 +1,447 @@
+name: Agent Dispatch
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  # Detect which agent should handle this issue
+  route:
+    if: github.event.label.name == 'agent-ready'
+    runs-on: ubuntu-latest
+    outputs:
+      agent: ${{ steps.detect.outputs.agent }}
+      prompt: ${{ steps.detect.outputs.prompt }}
+    steps:
+      - name: Detect Agent & Build Prompt
+        id: detect
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.issue.labels.map(l => l.name);
+            const title = context.payload.issue.title;
+            const body = context.payload.issue.body || '';
+
+            // Route by labels → agent type
+            let agent = 'forge'; // default
+            if (labels.some(l => l.startsWith('area:infra'))) agent = 'infra';
+            else if (labels.some(l => l === 'type:spike')) agent = 'strateg';
+
+            // Title-based override
+            if (title.match(/\[Spike\]/i) || title.match(/\[Research\]/i)) agent = 'strateg';
+            if (title.match(/\[Infra\]/i)) agent = 'infra';
+
+            const issueNum = context.payload.issue.number;
+            const issueRef = `Issue #${issueNum}: ${title}\nBody:\n${body}`;
+
+            let prompt = '';
+            if (agent === 'forge') {
+              prompt = [
+                'You are Forge, an AI developer agent for ASH Dashboard Robotics.',
+                'Read CLAUDE.md for project conventions.',
+                '',
+                'Your task: implement the following GitHub issue.',
+                '',
+                issueRef,
+                '',
+                'Instructions:',
+                '1. Read the issue carefully, understand requirements',
+                '2. Read CLAUDE.md and relevant source files before coding',
+                '3. Implement the changes following project conventions',
+                '4. Run: pnpm lint && pnpm typecheck && pnpm test',
+                '5. Fix ALL errors before finishing — do not leave broken code',
+                '6. Commit with conventional commit: feat/fix/chore(scope): description (#' + issueNum + ')',
+                '',
+                'IMPORTANT:',
+                '- Follow CLAUDE.md conventions strictly',
+                '- Base branch is feature/msgpack-integration',
+                '- If tests fail, fix them. Do NOT skip.',
+                '- If you cannot implement something, leave a clear TODO with explanation',
+                '- One logical change per commit'
+              ].join('\n');
+
+            } else if (agent === 'strateg') {
+              prompt = [
+                'You are Strateg, an AI research & strategy agent for ASH Dashboard Robotics.',
+                'Read CLAUDE.md for project context.',
+                '',
+                'Your task: research and analyze the following topic.',
+                '',
+                issueRef,
+                '',
+                'Instructions:',
+                '1. Read the issue carefully — understand the research question',
+                '2. Analyze the codebase, docs, and any relevant context',
+                '3. Create a research file: research/issue-' + issueNum + '-findings.md',
+                '4. The file MUST exist and contain your complete findings',
+                '',
+                'Required file format (research/issue-' + issueNum + '-findings.md):',
+                '```',
+                '# Research: [topic from issue title]',
+                '',
+                '## Executive Summary',
+                '- (3-5 key findings as bullets)',
+                '',
+                '## Detailed Analysis',
+                '(thorough analysis — code references, architecture, data)',
+                '',
+                '## Recommendations',
+                '(each option with pros/cons)',
+                '',
+                '## Next Steps',
+                '(concrete actionable items)',
+                '```',
+                '',
+                'CRITICAL:',
+                '- You MUST create the file research/issue-' + issueNum + '-findings.md',
+                '- mkdir -p research/ first if the directory does not exist',
+                '- Write substantial content, not placeholders',
+                '- This file will be auto-posted as a comment on the issue',
+                '- If you need web research, note what should be looked up'
+              ].join('\n');
+
+            } else if (agent === 'infra') {
+              prompt = [
+                'You are Infra, an AI infrastructure agent for ASH Dashboard Robotics.',
+                'Read CLAUDE.md for project context.',
+                '',
+                'Your task: implement the following infrastructure change.',
+                '',
+                issueRef,
+                '',
+                'Instructions:',
+                '1. Read the issue carefully',
+                '2. Implement infrastructure changes (config, CI/CD, deployment, etc.)',
+                '3. Test changes where possible (dry-run, validation)',
+                '4. Document any manual steps in a comment block or README',
+                '5. Commit with conventional commit: chore(infra): description (#' + issueNum + ')',
+                '',
+                'IMPORTANT:',
+                '- NEVER expose secrets, tokens, or credentials in code',
+                '- Use GitHub Secrets / env vars for sensitive values',
+                '- Document what was changed and why',
+                '- If manual intervention needed after merge, note it clearly in the PR body'
+              ].join('\n');
+            }
+
+            core.setOutput('agent', agent);
+            core.setOutput('prompt', prompt);
+            console.log(`Routing to agent: ${agent}`);
+
+  # ──────────────────────────────────────────────
+  # FORGE — Development tasks (branch → implement → PR)
+  # ──────────────────────────────────────────────
+  forge:
+    needs: route
+    if: needs.route.outputs.agent == 'forge'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: feature/msgpack-integration
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create Branch
+        run: |
+          ISSUE_NUM=${{ github.event.issue.number }}
+          TITLE=$(echo "${{ github.event.issue.title }}" | sed 's/\[.*\] //' | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-' | head -c 40)
+          BRANCH="issue/${ISSUE_NUM}-${TITLE}"
+          git checkout -b "$BRANCH"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+      - name: Forge Implementation
+        uses: anthropics/claude-code-action@v1
+        env:
+          ANTHROPIC_MODEL: eu.anthropic.claude-sonnet-4-5-20250929-v1:0
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        with:
+          use_bedrock: true
+          allowed_bots: "ash-agents[bot],ash-agents,github-actions[bot]"
+          prompt: ${{ needs.route.outputs.prompt }}
+          claude_args: "--max-turns 25"
+
+      - name: Push & Create PR
+        id: push-pr
+        run: |
+          git config user.name "forge-agent[bot]"
+          git config user.email "forge@ash-sus.dev"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          git commit -m "feat: implement #${{ github.event.issue.number }}"
+          git push origin "$BRANCH"
+          PR_URL=$(gh pr create \
+            --base feature/msgpack-integration \
+            --head "$BRANCH" \
+            --title "feat: implement #${{ github.event.issue.number }} — ${{ github.event.issue.title }}" \
+            --body "Closes #${{ github.event.issue.number }}
+
+          Implemented by Forge Agent (automated via GitHub Action).
+
+          ## Checklist
+          - [ ] \`pnpm test\` passes
+          - [ ] \`pnpm lint\` passes
+          - [ ] \`pnpm typecheck\` passes
+          - [ ] Manual review by QA" \
+            --label "agent-working")
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on Issue (no changes)
+        if: steps.push-pr.outputs.has_changes == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }},
+              body: '⚠️ Forge completed but produced no code changes. This may mean:\n- The issue was already resolved\n- The issue needs clarification\n- The task was too complex for auto-implementation\n\nCheck [Action logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+            });
+
+      - name: Update Labels
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = ['agent-working'];
+            if ('${{ steps.push-pr.outputs.has_changes }}' === 'false') {
+              labels.push('agent-blocked');
+            }
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }}, name: 'agent-ready'
+            }).catch(() => {});
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }}, labels
+            });
+
+  # ──────────────────────────────────────────────
+  # STRATEG — Research tasks (analyze → file → comment on issue)
+  # ──────────────────────────────────────────────
+  strateg:
+    needs: route
+    if: needs.route.outputs.agent == 'strateg'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: feature/msgpack-integration
+          fetch-depth: 0
+
+      - name: Ensure research dir
+        run: mkdir -p research
+
+      - name: Strateg Research
+        uses: anthropics/claude-code-action@v1
+        env:
+          ANTHROPIC_MODEL: eu.anthropic.claude-sonnet-4-5-20250929-v1:0
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        with:
+          use_bedrock: true
+          allowed_bots: "ash-agents[bot],ash-agents,github-actions[bot]"
+          prompt: ${{ needs.route.outputs.prompt }}
+          claude_args: "--max-turns 15"
+
+      - name: Post Findings to Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const issueNum = ${{ github.event.issue.number }};
+            const researchDir = 'research';
+            let posted = false;
+
+            if (fs.existsSync(researchDir)) {
+              const files = fs.readdirSync(researchDir).filter(f =>
+                f.includes(`issue-${issueNum}`) || f.includes(`${issueNum}`)
+              );
+              if (files.length > 0) {
+                const content = fs.readFileSync(`${researchDir}/${files[0]}`, 'utf8');
+                if (content.trim().length > 50) {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNum,
+                    body: `## 📊 Strateg Research Findings\n\n${content}`
+                  });
+                  posted = true;
+                  console.log(`Posted findings from ${files[0]}`);
+                }
+              }
+            }
+
+            if (!posted) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNum,
+                body: [
+                  '⚠️ **Strateg completed but no research file was found.**',
+                  '',
+                  'Expected file: `research/issue-' + issueNum + '-findings.md`',
+                  '',
+                  'This may mean:',
+                  '- The topic needs more context or clarification',
+                  '- The research requires web access (not available in CI)',
+                  '- Check [Action logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for Claude\'s analysis',
+                ].join('\n')
+              });
+            }
+
+      - name: Push Research & Create PR
+        run: |
+          git config user.name "strateg-agent[bot]"
+          git config user.email "strateg@ash-sus.dev"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No files to commit"
+            exit 0
+          fi
+          BRANCH="research/${{ github.event.issue.number }}"
+          git checkout -b "$BRANCH"
+          git commit -m "research: findings for #${{ github.event.issue.number }}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --base feature/msgpack-integration \
+            --head "$BRANCH" \
+            --title "research: #${{ github.event.issue.number }} — ${{ github.event.issue.title }}" \
+            --body "Research findings for #${{ github.event.issue.number }}. See issue comment for details." \
+            --label "agent-working"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Labels
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }}, name: 'agent-ready'
+            }).catch(() => {});
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }}, labels: ['agent-working']
+            });
+
+  # ──────────────────────────────────────────────
+  # INFRA — Infrastructure tasks (config, CI/CD, deployment)
+  # ──────────────────────────────────────────────
+  infra:
+    needs: route
+    if: needs.route.outputs.agent == 'infra'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: feature/msgpack-integration
+          fetch-depth: 0
+
+      - name: Infra Implementation
+        uses: anthropics/claude-code-action@v1
+        env:
+          ANTHROPIC_MODEL: eu.anthropic.claude-sonnet-4-5-20250929-v1:0
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        with:
+          use_bedrock: true
+          allowed_bots: "ash-agents[bot],ash-agents,github-actions[bot]"
+          prompt: ${{ needs.route.outputs.prompt }}
+          claude_args: "--max-turns 20"
+
+      - name: Push & Create PR
+        id: push-pr
+        run: |
+          git config user.name "infra-agent[bot]"
+          git config user.email "infra@ash-sus.dev"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          BRANCH="infra/${{ github.event.issue.number }}"
+          git checkout -b "$BRANCH"
+          git commit -m "chore(infra): implement #${{ github.event.issue.number }}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --base feature/msgpack-integration \
+            --head "$BRANCH" \
+            --title "chore(infra): #${{ github.event.issue.number }} — ${{ github.event.issue.title }}" \
+            --body "Closes #${{ github.event.issue.number }}
+
+          Implemented by Infra Agent (automated via GitHub Action)." \
+            --label "agent-working"
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on Issue (no changes)
+        if: steps.push-pr.outputs.has_changes == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }},
+              body: '⚠️ Infra completed but produced no changes. Check [Action logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+            });
+
+      - name: Update Labels
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = ['agent-working'];
+            if ('${{ steps.push-pr.outputs.has_changes }}' === 'false') {
+              labels.push('agent-blocked');
+            }
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }}, name: 'agent-ready'
+            }).catch(() => {});
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }}, labels
+            });

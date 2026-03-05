@@ -1,0 +1,3 @@
+export ROS_DISTRO=jazzy
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/IsaacSim/exts/isaacsim.ros2.bridge/jazzy/lib

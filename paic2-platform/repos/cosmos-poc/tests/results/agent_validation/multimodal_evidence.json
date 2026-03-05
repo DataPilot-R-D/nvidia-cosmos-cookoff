@@ -1,0 +1,161 @@
+{
+  "avg_f1_image_enriched": 0.4,
+  "avg_f1_metadata_only": 0.2,
+  "case_count": 2,
+  "conflict_detection_rate": 0.0,
+  "decoy_false_positive_rate_image": 1.0,
+  "decoy_false_positive_rate_metadata_only": 0.5,
+  "f1_lift_image_minus_metadata": 0.2,
+  "overall_pass": false,
+  "per_case": [
+    {
+      "case_id": "track_b_ts_0",
+      "conflict_test": {
+        "correct": false,
+        "expected_metadata_consistent": false,
+        "image_timestamp": 1771429579.3890905,
+        "metadata_timestamp": 1771429583.3130214,
+        "payload": {
+          "image_timestamp": 1771429579.3890905,
+          "metadata_consistent": true,
+          "metadata_timestamp": 1771429583.3130214,
+          "visible_objects": [
+            "storage rack",
+            "wall",
+            "structural beam",
+            "horizontal bar"
+          ]
+        }
+      },
+      "decoy_objects": [
+        "shelf",
+        "wall",
+        "structural beam"
+      ],
+      "image_enriched": {
+        "decoy_false_positives": 3,
+        "payload": {
+          "metadata_consistent": true,
+          "timestamp": 1771429579.3890905,
+          "visible_objects": [
+            "storage rack",
+            "shelf",
+            "wall",
+            "structural beam"
+          ]
+        },
+        "score": {
+          "f1": 0.4,
+          "fn": 0,
+          "fp": 3,
+          "precision": 0.25,
+          "recall": 1.0,
+          "tp": 1
+        }
+      },
+      "metadata_only": {
+        "decoy_false_positives": 0,
+        "payload": {
+          "metadata_consistent": true,
+          "timestamp": 1771429579.3890905,
+          "visible_objects": []
+        },
+        "score": {
+          "f1": 0.0,
+          "fn": 1,
+          "fp": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "tp": 0
+        }
+      },
+      "oracle_objects": [
+        "storage rack"
+      ],
+      "timestamp": 1771429579.3890905
+    },
+    {
+      "case_id": "track_b_ts_1",
+      "conflict_test": {
+        "correct": false,
+        "expected_metadata_consistent": false,
+        "image_timestamp": 1771429583.3130214,
+        "metadata_timestamp": 1771429579.3890905,
+        "payload": {
+          "image_timestamp": 1771429583.3130214,
+          "metadata_consistent": true,
+          "metadata_timestamp": 1771429579.3890905,
+          "visible_objects": [
+            "storage rack",
+            "shelf",
+            "wall",
+            "structural beam"
+          ]
+        }
+      },
+      "decoy_objects": [
+        "wall",
+        "structural beam",
+        "horizontal bar"
+      ],
+      "image_enriched": {
+        "decoy_false_positives": 3,
+        "payload": {
+          "metadata_consistent": true,
+          "timestamp": 1771429583.3130214,
+          "visible_objects": [
+            "storage rack",
+            "wall",
+            "structural beam",
+            "horizontal bar"
+          ]
+        },
+        "score": {
+          "f1": 0.4,
+          "fn": 0,
+          "fp": 3,
+          "precision": 0.25,
+          "recall": 1.0,
+          "tp": 1
+        }
+      },
+      "metadata_only": {
+        "decoy_false_positives": 3,
+        "payload": {
+          "metadata_consistent": true,
+          "timestamp": 1771429583.3130214,
+          "visible_objects": [
+            "storage rack",
+            "wall",
+            "structural beam",
+            "horizontal bar"
+          ]
+        },
+        "score": {
+          "f1": 0.4,
+          "fn": 0,
+          "fp": 3,
+          "precision": 0.25,
+          "recall": 1.0,
+          "tp": 1
+        }
+      },
+      "oracle_objects": [
+        "storage rack"
+      ],
+      "timestamp": 1771429583.3130214
+    }
+  ],
+  "threshold_results": {
+    "avg_f1_image_enriched": false,
+    "conflict_detection_rate": false,
+    "decoy_false_positive_rate_image": false,
+    "f1_lift_image_minus_metadata": true
+  },
+  "thresholds": {
+    "max_decoy_false_positive_rate_image": 0.25,
+    "min_avg_f1_image_enriched": 0.6,
+    "min_conflict_detection_rate": 0.8,
+    "min_f1_lift_image_minus_metadata": 0.05
+  }
+}

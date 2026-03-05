@@ -1,0 +1,19 @@
+# Guard — walks from window area toward doors (Z-up)
+Character_04 GoTo 0.5 -18.0 0 180
+Character_04 Idle 999.0
+
+# Thief 1 — wait then enter
+Character_05 Idle 38.0
+Character_05 GoTo 0.2 15.0 0 180
+Character_05 GoTo 0.5 5.5 0 180
+Character_05 LookAround 3.0
+Character_05 GoTo -1.0 3.0 0 180
+Character_05 Idle 5.0
+
+# Thief 2 — follow
+Character_06 Idle 40.0
+Character_06 GoTo -0.5 15.0 0 180
+Character_06 GoTo -0.5 6.0 0 180
+Character_06 GoTo 1.0 4.0 0 90
+Character_06 LookAround 3.0
+Character_06 Idle 5.0

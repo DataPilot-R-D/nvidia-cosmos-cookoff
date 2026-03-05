@@ -1,0 +1,176 @@
+// FlatBuffers Schema for ROS Sensor Messages
+// Provides 10x faster serialization and zero-copy access compared to JSON
+//
+// Compile with: flatc --ts -o ./generated ros_messages.fbs
+
+namespace RosFlatBuffers;
+
+// =============================================================================
+// Common Types
+// =============================================================================
+
+struct Vector3 {
+  x: float;
+  y: float;
+  z: float;
+}
+
+struct Quaternion {
+  x: float;
+  y: float;
+  z: float;
+  w: float;
+}
+
+struct Timestamp {
+  sec: int;
+  nanosec: uint;
+}
+
+table Header {
+  seq: uint;
+  stamp: Timestamp;
+  frame_id: string;
+}
+
+// =============================================================================
+// PointCloud2 - Optimized for large 3D LIDAR data
+// =============================================================================
+
+struct Point3DFloat {
+  x: float;
+  y: float;
+  z: float;
+  intensity: float;
+}
+
+table PointCloud2 {
+  header: Header;
+  width: uint;
+  height: uint;
+  // Flattened points array: [x1,y1,z1,i1, x2,y2,z2,i2, ...]
+  // Using [float] instead of [Point3DFloat] for efficient access
+  points: [float];
+  point_count: uint;
+  // Original ROS metadata (for reconstruction)
+  point_step: uint;
+  row_step: uint;
+  is_dense: bool;
+}
+
+// =============================================================================
+// OccupancyGrid - Map data for navigation
+// =============================================================================
+
+struct MapMetaData {
+  resolution: float;
+  width: uint;
+  height: uint;
+  origin_x: float;
+  origin_y: float;
+  origin_z: float;
+}
+
+table OccupancyGrid {
+  header: Header;
+  info: MapMetaData;
+  // Grid data: 0=free, 100=occupied, 255=unknown (converted from -1)
+  data: [ubyte];
+}
+
+// =============================================================================
+// LaserScan - 2D LIDAR
+// =============================================================================
+
+table LaserScan {
+  header: Header;
+  angle_min: float;
+  angle_max: float;
+  angle_increment: float;
+  time_increment: float;
+  scan_time: float;
+  range_min: float;
+  range_max: float;
+  ranges: [float];
+  intensities: [float];
+}
+
+// =============================================================================
+// Processed LIDAR Points (output format)
+// =============================================================================
+
+table ProcessedPoints {
+  // Flattened [x,y,z,intensity] tuples
+  data: [float];
+  point_count: uint;
+  scan_index: uint;
+  timestamp: long;
+}
+
+// =============================================================================
+// Robot Pose
+// =============================================================================
+
+table Pose {
+  position: Vector3;
+  orientation: Quaternion;
+}
+
+table PoseStamped {
+  header: Header;
+  pose: Pose;
+}
+
+// =============================================================================
+// Navigation Path
+// =============================================================================
+
+table Path {
+  header: Header;
+  poses: [PoseStamped];
+}
+
+// =============================================================================
+// IMU Data
+// =============================================================================
+
+table Imu {
+  header: Header;
+  orientation: Quaternion;
+  angular_velocity: Vector3;
+  linear_acceleration: Vector3;
+}
+
+// =============================================================================
+// Message Wrapper (for WebSocket binary frames)
+// =============================================================================
+
+enum MessageType : byte {
+  Unknown = 0,
+  PointCloud2 = 1,
+  OccupancyGrid = 2,
+  LaserScan = 3,
+  ProcessedPoints = 4,
+  PoseStamped = 5,
+  Path = 6,
+  Imu = 7,
+}
+
+union MessagePayload {
+  PointCloud2,
+  OccupancyGrid,
+  LaserScan,
+  ProcessedPoints,
+  PoseStamped,
+  Path,
+  Imu,
+}
+
+table WebSocketMessage {
+  type: MessageType;
+  topic: string;
+  timestamp: long;
+  payload: MessagePayload;
+}
+
+root_type WebSocketMessage;

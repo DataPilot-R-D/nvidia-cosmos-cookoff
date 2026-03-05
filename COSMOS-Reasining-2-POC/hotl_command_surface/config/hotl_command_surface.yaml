@@ -1,0 +1,7 @@
+sras_hotl_command_surface:
+  ros__parameters:
+    task_status_topic: /robot/task_status
+    alerts_topic: /ui/alerts
+    command_topic: /ui/set_task_state
+    set_task_state_service: /robot/set_task_state
+    dashboard_interval_s: 1.0

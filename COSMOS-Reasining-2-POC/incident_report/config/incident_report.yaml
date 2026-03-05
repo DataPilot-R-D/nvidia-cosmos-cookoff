@@ -1,0 +1,6 @@
+sras_incident_report:
+  ros__parameters:
+    auto_generate_on_closure: true
+    max_buffer_events: 200
+    report_topic: /reasoning/incident_reports
+    timeline_events_topic: /reasoning/timeline_feed

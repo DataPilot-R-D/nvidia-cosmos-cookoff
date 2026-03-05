@@ -1,0 +1,13 @@
+std_msgs/Header header
+string alert_id
+uint8 severity
+uint8 SEVERITY_LOW=0
+uint8 SEVERITY_MEDIUM=1
+uint8 SEVERITY_HIGH=2
+uint8 SEVERITY_CRITICAL=3
+string title
+string message
+string source_node
+string related_task_id
+bool requires_action
+builtin_interfaces/Time timestamp_created

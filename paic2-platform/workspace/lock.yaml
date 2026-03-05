@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-02-26T00:00:00Z",
+  "source_of_truth": {
+    "repo": "sras-platform",
+    "branch": "main",
+    "policy": "Pinned commits only. Promote via lock bump pull request."
+  },
+  "repos": [
+    {
+      "id": "dashboard",
+      "path": "repos/dashboard",
+      "remote": "git@github.com:DataPilot-R-D/Dashboard_Robotics.git",
+      "default_branch": "feature/msgpack-integration",
+      "commit": "c67da7c904bc991357ac22e5822005995bd90aaa",
+      "domain": "dashboard",
+      "criticality": "high"
+    },
+    {
+      "id": "ros2-planner",
+      "path": "repos/planner",
+      "remote": "git@github.com:DataPilot-R-D/sras_ros2_robot_task_planner.git",
+      "default_branch": "main",
+      "commit": "59e00abd8e0598e17c6c75931654be02770f6baf",
+      "domain": "reasoning",
+      "criticality": "high"
+    },
+    {
+      "id": "ros2-executor",
+      "path": "repos/executor",
+      "remote": "git@github.com:DataPilot-R-D/sras_ros2_robot_task_executor.git",
+      "default_branch": "main",
+      "commit": "65434cbf866168415e33a1d3df2d47d05e0cc5cb",
+      "domain": "execution",
+      "criticality": "high"
+    },
+    {
+      "id": "ros2-bringup",
+      "path": "repos/bringup",
+      "remote": "git@github.com:DataPilot-R-D/sras_ros2_bringup.git",
+      "default_branch": "main",
+      "commit": "62893bf883a2eb88c47de014acaa62bec4aaa7f2",
+      "domain": "integration",
+      "criticality": "high"
+    },
+    {
+      "id": "ros2-dimos-bridge",
+      "path": "repos/dimos-bridge",
+      "remote": "git@github.com:DataPilot-R-D/sras_ros2_dimos_bridge.git",
+      "default_branch": "main",
+      "commit": "1c88329001f2af832db8a45d2d518c0a75c1f06e",
+      "domain": "reasoning",
+      "criticality": "high"
+    },
+    {
+      "id": "reasoning-cosmos-poc",
+      "path": "repos/cosmos-poc",
+      "remote": "git@github.com:DataPilot-R-D/cosmos-hackathon.git",
+      "default_branch": "main",
+      "commit": "193c0f6d8efaeb30ff6b45c51a5853e2cc5117c1",
+      "domain": "reasoning",
+      "criticality": "medium"
+    },
+    {
+      "id": "sim-go2-omniverse",
+      "path": "repos/go2-omniverse",
+      "remote": "git@github.com:DataPilot-R-D/go2_omniverse.git",
+      "default_branch": "master",
+      "commit": "ea8696c52d436ac35095e40fc075209954161231",
+      "domain": "simulation",
+      "criticality": "medium"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "reasoning-cosmos-poc",
+      "kind": "dirty_worktree_detected_at_lock_time",
+      "detected_at_utc": "2026-02-26T00:00:00Z",
+      "details": [
+        "M configs/runpod-cosmos/config.json",
+        "?? .claude/"
+      ]
+    }
+  ]
+}

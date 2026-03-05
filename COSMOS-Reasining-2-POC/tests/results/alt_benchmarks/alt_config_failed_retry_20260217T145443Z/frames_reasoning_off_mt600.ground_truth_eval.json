@@ -1,0 +1,626 @@
+{
+  "generated_at_utc": "2026-02-17T14:56:18+00:00",
+  "results_path": "/Users/szymonpaluch/Projects/DataPilot/cosmos-hackathon/tests/results/alt_benchmarks/alt_config_failed_retry_20260217T145443Z/frames_reasoning_off_mt600.raw.json",
+  "prompts_path": "/Users/szymonpaluch/Projects/DataPilot/cosmos-hackathon/tests/inputs/prompts/benchmark_prompts.json",
+  "pass_threshold": 0.7,
+  "summary": {
+    "eligible_ground_truth_cases": 24,
+    "scored_cases": 19,
+    "passed_cases": 5,
+    "pass_rate": 0.2632,
+    "mean_score": 0.4538,
+    "median_score": 0.55,
+    "min_score": 0.0,
+    "max_score": 1.0
+  },
+  "category_scores": {
+    "B2": {
+      "cases": 4,
+      "mean_score": 0.4219,
+      "pass_rate": 0.0
+    },
+    "B3": {
+      "cases": 7,
+      "mean_score": 0.4593,
+      "pass_rate": 0.2857
+    },
+    "B4": {
+      "cases": 4,
+      "mean_score": 0.25,
+      "pass_rate": 0.25
+    },
+    "B5": {
+      "cases": 2,
+      "mean_score": 0.575,
+      "pass_rate": 0.5
+    },
+    "B6": {
+      "cases": 2,
+      "mean_score": 0.785,
+      "pass_rate": 0.5
+    }
+  },
+  "scored_cases": [
+    {
+      "prompt_test_id": "B2_counting_balloons",
+      "result_id": "B2.2",
+      "ground_truth": "4 balloons: yellow, green/lime, cyan/turquoise, red",
+      "score": 0.5875,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 0.95,
+      "prompt_tokens": 334,
+      "completion_tokens": 20,
+      "error": null,
+      "details": [
+        {
+          "name": "count_equals_4",
+          "score": 0.5,
+          "weight": 0.65
+        },
+        {
+          "name": "color_coverage",
+          "score": 0.75,
+          "weight": 0.35
+        }
+      ],
+      "answer_excerpt": "There are 3 balloons in the image, their colors are yellow, blue, and red."
+    },
+    {
+      "prompt_test_id": "B2_counting_chairs",
+      "result_id": "B2.3",
+      "ground_truth": "3 visible",
+      "score": 0.5,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 0.79,
+      "prompt_tokens": 772,
+      "completion_tokens": 13,
+      "error": null,
+      "details": [
+        {
+          "name": "count_equals_3",
+          "score": 0.5,
+          "weight": 1.0
+        }
+      ],
+      "answer_excerpt": "There are 2 chairs or seating surfaces in the image."
+    },
+    {
+      "prompt_test_id": "B2_counting_table_items",
+      "result_id": "B2.4",
+      "ground_truth": "~7: magazine, toys/markers, mug, roses vase, book/magazine, cloth, green mat",
+      "score": 0.0,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 1.14,
+      "prompt_tokens": 775,
+      "completion_tokens": 25,
+      "error": null,
+      "details": [
+        {
+          "name": "count_approx_7",
+          "score": 0.0,
+          "weight": 1.0
+        }
+      ],
+      "answer_excerpt": "There are 3 distinct items on the coffee table: a bouquet of red roses, a magazine, and a laptop."
+    },
+    {
+      "prompt_test_id": "B2_state_door",
+      "result_id": "B2.6",
+      "ground_truth": "Door OPEN, curtain blowing from airflow",
+      "score": 0.6,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 1.03,
+      "prompt_tokens": 777,
+      "completion_tokens": 23,
+      "error": null,
+      "details": [
+        {
+          "name": "door_open",
+          "score": 1.0,
+          "weight": 0.6
+        },
+        {
+          "name": "curtain_motion",
+          "score": 0.0,
+          "weight": 0.4
+        }
+      ],
+      "answer_excerpt": "The terrace/balcony door is open, with its right side pulled inward to reveal a snowy landscape beyond."
+    },
+    {
+      "prompt_test_id": "B3_change_mug_general",
+      "result_id": "B3.1",
+      "ground_truth": "Orange mug added to table",
+      "score": 0.55,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 0.8,
+      "prompt_tokens": 630,
+      "completion_tokens": 13,
+      "error": null,
+      "details": [
+        {
+          "name": "mug_object",
+          "score": 1.0,
+          "weight": 0.55
+        },
+        {
+          "name": "added_change",
+          "score": 0.0,
+          "weight": 0.45
+        }
+      ],
+      "answer_excerpt": "The color of the mug has changed from green to orange."
+    },
+    {
+      "prompt_test_id": "B3_change_mug_targeted",
+      "result_id": "B3.2",
+      "ground_truth": "Orange mug added to center-left of table",
+      "score": 0.665,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 0.95,
+      "prompt_tokens": 636,
+      "completion_tokens": 16,
+      "error": null,
+      "details": [
+        {
+          "name": "mug_object",
+          "score": 0.7,
+          "weight": 0.45
+        },
+        {
+          "name": "added_change",
+          "score": 1.0,
+          "weight": 0.35
+        },
+        {
+          "name": "rough_location",
+          "score": 0.0,
+          "weight": 0.2
+        }
+      ],
+      "answer_excerpt": "Yes, the red mug was added to the table in the second image."
+    },
+    {
+      "prompt_test_id": "B3_change_roller_general",
+      "result_id": "B3.5",
+      "ground_truth": "Dark blue foam roller removed from green container",
+      "score": 0.0,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 0.81,
+      "prompt_tokens": 630,
+      "completion_tokens": 13,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_roller",
+          "score": 0.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_removed",
+          "score": 0.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_green_container",
+          "score": 0.0,
+          "weight": 0.2
+        }
+      ],
+      "answer_excerpt": "The arrangement of the items on the couch has been altered."
+    },
+    {
+      "prompt_test_id": "B3_change_roller_targeted",
+      "result_id": "B3.6",
+      "ground_truth": "Dark blue foam roller removed from green container on sofa",
+      "score": 0.8,
+      "pass_threshold": 0.7,
+      "passed": true,
+      "finish_reason": "stop",
+      "latency_s": 0.67,
+      "prompt_tokens": 639,
+      "completion_tokens": 7,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_roller",
+          "score": 1.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_removed",
+          "score": 1.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_green_container",
+          "score": 0.0,
+          "weight": 0.2
+        }
+      ],
+      "answer_excerpt": "The foam roller was removed."
+    },
+    {
+      "prompt_test_id": "B3_change_roses_general",
+      "result_id": "B3.3",
+      "ground_truth": "Roses vase moved from right to left side of table",
+      "score": 0.8,
+      "pass_threshold": 0.7,
+      "passed": true,
+      "finish_reason": "stop",
+      "latency_s": 1.21,
+      "prompt_tokens": 1110,
+      "completion_tokens": 31,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_roses_or_vase",
+          "score": 1.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_movement",
+          "score": 1.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_left_and_right",
+          "score": 0.0,
+          "weight": 0.2
+        }
+      ],
+      "answer_excerpt": "The arrangement of the items on the table has been altered, with the vase now placed closer to the center and the magazine moved slightly to the right."
+    },
+    {
+      "prompt_test_id": "B3_change_roses_targeted",
+      "result_id": "B3.4",
+      "ground_truth": "Roses vase moved from right to left side of table",
+      "score": 0.4,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 1.04,
+      "prompt_tokens": 1117,
+      "completion_tokens": 23,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_roses_or_vase",
+          "score": 1.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_movement",
+          "score": 0.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_left_and_right",
+          "score": 0.0,
+          "weight": 0.2
+        }
+      ],
+      "answer_excerpt": "The bouquet of red flowers in a vase was left in place, adding a pop of color to the table."
+    },
+    {
+      "prompt_test_id": "B3_lighting_comparison",
+      "result_id": "B3.7",
+      "ground_truth": "1=all off, 2=overhead on, 3=small mirror light on",
+      "score": 0.0,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 1.66,
+      "prompt_tokens": 1660,
+      "completion_tokens": 52,
+      "error": null,
+      "details": [
+        {
+          "name": "state_1_all_off_dark",
+          "score": 0.0,
+          "weight": 0.3333333333333333
+        },
+        {
+          "name": "state_2_overhead_on",
+          "score": 0.0,
+          "weight": 0.3333333333333333
+        },
+        {
+          "name": "state_3_mirror_on",
+          "score": 0.0,
+          "weight": 0.3333333333333333
+        }
+      ],
+      "answer_excerpt": "The lighting transitions from a neutral, daytime glow in the first image to a warm, inviting ambiance in the third. The second image maintains a balanced mix of natural and artificial light, while the third introduces a soft, golden hue that enhances the cozy atmosphere."
+    },
+    {
+      "prompt_test_id": "B4_activity_recognition",
+      "result_id": "B4.5",
+      "ground_truth": "Standing/turning near wall, was walking",
+      "score": 0.7,
+      "pass_threshold": 0.7,
+      "passed": true,
+      "finish_reason": "stop",
+      "latency_s": 2.16,
+      "prompt_tokens": 777,
+      "completion_tokens": 70,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_standing",
+          "score": 1.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_turning_or_looking",
+          "score": 1.0,
+          "weight": 0.3
+        },
+        {
+          "name": "mentions_walking",
+          "score": 0.0,
+          "weight": 0.3
+        }
+      ],
+      "answer_excerpt": "The man is standing with his body turned sideways, leaning against the wall. His posture is relaxed yet attentive, as he gazes directly at the camera. With his right hand resting casually by his side and his left arm slightly bent, he appears to be in a moment of pause or reflection. His expression "
+    },
+    {
+      "prompt_test_id": "B4_motion_frames",
+      "result_id": "B4.1",
+      "ground_truth": "Blue foam roller rolling left\u2192right, slow speed",
+      "score": 0.3,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 0.84,
+      "prompt_tokens": 2259,
+      "completion_tokens": 15,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_roller",
+          "score": 1.0,
+          "weight": 0.3
+        },
+        {
+          "name": "direction_left_to_right",
+          "score": 0.0,
+          "weight": 0.4
+        },
+        {
+          "name": "speed_slow_or_steady",
+          "score": 0.0,
+          "weight": 0.3
+        }
+      ],
+      "answer_excerpt": "The blue foam roller is moving to the right at a moderate speed."
+    },
+    {
+      "prompt_test_id": "B4_person_detection",
+      "result_id": "B4.3_1",
+      "ground_truth": "Yes: man in dark green polka dot shirt, navy pants",
+      "score": 0.0,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 0.59,
+      "prompt_tokens": 778,
+      "completion_tokens": 11,
+      "error": null,
+      "details": [
+        {
+          "name": "affirmative_person_detected",
+          "score": 0.0,
+          "weight": 0.5
+        },
+        {
+          "name": "describes_green_polka_top",
+          "score": 0.0,
+          "weight": 0.3
+        },
+        {
+          "name": "describes_navy_pants",
+          "score": 0.0,
+          "weight": 0.2
+        }
+      ],
+      "answer_excerpt": "No, there is no person in this image."
+    },
+    {
+      "prompt_test_id": "B4_person_tracking",
+      "result_id": "B4.4",
+      "ground_truth": "Person walks L\u2192R to window, turns, walks R\u2192L back out",
+      "score": 0.0,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 1.43,
+      "prompt_tokens": 2262,
+      "completion_tokens": 39,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_person_motion",
+          "score": 0.0,
+          "weight": 0.3
+        },
+        {
+          "name": "mentions_left_to_right",
+          "score": 0.0,
+          "weight": 0.25
+        },
+        {
+          "name": "mentions_right_to_left",
+          "score": 0.0,
+          "weight": 0.25
+        },
+        {
+          "name": "mentions_window_or_turn",
+          "score": 0.0,
+          "weight": 0.2
+        }
+      ],
+      "answer_excerpt": "In the first and third frames, the person is not present in the scene. In the second frame, the person appears on the right side of the image, standing near a wooden chair."
+    },
+    {
+      "prompt_test_id": "B5_door_sequence",
+      "result_id": "B5.3",
+      "ground_truth": "Door goes from closed to open, curtain starts blowing",
+      "score": 0.3,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 2.04,
+      "prompt_tokens": 2266,
+      "completion_tokens": 64,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_state_change",
+          "score": 1.0,
+          "weight": 0.3
+        },
+        {
+          "name": "mentions_closed_to_open",
+          "score": 0.0,
+          "weight": 0.4
+        },
+        {
+          "name": "mentions_curtain_motion",
+          "score": 0.0,
+          "weight": 0.3
+        }
+      ],
+      "answer_excerpt": "The door or window state did not change, as the third frame shows a closed glass door with curtains on either side, which is consistent with the first frame's description of a large window. There is no security concern evident in the images, as the scenes depict normal indoor settings without any si"
+    },
+    {
+      "prompt_test_id": "B5_security_door",
+      "result_id": "B5.1",
+      "ground_truth": "Door OPEN, curtain blowing, should be YELLOW+ alert",
+      "score": 0.85,
+      "pass_threshold": 0.7,
+      "passed": true,
+      "finish_reason": "stop",
+      "latency_s": 2.42,
+      "prompt_tokens": 779,
+      "completion_tokens": 81,
+      "error": null,
+      "details": [
+        {
+          "name": "door_open",
+          "score": 1.0,
+          "weight": 0.4
+        },
+        {
+          "name": "curtain_motion",
+          "score": 0.5,
+          "weight": 0.3
+        },
+        {
+          "name": "alert_level_yellow_plus",
+          "score": 1.0,
+          "weight": 0.3
+        }
+      ],
+      "answer_excerpt": "The glass door is partially open, allowing a view of the snowy outdoor area. This suggests that the door is not fully secured, as it can be opened without additional locks or barriers. The presence of curtains on either side does not provide significant security enhancement. The risk score for this "
+    },
+    {
+      "prompt_test_id": "B6_room_dimensions",
+      "result_id": "B6.1",
+      "ground_truth": "7m \u00d7 5m",
+      "score": 0.57,
+      "pass_threshold": 0.7,
+      "passed": false,
+      "finish_reason": "stop",
+      "latency_s": 1.26,
+      "prompt_tokens": 789,
+      "completion_tokens": 32,
+      "error": null,
+      "details": [
+        {
+          "name": "dimensions_close_to_7x5",
+          "score": 0.4625,
+          "weight": 0.8
+        },
+        {
+          "name": "mentions_units",
+          "score": 1.0,
+          "weight": 0.2
+        }
+      ],
+      "answer_excerpt": "Based on the visual details and the sofa's length, the room is roughly 4.5 meters in length and 3.2 meters in width."
+    },
+    {
+      "prompt_test_id": "B6_stability",
+      "result_id": "B6.2",
+      "ground_truth": "Wooden stool leaning against wall \u2014 tipping risk",
+      "score": 1.0,
+      "pass_threshold": 0.7,
+      "passed": true,
+      "finish_reason": "stop",
+      "latency_s": 3.63,
+      "prompt_tokens": 775,
+      "completion_tokens": 131,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_stool_or_chair",
+          "score": 1.0,
+          "weight": 0.5
+        },
+        {
+          "name": "mentions_instability_risk",
+          "score": 1.0,
+          "weight": 0.5
+        }
+      ],
+      "answer_excerpt": "Based on the room's layout, several items could potentially fall or become unstable, posing hazards to occupants. The wooden table with a laptop on it is particularly vulnerable; if disturbed, the laptop could slide off the edge, especially if the table surface is uneven or slippery. Additionally, t"
+    }
+  ],
+  "skipped_cases": [
+    {
+      "prompt_test_id": "B2_small_objects_pens",
+      "reason": "no_result_mapping"
+    },
+    {
+      "prompt_test_id": "B2_small_objects_switch",
+      "reason": "no_result_mapping"
+    },
+    {
+      "prompt_test_id": "B3_lighting_per_image",
+      "reason": "no_result_mapping"
+    },
+    {
+      "prompt_test_id": "B4_motion_video",
+      "result_id": "B4.2",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B7_json_change",
+      "reason": "no_result_mapping"
+    }
+  ],
+  "missing_result_cases": [],
+  "no_ground_truth_cases": [
+    "B1_latency_3_frames",
+    "B1_latency_single_frame",
+    "B1_latency_video",
+    "B2_object_inventory",
+    "B5_security_person",
+    "B7_json_schema"
+  ]
+}

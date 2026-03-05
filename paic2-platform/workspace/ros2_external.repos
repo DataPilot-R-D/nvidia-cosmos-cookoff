@@ -1,0 +1,9 @@
+repositories:
+  simulation_interfaces:
+    type: git
+    url: https://github.com/ros-simulation/simulation_interfaces.git
+    version: 1.1.0
+  m-explore-ros2:
+    type: git
+    url: https://github.com/robo-friends/m-explore-ros2.git
+    version: main

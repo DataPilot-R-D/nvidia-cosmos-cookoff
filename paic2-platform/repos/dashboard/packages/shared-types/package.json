@@ -1,0 +1,33 @@
+{
+  "name": "@workspace/shared-types",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./websocket": "./src/websocket.ts",
+    "./robot": "./src/robot.ts",
+    "./dashboard": "./src/dashboard.ts",
+    "./camera": "./src/camera.ts",
+    "./video": "./src/video.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.53.1",
+    "@typescript-eslint/parser": "^8.53.1",
+    "eslint": "^8.57.1",
+    "typescript": "^5.7.2",
+    "@workspace/typescript-config": "workspace:*",
+    "vitest": "^2.1.0"
+  }
+}

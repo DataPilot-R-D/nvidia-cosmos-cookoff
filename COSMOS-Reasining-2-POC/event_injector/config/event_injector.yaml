@@ -1,0 +1,9 @@
+sras_event_injector:
+  ros__parameters:
+    auto_start: true
+    loop: true
+    blindspot_topic: /reasoning/blindspot_events
+    phase_1_duration_s: 10.0
+    phase_2_duration_s: 8.0
+    phase_3_duration_s: 6.0
+    phase_4_duration_s: 10.0

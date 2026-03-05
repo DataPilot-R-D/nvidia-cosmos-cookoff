@@ -1,0 +1,35 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended"],
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "globals": {
+    "Bun": "readonly",
+    "NodeJS": "readonly"
+  },
+  "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-constant-condition": "warn",
+    "no-extra-semi": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["src/__tests__/**/*.ts"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "no-empty": "off"
+      }
+    }
+  ]
+}

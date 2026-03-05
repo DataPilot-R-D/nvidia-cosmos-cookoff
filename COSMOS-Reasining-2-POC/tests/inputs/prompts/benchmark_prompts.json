@@ -1,0 +1,225 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "date": "2026-02-16",
+    "model": "nvidia/Cosmos-Reason2-8B",
+    "endpoint": "http://<pod_host>:8899/v1",
+    "prompting_guide": "https://nvidia-cosmos.github.io/cosmos-cookbook/core_concepts/prompt_guide/reason_guide.html",
+    "notes": "All prompts follow official NVIDIA guide: media-first, system prompt, reasoning mode where noted"
+  },
+  "system_prompt": "You are a helpful assistant.",
+  "reasoning_suffix": "\n\nAnswer the question using the following format:\n\n<think>\nYour reasoning.\n</think>\n\nWrite your final answer immediately after the </think> tag.",
+  "sampling": {
+    "default": {"temperature": 0.7, "top_p": 0.8, "top_k": 20, "presence_penalty": 1.5},
+    "reasoning": {"temperature": 0.6, "top_p": 0.95, "top_k": 20, "presence_penalty": 0.0}
+  },
+  "tests": {
+    "B1_latency_single_frame": {
+      "images": ["cosmos_f2.jpg"],
+      "prompt": "Describe what you see.",
+      "reasoning": false,
+      "max_tokens": 200,
+      "runs": 3
+    },
+    "B1_latency_3_frames": {
+      "images": ["cosmos_f0.jpg", "cosmos_f2.jpg", "cosmos_f4.jpg"],
+      "prompt": "Describe what you see in these 3 surveillance frames.",
+      "reasoning": false,
+      "max_tokens": 300
+    },
+    "B1_latency_video": {
+      "videos": ["roller_clip.mp4"],
+      "prompt": "Describe what you see.",
+      "reasoning": false,
+      "max_tokens": 200
+    },
+    "B2_object_inventory": {
+      "images": ["cosmos_f2.jpg"],
+      "prompt": "List every object you can identify. For each: name, position (left/center/right), size (small/medium/large), color/material.",
+      "reasoning": true,
+      "max_tokens": 600
+    },
+    "B2_counting_balloons": {
+      "images": ["mug_after.jpg"],
+      "prompt": "How many balloons are visible? Count each one by color.",
+      "reasoning": true,
+      "max_tokens": 200,
+      "ground_truth": "4 balloons: yellow, green/lime, cyan/turquoise, red"
+    },
+    "B2_counting_chairs": {
+      "images": ["mug_after.jpg"],
+      "prompt": "How many chairs are at the dining table? Count carefully.",
+      "reasoning": true,
+      "max_tokens": 200,
+      "ground_truth": "3 visible"
+    },
+    "B2_counting_table_items": {
+      "images": ["mug_after.jpg"],
+      "prompt": "How many separate items are on the dining table? List each one.",
+      "reasoning": true,
+      "max_tokens": 300,
+      "ground_truth": "~7: magazine, toys/markers, mug, roses vase, book/magazine, cloth, green mat"
+    },
+    "B2_small_objects_pens": {
+      "images": ["mug_after.jpg"],
+      "prompt": "Can you see any pens, markers, or writing instruments on the table?",
+      "reasoning": true,
+      "max_tokens": 150,
+      "ground_truth": "Yes, several markers/pens center-left of table"
+    },
+    "B2_small_objects_switch": {
+      "images": ["roses_before.jpg"],
+      "prompt": "Can you see a light switch or electrical outlet on the wall?",
+      "reasoning": true,
+      "max_tokens": 150,
+      "ground_truth": "Yes, dark switch panel on right wall"
+    },
+    "B2_state_door": {
+      "images": ["window_f6.jpg"],
+      "prompt": "Is the terrace/balcony door open or closed? Is there a curtain blowing? Provide evidence from the image.",
+      "reasoning": true,
+      "max_tokens": 300,
+      "ground_truth": "Door OPEN, curtain blowing from airflow"
+    },
+    "B3_change_mug_general": {
+      "images": ["mug_before.jpg", "mug_after.jpg"],
+      "prompt": "Two photos of the same room. What changed? List every difference.",
+      "reasoning": true,
+      "max_tokens": 400,
+      "ground_truth": "Orange mug added to table"
+    },
+    "B3_change_mug_targeted": {
+      "images": ["mug_before.jpg", "mug_after.jpg"],
+      "prompt": "Image 1 is BEFORE, Image 2 is AFTER. Was any NEW object added? If yes: what, color, where?",
+      "reasoning": true,
+      "max_tokens": 200,
+      "ground_truth": "Orange mug added to center-left of table"
+    },
+    "B3_change_roses_general": {
+      "images": ["roses_before.jpg", "roses_after.jpg"],
+      "prompt": "Two photos of the same room. What changed? List every difference.",
+      "reasoning": true,
+      "max_tokens": 400,
+      "ground_truth": "Roses vase moved from right to left side of table"
+    },
+    "B3_change_roses_targeted": {
+      "images": ["roses_before.jpg", "roses_after.jpg"],
+      "prompt": "Image 1 is BEFORE, Image 2 is AFTER. Was any object moved? If yes: what, from where, to where?",
+      "reasoning": true,
+      "max_tokens": 200,
+      "ground_truth": "Roses vase moved from right to left side of table"
+    },
+    "B3_change_roller_general": {
+      "images": ["b3_before.jpg", "b3_after.jpg"],
+      "prompt": "Two photos of the same scene. What changed? List every difference.",
+      "reasoning": true,
+      "max_tokens": 400,
+      "ground_truth": "Dark blue foam roller removed from green container"
+    },
+    "B3_change_roller_targeted": {
+      "images": ["b3_before.jpg", "b3_after.jpg"],
+      "prompt": "Image 1 is BEFORE, Image 2 is AFTER. Was any object removed? If yes: what, color, where was it?",
+      "reasoning": true,
+      "max_tokens": 200,
+      "ground_truth": "Dark blue foam roller removed from green container on sofa"
+    },
+    "B3_lighting_per_image": {
+      "images": ["light_1.jpg"],
+      "prompt": "What is the lighting state in this bathroom? Which lights are on/off? Overall brightness and color temperature?",
+      "reasoning": true,
+      "max_tokens": 200,
+      "ground_truth": "All lights OFF, dark",
+      "note": "Run separately for light_1.jpg, light_2.jpg, light_3.jpg"
+    },
+    "B3_lighting_comparison": {
+      "images": ["light_1.jpg", "light_2.jpg", "light_3.jpg"],
+      "prompt": "Three photos of the same bathroom with different lighting. For each: which lights are on/off? Summarize changes 1→2 and 2→3.",
+      "reasoning": true,
+      "max_tokens": 500,
+      "ground_truth": "1=all off, 2=overhead on, 3=small mirror light on"
+    },
+    "B4_motion_frames": {
+      "images": ["roller_f0.jpg", "roller_f1.jpg", "roller_f2.jpg"],
+      "prompt": "Three sequential frames (0s, 1s, 2s). Is anything moving? What object, direction, speed?",
+      "reasoning": true,
+      "max_tokens": 300,
+      "ground_truth": "Blue foam roller rolling left→right, slow speed"
+    },
+    "B4_motion_video": {
+      "videos": ["roller_clip.mp4"],
+      "prompt": "Is anything moving? What, direction, speed?",
+      "reasoning": true,
+      "max_tokens": 300,
+      "ground_truth": "Blue foam roller rolling left→right, slow speed"
+    },
+    "B4_person_detection": {
+      "images": ["person_f1.jpg"],
+      "prompt": "Is there a person in this image? If yes, describe them.",
+      "reasoning": true,
+      "max_tokens": 200,
+      "ground_truth": "Yes: man in dark green polka dot shirt, navy pants",
+      "note": "Run for each person_f0 through person_f4"
+    },
+    "B4_person_tracking": {
+      "images": ["person_f0.jpg", "person_f2.jpg", "person_f4.jpg"],
+      "prompt": "Three sequential frames (0s, 4s, 8s). Is anyone moving? Who, direction, entering or leaving?",
+      "reasoning": true,
+      "max_tokens": 400,
+      "ground_truth": "Person walks L→R to window, turns, walks R→L back out"
+    },
+    "B4_activity_recognition": {
+      "images": ["person_f3.jpg"],
+      "prompt": "What is this person doing? Choose: walking, running, standing, sitting, crouching, reaching, looking around. Direction of movement?",
+      "reasoning": true,
+      "max_tokens": 150,
+      "ground_truth": "Standing/turning near wall, was walking"
+    },
+    "B5_security_door": {
+      "images": ["window_f6.jpg"],
+      "prompt": "You are a security AI. Analyze: 1) ALERT LEVEL (green/yellow/orange/red) 2) Is any door/window open? 3) Curtain movement? 4) Recommended action.",
+      "reasoning": true,
+      "max_tokens": 400,
+      "ground_truth": "Door OPEN, curtain blowing, should be YELLOW+ alert"
+    },
+    "B5_security_person": {
+      "images": ["person_f3.jpg"],
+      "prompt": "SECURITY AI: Person detected. 1) ALERT LEVEL 2) Person description 3) Threat assessment 4) Recommended action.",
+      "reasoning": true,
+      "max_tokens": 300
+    },
+    "B5_door_sequence": {
+      "images": ["window_f0.jpg", "window_f3.jpg", "window_f6.jpg"],
+      "prompt": "Three surveillance frames (0s, 3s, 6s). What changed? Focus on doors, windows, curtains. Security implications?",
+      "reasoning": true,
+      "max_tokens": 400,
+      "ground_truth": "Door goes from closed to open, curtain starts blowing"
+    },
+    "B6_room_dimensions": {
+      "images": ["cosmos_f2.jpg"],
+      "prompt": "Estimate room dimensions (width × depth) in meters. Standard sofa = 2.5m long for reference.",
+      "reasoning": true,
+      "max_tokens": 300,
+      "ground_truth": "7m × 5m"
+    },
+    "B6_stability": {
+      "images": ["cosmos_f4.jpg"],
+      "prompt": "Is any furniture at risk of falling or tipping? Any unstable objects?",
+      "reasoning": true,
+      "max_tokens": 300,
+      "ground_truth": "Wooden stool leaning against wall — tipping risk"
+    },
+    "B7_json_schema": {
+      "images": ["cosmos_f2.jpg"],
+      "prompt": "Return ONLY valid JSON: {\"scene\": {\"type\": \"indoor|outdoor\", \"room_type\": \"string\"}, \"objects\": [{\"name\": \"string\", \"position\": \"left|center|right\", \"size\": \"small|medium|large\"}], \"people_count\": 0, \"alert_level\": \"green|yellow|red\"}",
+      "reasoning": true,
+      "max_tokens": 500
+    },
+    "B7_json_change": {
+      "images": ["mug_before.jpg", "mug_after.jpg"],
+      "prompt": "Compare Image 1 and Image 2. Return JSON: {\"added\": [{\"object\": \"...\", \"color\": \"...\", \"location\": \"...\"}], \"removed\": [], \"moved\": []}",
+      "reasoning": true,
+      "max_tokens": 300,
+      "ground_truth": "added: orange mug"
+    }
+  }
+}

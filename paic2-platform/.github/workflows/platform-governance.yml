@@ -1,0 +1,47 @@
+name: platform-governance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate lock schema and mappings
+        run: python3 workspace/check_lock.py
+
+  secret-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan for likely secrets
+        run: |
+          set -euo pipefail
+          if rg -n --hidden --glob '!.git/*' --glob '!**/*.md' \
+            '(-----BEGIN [A-Z ]*PRIVATE KEY-----|AKIA[0-9A-Z]{16}|OPENAI_API_KEY=|RUNPOD_API_KEY=|MOONDREAM_API_KEY=|ALIBABA_API_KEY=)' .; then
+            echo "Potential secret material detected." >&2
+            exit 1
+          fi
+
+  required-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check required source-of-truth files
+        run: |
+          set -euo pipefail
+          test -f workspace/lock.yaml
+          test -f workspace/bootstrap.sh
+          test -f workspace/update_lock.sh
+          test -f workspace/owners.yaml
+          test -f docs/architecture/system-overview.md
+          test -f docs/contracts/contracts-index.md

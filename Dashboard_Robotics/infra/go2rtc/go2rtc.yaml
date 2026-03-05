@@ -1,0 +1,20 @@
+api:
+  listen: ':1984'
+
+streams:
+  camera1:
+    - ${GO2RTC_RTSP_SOURCE:rtsp://localhost:8554/camera1}
+
+rtsp:
+  listen: ':8554'
+
+webrtc:
+  listen: ':1984'
+  candidates:
+    - stun:stun.l.google.com:19302
+
+mse:
+  listen: ':1984'
+
+log:
+  level: info

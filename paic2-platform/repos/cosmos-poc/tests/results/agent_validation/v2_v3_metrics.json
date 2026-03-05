@@ -1,0 +1,70 @@
+{
+  "aggregate": {
+    "case_count": 4,
+    "early_exit_count": 1,
+    "early_exit_rate": 0.25,
+    "estimated_call_reduction_pct": 35.0,
+    "v2_avg_calls_per_frame": 5.0,
+    "v3_avg_calls_per_frame": 3.25
+  },
+  "assumptions": {
+    "v2_model_calls_per_frame": 5,
+    "v3_model_calls_deep_path": 4,
+    "v3_model_calls_early_exit": 1
+  },
+  "cases": [
+    {
+      "alert_level": "green",
+      "confidence": 0.95,
+      "has_signal_conflict": false,
+      "name": "routine_green_high_confidence",
+      "v2_model_calls": 5,
+      "v3_model_calls": 1,
+      "v3_route_path": [
+        "detect_fast",
+        "risk_gate",
+        "act_minimal",
+        "end"
+      ]
+    },
+    {
+      "alert_level": "green",
+      "confidence": 0.45,
+      "has_signal_conflict": false,
+      "name": "green_low_confidence",
+      "v2_model_calls": 5,
+      "v3_model_calls": 4,
+      "v3_route_path": [
+        "detect_fast",
+        "risk_gate",
+        "understand_deep"
+      ]
+    },
+    {
+      "alert_level": "yellow",
+      "confidence": 0.92,
+      "has_signal_conflict": false,
+      "name": "yellow_high_confidence",
+      "v2_model_calls": 5,
+      "v3_model_calls": 4,
+      "v3_route_path": [
+        "detect_fast",
+        "risk_gate",
+        "understand_deep"
+      ]
+    },
+    {
+      "alert_level": "green",
+      "confidence": 0.93,
+      "has_signal_conflict": true,
+      "name": "green_high_conflict",
+      "v2_model_calls": 5,
+      "v3_model_calls": 4,
+      "v3_route_path": [
+        "detect_fast",
+        "risk_gate",
+        "understand_deep"
+      ]
+    }
+  ]
+}

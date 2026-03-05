@@ -1,0 +1,15 @@
+sras_lidar_camera_fusion:
+  ros__parameters:
+    pointcloud_topic: /robot0/point_cloud2_L1
+    image_topic: /robot0/front_cam/rgb
+    camera_info_topic: /robot0/front_cam/camera_info
+    detections_2d_topic: /perception/detections_2d
+    lidar_frame: lidar_frame
+    camera_optical_frame: camera_optical_frame
+    max_range_m: 50.0
+    min_range_m: 0.3
+    depth_tolerance_m: 0.5
+    min_points_in_bbox: 3
+    image_width: 640
+    image_height: 480
+    benchmark_interval_s: 10.0

@@ -1,0 +1,18 @@
+sras_spatial_object_recognition:
+  ros__parameters:
+    cctv_image_topics:
+      - /cctv/cam0/image_raw
+    robot_image_topic: /robot0/front_cam/rgb
+    robot_depth_topic: /robot0/front_cam/depth
+    robot_pointcloud_topic: /robot0/point_cloud2_L1
+    camera_info_topic: /robot0/front_cam/camera_info
+    map_frame: map
+    camera_frame: robot0/front_cam_optical_frame
+    detection_interval_s: 2.0
+    min_detection_confidence: 0.3
+    detections_3d_topic: /perception/detections_3d
+    asset_states_topic: /perception/asset_states
+    use_json_transport_fallback: true
+    vlm_backend: cosmos
+    cosmos_api_base: ""
+    cosmos_model: nvidia/cosmos-reason-2

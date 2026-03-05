@@ -1,0 +1,14 @@
+[Unit]
+Description=go2rtc media gateway
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/go2rtc -config /etc/go2rtc/go2rtc.yaml
+Restart=always
+RestartSec=3
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

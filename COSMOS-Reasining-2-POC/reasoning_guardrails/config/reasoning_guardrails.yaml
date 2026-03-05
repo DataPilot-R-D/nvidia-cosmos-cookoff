@@ -1,0 +1,15 @@
+sras_reasoning_guardrails:
+  ros__parameters:
+    risk_assessments_topic: /reasoning/risk_assessments
+    task_requests_topic: /reasoning/task_requests
+    nav_readiness_topic: /robot/nav_readiness
+    task_verdicts_topic: ~/task_verdicts
+    alerts_topic: /ui/alerts
+    allowed_task_types: [0, 1, 2, 3, 4]
+    max_auto_approve_risk: 1
+    forbidden_zones: []
+    max_speed_mps: 1.0
+    require_nav_ready: true
+    require_operator_for_critical: true
+    max_concurrent_tasks: 2
+    patrol_allowed_risk_levels: [0, 1]

@@ -1,0 +1,14 @@
+std_msgs/Header header
+string event_id
+string camera_id
+string zone_id
+uint8 severity
+uint8 SEVERITY_LOW=0
+uint8 SEVERITY_MEDIUM=1
+uint8 SEVERITY_HIGH=2
+uint8 SEVERITY_CRITICAL=3
+float64 confidence
+string description
+string[] affected_asset_ids
+builtin_interfaces/Time timestamp_detected
+float64 duration_s

@@ -1,0 +1,24 @@
+# Isaac RTSP Exporter - Stream Configuration
+#
+# Each stream maps a ROS image topic to an RTSP path.
+# The exporter subscribes to the topic, encodes frames with NVENC H.264,
+# and serves them at rtsp://0.0.0.0:<port>/<path>
+
+streams:
+  - name: entrance
+    path: /isaac/entrance
+    topic: /sim/warehouse/entrance/image_raw
+    topic_type: sensor_msgs/Image
+    encoding: rgb8
+    width: 1280
+    height: 720
+    fps: 15
+
+  - name: dock
+    path: /isaac/dock
+    topic: /sim/warehouse/dock/image_raw
+    topic_type: sensor_msgs/Image
+    encoding: rgb8
+    width: 1280
+    height: 720
+    fps: 15

@@ -1,0 +1,25 @@
+# RTAB-Map 3D colored map configuration
+# Użycie: ros2 launch dimos_vlm_bridge rtabmap_3d_map.launch.py
+#
+# Wszystkie wartości można nadpisać przez argumenty launch, np.:
+#   ros2 launch dimos_vlm_bridge rtabmap_3d_map.launch.py use_sim_time:=true max_depth:=8.0
+
+# ── Topiki ──────────────────────────────────────────────────────────────────
+scan_cloud_topic:  "/robot0/point_cloud2_L1"
+rgb_topic:         "/robot0/front_cam/rgb"
+depth_topic:       "/robot0/front_cam/depth"
+camera_info_topic: "/robot0/front_cam/camera_info"
+odom_topic:        "/robot0/odom"
+
+# ── Ramki TF ────────────────────────────────────────────────────────────────
+base_frame:   "robot0/base_link"
+odom_frame:   "odom"
+map_frame:    "map"
+camera_frame: "robot0/front_cam_optical_frame"
+
+# ── Parametry mapy 3D ───────────────────────────────────────────────────────
+use_sim_time: "true"
+localization: "false"   # zmień na "true" żeby tylko lokalizować na gotowej mapie
+
+voxel_size: "0.05"      # rozdzielczość voxeli [m] — mniejsza = więcej szczegółów, więcej RAM
+max_depth:  "6.0"       # maksymalny zasięg depth image [m]

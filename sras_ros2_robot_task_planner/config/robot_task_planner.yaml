@@ -1,0 +1,61 @@
+robot_task_planner_node:
+  ros__parameters:
+    blindspot_topic: /reasoning/blindspot_events
+    risk_topic: /reasoning/risk_assessments
+    task_status_topic: /robot/task_status
+    map_topic: /map
+    task_request_topic: /reasoning/task_requests
+
+    planner_state_topic: ~/planner_state
+    set_task_state_topic: /ui/set_task_state
+    planner_tick_hz: 2.0
+
+    incident_ttl_s: 600.0
+    dedup_window_s: 60.0
+    queue_max_size: 300
+    max_active_tasks: 1
+    auto_approve_max_severity: 0.55
+    default_task_priority: 0.5
+
+    require_map: true
+    map_stale_timeout_s: 5.0
+    require_nav_ready: false
+
+    langgraph_enabled: false
+    deep_conf_threshold: 0.8
+    max_reentries: 2
+
+    cosmos_enabled: false
+    cosmos_api_base: ""
+    cosmos_model: nvidia/cosmos-reason-2
+    cosmos_timeout_s: 3.0
+    cosmos_max_retries: 1
+    cosmos_use_reasoning: false
+
+    use_json_transport_fallback: true
+    planner_journal_enabled: false
+    planner_journal_path: data/planner_journal.db
+
+    detection_topic: /triangulated/detections_json
+    odom_topic: /odom
+    detection_buffer_window_s: 10.0
+    detection_position_shift_m: 1.5
+    detection_sustained_frames: 3
+    detection_cosmos_enabled: false
+    detection_min_score: 0.3
+    detection_alert_on_change: true
+
+    # Multi-robot configuration
+    multi_robot_enabled: false
+    max_active_tasks_per_robot: 1
+    cosmos_assignment_enabled: false
+    cosmos_assignment_timeout_s: 3.0
+    robot_fleet:
+      - robot_id: robot0
+        robot_type: quadruped
+        odom_topic: /robot0/odom
+        nav2_ready: true
+      - robot_id: robot1
+        robot_type: humanoid
+        odom_topic: /robot1/odom
+        nav2_ready: false

@@ -1,0 +1,9 @@
+/**:
+  ros__parameters:
+    max_events: 500
+    feed_interval_s: 2.0
+    blindspot_events_topic: /reasoning/blindspot_events
+    risk_assessments_topic: /reasoning/risk_assessments
+    task_status_topic: /robot/task_status
+    operator_alerts_topic: /ui/alerts
+    task_requests_topic: /reasoning/task_requests

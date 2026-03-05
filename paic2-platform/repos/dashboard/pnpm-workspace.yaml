@@ -1,0 +1,9 @@
+packages:
+  - apps/*
+  - packages/*
+  - packages/wasm-processing/pkg
+
+ignoredBuiltDependencies:
+  - esbuild
+  - sharp
+  - unrs-resolver

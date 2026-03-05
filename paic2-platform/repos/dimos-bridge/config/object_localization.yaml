@@ -1,0 +1,56 @@
+object_localization_node:
+  ros__parameters:
+    # Output directory for object localization artifacts
+    output_dir: "./object_localization"
+    
+    # Database path for storing detections
+    db_path: "./object_localization/objects.db"
+    
+    # Detection interval in seconds (how often to run object detection)
+    detection_interval: 2.0
+    
+    # VLM backend configuration
+    # Options: openai, qwen, qwen2.5_local, nemotron_local, smolvlm_local, 
+    #          moondream_local, moondream_objects_local, moondream_hosted, cosmos_reason2
+    vlm_backend: "moondream_local"
+    
+    # Optional VLM model name override
+    vlm_model_name: ""
+    
+    # Maximum tokens for VLM responses
+    max_tokens: 2000
+    
+    # NVIDIA Cosmos Reason 2 configuration (only used when vlm_backend: "cosmos_reason2")
+    # OpenAI-compatible API endpoint URL
+    cosmos_api_url: ""  # e.g., "http://localhost:8000" or "https://api.nvidia.com"
+    # Optional API key for authentication
+    cosmos_api_key: ""  # Leave empty if not required, or use environment variable COSMOS_API_KEY
+    # Enable reasoning mode (<think> tags) - generally NOT recommended for simple object detection
+    # Use only for complex scenes or when accuracy is critical (increases token usage)
+    cosmos_use_reasoning: false
+    
+    # ROS2 topics
+    camera_topic: "/robot0/front_cam/rgb"
+    camera_info_topic: "/robot0/front_cam/camera_info"
+    depth_topic: "/robot0/front_cam/depth"  # Optional: depth map for improved 3D localization
+    pointcloud_topic: "/robot0/point_cloud2_L1"
+    odom_topic: "/odom"
+    
+    # TF frames
+    camera_frame: "robot0/front_cam_optical_frame"
+    map_frame: "map"
+    
+    # Synchronization parameters
+    sync_slop: 0.2  # seconds - time tolerance for message synchronization
+    
+    # Point cloud processing
+    max_points: 60000  # Maximum number of LIDAR points to process
+    
+    # Detection parameters
+    min_detection_confidence: 0.3  # Minimum confidence threshold for detections
+    bbox_depth_percentile: 50  # Percentile for depth estimation within bbox (50 = median)
+    
+    # Depth fusion parameters
+    use_depth_fusion: true  # Enable LIDAR+Depth fusion for better 3D localization
+    min_lidar_points_for_bbox: 10  # Minimum LIDAR points in bbox to use LIDAR (otherwise use depth)
+    depth_valid_range: [0.1, 10.0]  # Valid depth range in meters [min, max]

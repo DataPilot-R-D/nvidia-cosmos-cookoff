@@ -1,0 +1,178 @@
+{
+  "generated_at_utc": "2026-02-17T14:57:02+00:00",
+  "results_path": "/Users/szymonpaluch/Projects/DataPilot/cosmos-hackathon/tests/results/alt_benchmarks/alt_config_failed_retry_20260217T145443Z/videos_reasoning_on_mt1200.raw.json",
+  "prompts_path": "/Users/szymonpaluch/Projects/DataPilot/cosmos-hackathon/tests/inputs/prompts/benchmark_prompts.json",
+  "pass_threshold": 0.7,
+  "summary": {
+    "eligible_ground_truth_cases": 24,
+    "scored_cases": 1,
+    "passed_cases": 1,
+    "pass_rate": 1.0,
+    "mean_score": 1.0,
+    "median_score": 1.0,
+    "min_score": 1.0,
+    "max_score": 1.0
+  },
+  "category_scores": {
+    "B4": {
+      "cases": 1,
+      "mean_score": 1.0,
+      "pass_rate": 1.0
+    }
+  },
+  "scored_cases": [
+    {
+      "prompt_test_id": "B4_motion_video",
+      "result_id": "B4.2",
+      "ground_truth": "Blue foam roller rolling left\u2192right, slow speed",
+      "score": 1.0,
+      "pass_threshold": 0.7,
+      "passed": true,
+      "finish_reason": "stop",
+      "latency_s": 13.66,
+      "prompt_tokens": 3070,
+      "completion_tokens": 548,
+      "error": null,
+      "details": [
+        {
+          "name": "mentions_roller",
+          "score": 1.0,
+          "weight": 0.3
+        },
+        {
+          "name": "direction_left_to_right",
+          "score": 1.0,
+          "weight": 0.4
+        },
+        {
+          "name": "speed_slow_or_steady",
+          "score": 1.0,
+          "weight": 0.3
+        }
+      ],
+      "answer_excerpt": "The foam roller moves from the left side of the frame to the right in a smooth, continuous trajectory. Its motion is steady and uninterrupted, with no acceleration or deceleration observed. The direction of movement aligns with the camera's rightward pan, creating the visual effect of the roller rol"
+    }
+  ],
+  "skipped_cases": [
+    {
+      "prompt_test_id": "B2_counting_balloons",
+      "result_id": "B2.2",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B2_counting_chairs",
+      "result_id": "B2.3",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B2_counting_table_items",
+      "result_id": "B2.4",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B2_small_objects_pens",
+      "reason": "no_result_mapping"
+    },
+    {
+      "prompt_test_id": "B2_small_objects_switch",
+      "reason": "no_result_mapping"
+    },
+    {
+      "prompt_test_id": "B2_state_door",
+      "result_id": "B2.6",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B3_change_mug_general",
+      "result_id": "B3.1",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B3_change_mug_targeted",
+      "result_id": "B3.2",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B3_change_roller_general",
+      "result_id": "B3.5",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B3_change_roller_targeted",
+      "result_id": "B3.6",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B3_change_roses_general",
+      "result_id": "B3.3",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B3_change_roses_targeted",
+      "result_id": "B3.4",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B3_lighting_comparison",
+      "result_id": "B3.7",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B3_lighting_per_image",
+      "reason": "no_result_mapping"
+    },
+    {
+      "prompt_test_id": "B4_activity_recognition",
+      "result_id": "B4.5",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B4_motion_frames",
+      "result_id": "B4.1",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B4_person_detection",
+      "result_id": "B4.3_1",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B4_person_tracking",
+      "result_id": "B4.4",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B5_door_sequence",
+      "result_id": "B5.3",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B5_security_door",
+      "result_id": "B5.1",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B6_room_dimensions",
+      "result_id": "B6.1",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B6_stability",
+      "result_id": "B6.2",
+      "reason": "result_skipped_in_run:skipped_modality"
+    },
+    {
+      "prompt_test_id": "B7_json_change",
+      "reason": "no_result_mapping"
+    }
+  ],
+  "missing_result_cases": [],
+  "no_ground_truth_cases": [
+    "B1_latency_3_frames",
+    "B1_latency_single_frame",
+    "B1_latency_video",
+    "B2_object_inventory",
+    "B5_security_person",
+    "B7_json_schema"
+  ]
+}

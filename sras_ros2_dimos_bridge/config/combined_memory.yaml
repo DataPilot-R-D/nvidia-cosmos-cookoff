@@ -1,0 +1,26 @@
+combined_memory_node:
+  ros__parameters:
+    # Output directory for combined memory system
+    output_dir: "/home/ubuntu/vlm_temporal/combined_memory"
+
+    # VLM backend for Temporal Memory:
+    # - openai (requires OPENAI_API_KEY)
+    # - qwen (requires ALIBABA_API_KEY)
+    # - moondream_local (fully local, requires torch+transformers)
+    # - moondream_hosted (requires MOONDREAM_API_KEY)
+    # - moondream_objects_local (local, comma-separated objects -> JSON)
+    vlm_backend: "moondream_local"
+    vlm_model_name: ""
+    
+    # Spatial memory settings
+    embedding_model: "clip"
+    new_memory: false
+    min_distance_threshold: 0.5
+    min_time_threshold: 1.0
+    
+    # ROS2 topics
+    camera_topic: "/robot0/front_cam/rgb"
+    odom_topic: "/robot0/odom"
+    query_topic: "/memory/query"
+    result_topic: "/memory/result"
+    location_topic: "/memory/location"

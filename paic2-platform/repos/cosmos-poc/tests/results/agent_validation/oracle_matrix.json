@@ -1,0 +1,131 @@
+{
+  "track_a_colocated_pairs": {
+    "pairs": [
+      {
+        "left_id": 2,
+        "left_object_name": "electrical outlet",
+        "right_id": 3,
+        "right_object_name": "control panel",
+        "timestamp": 1771345677.1569738
+      },
+      {
+        "left_id": 6,
+        "left_object_name": "electrical box",
+        "right_id": 9,
+        "right_object_name": "wall-mounted sign",
+        "timestamp": 1771345682.5338242
+      }
+    ]
+  },
+  "track_a_group_by_timestamp": {
+    "1771345677.1569738": [
+      "wall",
+      "electrical outlet",
+      "control panel",
+      "label",
+      "pipe"
+    ],
+    "1771345682.5338242": [
+      "electrical box",
+      "white brick wall",
+      "horizontal beam",
+      "wall-mounted sign"
+    ]
+  },
+  "track_a_relabel_candidates": {
+    "candidates": [
+      {
+        "bbox_iou": 0.1203576341127923,
+        "object_distance_3d": 1.0496592384102403,
+        "source_id": 2,
+        "source_object_name": "electrical outlet",
+        "source_timestamp": 1771345677.1569738,
+        "target_id": 6,
+        "target_object_name": "electrical box",
+        "target_timestamp": 1771345682.5338242
+      },
+      {
+        "bbox_iou": 0.1203576341127923,
+        "object_distance_3d": 1.0496592384102403,
+        "source_id": 3,
+        "source_object_name": "control panel",
+        "source_timestamp": 1771345677.1569738,
+        "target_id": 6,
+        "target_object_name": "electrical box",
+        "target_timestamp": 1771345682.5338242
+      }
+    ]
+  },
+  "track_a_spatial_extremes": {
+    "farthest": {
+      "distance_3d": 12.369205110581952,
+      "id": 8,
+      "object_name": "horizontal beam"
+    },
+    "nearest": {
+      "distance_3d": 2.5445327951742187,
+      "id": 5,
+      "object_name": "pipe"
+    }
+  },
+  "track_a_summary": {
+    "confidence_max": 0.5,
+    "confidence_min": 0.5,
+    "invalid_bbox_count": 0,
+    "row_count": 9,
+    "timestamp_max": 1771345682.5338242,
+    "timestamp_min": 1771345677.1569738
+  },
+  "track_b_largest_scene_cluster": {
+    "object_names": [
+      "wall",
+      "structural beam",
+      "horizontal bar",
+      "vertical beam",
+      "bracket",
+      "support column"
+    ],
+    "size": 6,
+    "timestamp": 1771429598.6261687
+  },
+  "track_b_object_persistence": {
+    "bracket": 1,
+    "brown cardboard box": 1,
+    "fire extinguisher": 1,
+    "gray wall": 1,
+    "horizontal bar": 1,
+    "metal shelving unit": 1,
+    "metallic cart": 1,
+    "orange horizontal beam": 1,
+    "purple boxes": 2,
+    "shelf": 1,
+    "storage rack": 4,
+    "structural beam": 1,
+    "support column": 1,
+    "vertical beam": 1,
+    "wall": 1,
+    "white brick wall": 1
+  },
+  "track_b_summary": {
+    "blob_len_max": 38168,
+    "blob_len_min": 33107,
+    "distinct_object_names": 16,
+    "distinct_timestamps": 6,
+    "row_count": 20,
+    "rows_with_blob": 20,
+    "timestamp_max": 1771429616.2139637,
+    "timestamp_min": 1771429579.3890905
+  },
+  "track_b_timestamp_hash_consistency": {
+    "each_timestamp_single_hash": true,
+    "hash_group_row_counts": [
+      1,
+      1,
+      2,
+      5,
+      5,
+      6
+    ],
+    "unique_frame_hashes": 6
+  }
+}

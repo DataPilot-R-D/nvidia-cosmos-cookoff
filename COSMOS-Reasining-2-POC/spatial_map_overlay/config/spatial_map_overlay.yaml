@@ -1,0 +1,6 @@
+sras_spatial_map_overlay:
+  ros__parameters:
+    publish_rate_hz: 2.0
+    marker_max_age_s: 30.0
+    max_markers: 100
+    max_alerts: 50

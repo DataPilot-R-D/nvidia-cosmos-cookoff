@@ -1,0 +1,22 @@
+spatial_memory_node:
+  ros__parameters:
+    # Output directory for spatial memory artifacts
+    output_dir: "/home/ubuntu/vlm_temporal/spatial_memory"
+    db_path: "/home/ubuntu/vlm_temporal/spatial_memory/chromadb"
+    visual_memory_path: "/home/ubuntu/vlm_temporal/spatial_memory/visual_memory.pkl"
+    
+    # Thresholds for storing frames
+    min_distance_threshold: 0.5   # Minimum 0.5m movement to store frame
+    min_time_threshold: 1.0       # Minimum 1 second between frames
+    
+    # Embedding model
+    embedding_model: "clip"       # CLIP for image embeddings
+    
+    # Memory management
+    new_memory: false             # Keep existing memory on restart
+    
+    # ROS2 topics
+    camera_topic: "/robot0/front_cam/rgb"
+    odom_topic: "/odom"
+    query_topic: "/spatial_memory/query_text"
+    result_topic: "/spatial_memory/location_result"

@@ -1,0 +1,67 @@
+name: "🐛 Bug Report"
+description: "Report a bug in Dashboard Robotics"
+title: "[Bug] "
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Bug Description"
+      description: "What went wrong?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Steps to Reproduce"
+      description: "Exact steps to trigger the bug"
+      value: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Observe '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected Behavior"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Actual Behavior"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "Severity"
+      options:
+        - "Critical - app crashes / data loss"
+        - "Major - feature broken, no workaround"
+        - "Minor - feature broken, workaround exists"
+        - "Cosmetic - visual only"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Environment / Context"
+      placeholder: |
+        - Browser: Chrome 120
+        - OS: Ubuntu 22.04
+        - Dashboard version/commit: abc1234
+        - Robot connected: yes/no
+        - WebSocket server status: running/stopped
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs / Screenshots"
+      description: "Paste relevant console logs, error messages, or screenshots"

@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://isaacsim.example.com/job.schema.json",
+  "title": "Isaac Sim Training Job",
+  "description": "Schema for Isaac Sim training job definitions stored in S3",
+  "type": "object",
+  "required": ["script"],
+  "properties": {
+    "script": {
+      "type": "string",
+      "description": "Absolute path to the training script to execute",
+      "examples": [
+        "/shared/workspace/train.py",
+        "/shared/IsaacLab/scripts/train_rl.py"
+      ]
+    },
+    "args": {
+      "type": "string",
+      "description": "Command line arguments to pass to the script",
+      "default": "",
+      "examples": [
+        "--epochs 100 --batch-size 32",
+        "--task Isaac-Reach-Franka-v0 --num_envs 4096"
+      ]
+    },
+    "timeout": {
+      "type": "integer",
+      "description": "Maximum runtime in seconds before job is terminated",
+      "default": 3600,
+      "minimum": 60,
+      "maximum": 86400,
+      "examples": [3600, 7200, 14400]
+    },
+    "workdir": {
+      "type": "string",
+      "description": "Working directory for script execution",
+      "default": "/shared/workspace",
+      "examples": [
+        "/shared/workspace",
+        "/shared/IsaacLab"
+      ]
+    },
+    "checkpoint_interval": {
+      "type": "integer",
+      "description": "Interval in seconds between automatic checkpoints to S3",
+      "default": 300,
+      "minimum": 60,
+      "examples": [300, 600, 900]
+    },
+    "env": {
+      "type": "object",
+      "description": "Environment variables to set before running the script",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "examples": [
+        {
+          "CUDA_VISIBLE_DEVICES": "0",
+          "WANDB_API_KEY": "your-api-key",
+          "WANDB_PROJECT": "isaacsim-training"
+        }
+      ]
+    },
+    "notify_on_complete": {
+      "type": "boolean",
+      "description": "Send SNS notification when job completes",
+      "default": false
+    },
+    "priority": {
+      "type": "string",
+      "description": "Job priority for queue ordering (future use)",
+      "enum": ["low", "normal", "high"],
+      "default": "normal"
+    },
+    "tags": {
+      "type": "object",
+      "description": "Custom tags for job tracking and filtering",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "examples": [
+        {
+          "experiment": "franka-reach-v2",
+          "owner": "alice"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "script": "/shared/workspace/train.py",
+      "args": "--epochs 100 --batch-size 32",
+      "timeout": 7200,
+      "workdir": "/shared/workspace/project",
+      "env": {
+        "CUDA_VISIBLE_DEVICES": "0",
+        "WANDB_API_KEY": "xxx"
+      }
+    },
+    {
+      "script": "/shared/IsaacLab/scripts/rsl_rl/train.py",
+      "args": "--task Isaac-Reach-Franka-v0 --num_envs 4096 --headless",
+      "timeout": 14400,
+      "checkpoint_interval": 600,
+      "env": {
+        "ISAACSIM_PATH": "/opt/nvidia/isaac-sim"
+      },
+      "tags": {
+        "experiment": "reach-baseline",
+        "owner": "team"
+      }
+    }
+  ]
+}

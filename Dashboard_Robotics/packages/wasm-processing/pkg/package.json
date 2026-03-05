@@ -1,0 +1,13 @@
+{
+  "name": "@workspace/wasm-processing",
+  "description": "High-performance WASM processors for ROS sensor data",
+  "version": "0.1.0",
+  "license": "MIT",
+  "files": [
+    "wasm_processing_bg.wasm",
+    "wasm_processing.js",
+    "wasm_processing.d.ts"
+  ],
+  "main": "wasm_processing.js",
+  "types": "wasm_processing.d.ts"
+}

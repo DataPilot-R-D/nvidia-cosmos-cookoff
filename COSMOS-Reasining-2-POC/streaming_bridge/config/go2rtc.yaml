@@ -1,0 +1,10 @@
+listen: ":1984"
+rtsp:
+  listen: ":8554"
+webrtc:
+  listen: ":8555"
+streams:
+  front_camera:
+    - "ffmpeg:http://localhost:8081/front_camera/stream#video=h264"
+  rear_camera:
+    - "ffmpeg:http://localhost:8081/rear_camera/stream#video=h264"

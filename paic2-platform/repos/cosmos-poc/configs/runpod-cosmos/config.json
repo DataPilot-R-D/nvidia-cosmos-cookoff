@@ -1,0 +1,25 @@
+{
+  "network_volume_id": "bnpr8tk3fq",
+  "runpod_pod_id": "peryjrmdjpyq5g",
+  "preferred_gpus": [
+    "NVIDIA A100 80GB PCIe",
+    "NVIDIA A100-SXM4-80GB",
+    "NVIDIA L40S",
+    "NVIDIA L40",
+    "NVIDIA RTX A6000",
+    "NVIDIA GeForce RTX 4090"
+  ],
+  "pod_template": {
+    "image_name": "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+    "container_disk_gb": 100,
+    "volume_path": "/workspace",
+    "ports": [
+      "22/tcp",
+      "8899/http"
+    ],
+    "name": "cosmos-reason2-8b"
+  },
+  "runpod_api_host": null,
+  "runpod_api_port": null,
+  "log_dir": "logs/runpod-cosmos"
+}

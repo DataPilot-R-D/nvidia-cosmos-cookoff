@@ -1,0 +1,38 @@
+name: "🔬 Spike / Research"
+description: "Investigation or proof-of-concept"
+title: "[Spike] "
+labels: ["type:spike"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: "Research Question"
+      description: "What are we trying to find out?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Context & Background"
+      description: "Why is this investigation needed?"
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: "Scope / Timebox"
+      description: "What's in and out of scope? How much time to spend?"
+      placeholder: |
+        - Timebox: 4 hours
+        - In scope: evaluate libraries X, Y, Z for feature A
+        - Out of scope: full implementation
+
+  - type: textarea
+    id: deliverable
+    attributes:
+      label: "Expected Deliverable"
+      description: "What should be produced?"
+      value: |
+        - [ ] Summary comment on this issue with findings
+        - [ ] Recommendation (go/no-go)
+        - [ ] If go: follow-up issue(s) created

@@ -1,0 +1,1085 @@
+#!/usr/bin/env python3
+"""ROS2 scaffold node for Robot Task Executor."""
+
+from __future__ import annotations
+
+import json
+import math
+import time
+from typing import Any
+
+from action_msgs.msg import GoalStatus
+from nav2_msgs.action import NavigateThroughPoses, NavigateToPose
+from geometry_msgs.msg import PoseStamped, Quaternion
+from nav_msgs.msg import OccupancyGrid
+import rclpy
+from rclpy.action import ActionClient
+from rclpy.node import Node
+from rclpy.qos import DurabilityPolicy, HistoryPolicy, QoSProfile, ReliabilityPolicy
+from std_msgs.msg import String
+from std_srvs.srv import Trigger
+from tf2_msgs.msg import TFMessage
+
+from sras_robot_task_executor.dashboard_notifications import (
+    NotificationThrottle,
+    ThrottleConfig,
+    build_notification,
+)
+from sras_robot_task_executor.execution_core import (
+    CommandRejectedError,
+    QueueFullError,
+    StatusEvent,
+    TaskExecutionCore,
+    TaskValidationError,
+    ValidatedTask,
+)
+from sras_robot_task_executor.multi_robot_execution_core import (
+    MultiRobotExecutionCore,
+)
+
+
+NOTIFIABLE_STATES = {
+    "QUEUED",
+    "DISPATCHED",
+    "ACTIVE",
+    "PAUSED",
+    "SUCCEEDED",
+    "FAILED",
+    "CANCELED",
+}
+
+
+class RobotTaskExecutorNode(Node):
+    """Minimal executor scaffold.
+
+    Note: this is intentionally lightweight. Nav2 action execution wiring
+    is added in implementation phases from issue #44.
+    """
+
+    def __init__(self) -> None:
+        super().__init__("robot_task_executor_node")
+        self._declare_parameters()
+        self._load_config()
+        self._setup_ros()
+        self._log_startup()
+
+    def _declare_parameters(self) -> None:
+        self.declare_parameter("task_request_topic", "/reasoning/task_requests")
+        self.declare_parameter("task_status_topic", "/robot/task_status")
+
+        self.declare_parameter("security_reports_topic", "/reasoning/security_reports")
+        self.declare_parameter("security_events_topic", "/reasoning/security_events")
+        self.declare_parameter("executor_state_topic", "~/executor_state")
+        self.declare_parameter("set_task_state_topic", "/ui/set_task_state")
+
+        self.declare_parameter("nav_to_pose_action", "/navigate_to_pose")
+        self.declare_parameter("nav_through_poses_action", "/navigate_through_poses")
+        self.declare_parameter("action_server_wait_timeout_s", 5.0)
+        self.declare_parameter("goal_timeout_s", 120.0)
+        self.declare_parameter("cancel_timeout_s", 5.0)
+
+        self.declare_parameter("executor_tick_hz", 2.0)
+        self.declare_parameter("max_queue_size", 100)
+        self.declare_parameter("max_active_tasks", 1)
+        self.declare_parameter("allow_preemption", False)
+
+        self.declare_parameter("require_map", True)
+        self.declare_parameter("map_topic", "/map")
+        self.declare_parameter("map_stale_timeout_s", 5.0)
+        self.declare_parameter("require_tf", True)
+        self.declare_parameter("tf_topic", "/tf")
+        self.declare_parameter("tf_static_topic", "/tf_static")
+        self.declare_parameter("tf_stale_timeout_s", 2.0)
+        self.declare_parameter("require_nav_ready", True)
+
+        self.declare_parameter("publish_executor_state", True)
+        self.declare_parameter("journal_enabled", False)
+        self.declare_parameter("journal_path", "data/executor_journal.db")
+        self.declare_parameter("use_json_transport_fallback", True)
+        self.declare_parameter("dashboard_notifications_topic", "/ui/dashboard_notifications")
+
+        self.declare_parameter("multi_robot_enabled", False)
+
+    def _load_config(self) -> None:
+        self.task_request_topic = str(self.get_parameter("task_request_topic").value)
+        self.task_status_topic = str(self.get_parameter("task_status_topic").value)
+
+        self.security_reports_topic = str(self.get_parameter("security_reports_topic").value)
+        self.security_events_topic = str(self.get_parameter("security_events_topic").value)
+        self.executor_state_topic = str(self.get_parameter("executor_state_topic").value)
+        self.set_task_state_topic = str(self.get_parameter("set_task_state_topic").value)
+
+        self.nav_to_pose_action = str(self.get_parameter("nav_to_pose_action").value)
+        self.nav_through_poses_action = str(self.get_parameter("nav_through_poses_action").value)
+        self.action_server_wait_timeout_s = max(
+            0.1,
+            float(self.get_parameter("action_server_wait_timeout_s").value),
+        )
+        self.goal_timeout_s = max(1.0, float(self.get_parameter("goal_timeout_s").value))
+        self.cancel_timeout_s = max(0.1, float(self.get_parameter("cancel_timeout_s").value))
+
+        self.tick_hz = max(0.1, float(self.get_parameter("executor_tick_hz").value))
+        self.max_queue_size = max(1, int(self.get_parameter("max_queue_size").value))
+        self.allow_preemption = bool(self.get_parameter("allow_preemption").value)
+        self.require_map = bool(self.get_parameter("require_map").value)
+        self.map_topic = str(self.get_parameter("map_topic").value)
+        self.map_stale_timeout_s = max(0.1, float(self.get_parameter("map_stale_timeout_s").value))
+        self.require_tf = bool(self.get_parameter("require_tf").value)
+        self.tf_topic = str(self.get_parameter("tf_topic").value)
+        self.tf_static_topic = str(self.get_parameter("tf_static_topic").value)
+        self.tf_stale_timeout_s = max(0.1, float(self.get_parameter("tf_stale_timeout_s").value))
+        self.require_nav_ready = bool(self.get_parameter("require_nav_ready").value)
+        self.use_json_transport_fallback = bool(
+            self.get_parameter("use_json_transport_fallback").value
+        )
+        self.dashboard_notifications_topic = str(
+            self.get_parameter("dashboard_notifications_topic").value
+        )
+        self.multi_robot_enabled = bool(self.get_parameter("multi_robot_enabled").value)
+
+    def _setup_ros(self) -> None:
+        self._last_map_msg_s: float | None = None
+        self._last_tf_msg_s: float | None = None
+        self._last_tf_static_msg_s: float | None = None
+        self._pending_goal_task_id: str | None = None
+        self._pending_goal_future = None
+        self._pending_cancel_requested = False
+        self._active_goal_task_id: str | None = None
+        self._active_goal_handle = None
+        self._active_goal_sent_s: float | None = None
+
+        self._multi_core: MultiRobotExecutionCore | None = None
+        self._per_robot_nav_clients: dict[str, dict[str, ActionClient]] = {}
+        self._per_robot_goal_state: dict[str, dict[str, Any]] = {}
+
+        core_kwargs = {
+            "max_queue_size": self.max_queue_size,
+            "allow_preemption": self.allow_preemption,
+            "require_map": self.require_map,
+            "require_tf": self.require_tf,
+            "require_nav_ready": self.require_nav_ready,
+        }
+
+        if self.multi_robot_enabled:
+            robot_ids = self._load_robot_ids()
+            self._multi_core = MultiRobotExecutionCore(
+                robot_ids=robot_ids,
+                **core_kwargs,
+            )
+            self.core = self._multi_core._fallback_core
+            self._setup_per_robot_nav_clients(robot_ids)
+        else:
+            self.core = TaskExecutionCore(**core_kwargs)
+
+        self.nav_to_pose_client = ActionClient(self, NavigateToPose, self.nav_to_pose_action)
+        self.nav_through_poses_client = ActionClient(
+            self,
+            NavigateThroughPoses,
+            self.nav_through_poses_action,
+        )
+        if self.require_nav_ready:
+            to_pose_ready = self.nav_to_pose_client.wait_for_server(
+                timeout_sec=self.action_server_wait_timeout_s
+            )
+            through_poses_ready = self.nav_through_poses_client.wait_for_server(
+                timeout_sec=self.action_server_wait_timeout_s
+            )
+            if not (to_pose_ready and through_poses_ready):
+                self.get_logger().warning(
+                    "Nav2 action servers not ready at startup; dispatch will stay BLOCKED until ready"
+                )
+
+        if self.require_map:
+            # Nav2 map_server commonly publishes /map as a transient-local latched topic.
+            map_qos = QoSProfile(
+                history=HistoryPolicy.KEEP_LAST,
+                depth=1,
+                reliability=ReliabilityPolicy.RELIABLE,
+                durability=DurabilityPolicy.TRANSIENT_LOCAL,
+            )
+            self.map_sub = self.create_subscription(
+                OccupancyGrid,
+                self.map_topic,
+                self._map_callback,
+                map_qos,
+            )
+        else:
+            self.map_sub = None
+
+        if self.require_tf:
+            self.tf_sub = self.create_subscription(
+                TFMessage,
+                self.tf_topic,
+                self._tf_callback,
+                50,
+            )
+            self.tf_static_sub = self.create_subscription(
+                TFMessage,
+                self.tf_static_topic,
+                self._tf_static_callback,
+                10,
+            )
+        else:
+            self.tf_sub = None
+            self.tf_static_sub = None
+
+        self.task_sub = self.create_subscription(
+            String,
+            self.task_request_topic,
+            self._task_request_callback,
+            10,
+        )
+        self.command_sub = self.create_subscription(
+            String,
+            self.set_task_state_topic,
+            self._task_command_callback,
+            10,
+        )
+        self.status_pub = self.create_publisher(String, self.task_status_topic, 10)
+
+        self.security_reports_pub = self.create_publisher(String, self.security_reports_topic, 10)
+        self.security_events_sub = self.create_subscription(
+            String,
+            self.security_events_topic,
+            self._security_event_callback,
+            10,
+        )
+        self.state_pub = self.create_publisher(String, self.executor_state_topic, 10)
+        self.dashboard_notif_pub = self.create_publisher(
+            String, self.dashboard_notifications_topic, 10,
+        )
+        self._notif_throttle = NotificationThrottle(
+            config=ThrottleConfig(), now_fn=time.time,
+        )
+        self.stats_srv = self.create_service(Trigger, "~/get_stats", self._get_stats_callback)
+        self.tick_timer = self.create_timer(1.0 / self.tick_hz, self._tick_callback)
+
+    def _load_robot_ids(self) -> list[str]:
+        try:
+            self.declare_parameter("robot_ids", ["robot0", "robot1"])
+            raw = self.get_parameter("robot_ids").value
+            if isinstance(raw, list):
+                return [str(r) for r in raw]
+        except Exception as exc:
+            self.get_logger().warning(
+                f"Failed to load robot_ids parameter, using defaults: {exc}"
+            )
+        return ["robot0", "robot1"]
+
+    def _setup_per_robot_nav_clients(self, robot_ids: list[str]) -> None:
+        for rid in robot_ids:
+            to_pose_param = f"{rid}_nav_to_pose_action"
+            through_poses_param = f"{rid}_nav_through_poses_action"
+            try:
+                self.declare_parameter(to_pose_param, f"/{rid}/navigate_to_pose")
+                self.declare_parameter(through_poses_param, f"/{rid}/navigate_through_poses")
+            except Exception as exc:
+                self.get_logger().warning(
+                    f"Parameter declaration for {rid} Nav2 actions failed "
+                    f"(may already be declared): {exc}"
+                )
+
+            to_pose_action = str(self.get_parameter(to_pose_param).value)
+            through_poses_action = str(self.get_parameter(through_poses_param).value)
+
+            self._per_robot_nav_clients[rid] = {
+                "navigate_to_pose": ActionClient(self, NavigateToPose, to_pose_action),
+                "navigate_through_poses": ActionClient(self, NavigateThroughPoses, through_poses_action),
+            }
+            self.get_logger().info(
+                f"Multi-robot Nav2 clients for {rid}: "
+                f"to_pose={to_pose_action}, through_poses={through_poses_action}"
+            )
+
+    def _log_startup(self) -> None:
+        self.get_logger().info("=" * 60)
+        self.get_logger().info("robot_task_executor_node started")
+        self.get_logger().info(f"task_request_topic: {self.task_request_topic}")
+        self.get_logger().info(f"task_status_topic: {self.task_status_topic}")
+        self.get_logger().info(f"security_reports_topic: {self.security_reports_topic}")
+        self.get_logger().info(f"security_events_topic: {self.security_events_topic}")
+        self.get_logger().info(f"nav_to_pose_action: {self.nav_to_pose_action}")
+        self.get_logger().info(f"require_map: {self.require_map} (topic={self.map_topic})")
+        self.get_logger().info(f"require_tf: {self.require_tf} (topic={self.tf_topic})")
+        self.get_logger().info(f"require_nav_ready: {self.require_nav_ready}")
+        self.get_logger().info(
+            f"json_fallback: {'enabled' if self.use_json_transport_fallback else 'disabled'}"
+        )
+        self.get_logger().info(
+            f"multi_robot: {'enabled' if self.multi_robot_enabled else 'disabled'}"
+        )
+        if self.multi_robot_enabled and self._multi_core is not None:
+            self.get_logger().info(
+                f"robot_ids: {self._multi_core.robot_ids}"
+            )
+        self.get_logger().info("=" * 60)
+
+    def _task_request_callback(self, msg: String) -> None:
+        payload = self._safe_parse_json(msg.data)
+
+        if payload is None:
+            self._publish_status(
+                task_id="",
+                state="FAILED",
+                detail="Invalid JSON task request",
+                progress=0.0,
+            )
+            return
+
+        target_core = self._multi_core if self._multi_core is not None else self.core
+        try:
+            queued = target_core.enqueue_task(payload)
+        except (TaskValidationError, QueueFullError) as exc:
+            task_id = str(payload.get("task_id", "")).strip()
+            self._publish_status(
+                task_id=task_id,
+                state="FAILED",
+                detail=f"Task rejected: {exc}",
+                progress=0.0,
+            )
+            return
+
+        self._publish_event(queued)
+
+    def _task_command_callback(self, msg: String) -> None:
+        payload = self._safe_parse_json(msg.data)
+        if payload is None:
+            self._publish_status(
+                task_id="",
+                state="REJECTED",
+                detail="Invalid JSON command payload",
+                progress=0.0,
+            )
+            return
+
+        command = str(payload.get("command", "")).strip().lower()
+        normalized_command = "cancel" if command == "stop" else command
+        target_core = self._multi_core if self._multi_core is not None else self.core
+        try:
+            event = target_core.handle_command(payload)
+        except CommandRejectedError as exc:
+            self._publish_status(
+                task_id=str(payload.get("task_id", "")).strip(),
+                state="REJECTED",
+                detail=f"Command rejected: {exc}",
+                progress=0.0,
+            )
+            return
+
+        self._publish_event(event)
+        if event.state == "DISPATCHED":
+            self._dispatch_active_task_to_nav()
+        if normalized_command in {"cancel", "pause"}:
+            self._cancel_goals_for_task(event.task_id, normalized_command)
+
+    def _tick_callback(self) -> None:
+        self._refresh_dispatch_readiness()
+        self._enforce_goal_timeout()
+
+        if self._multi_core is not None:
+            events = self._multi_core.dispatch_next_all()
+            for event in events:
+                self._publish_event(event)
+                if event.state == "DISPATCHED" and event.robot_id:
+                    self._dispatch_multi_robot_task(event.robot_id)
+
+            state = String()
+            state.data = json.dumps(self._multi_core.snapshot())
+            self.state_pub.publish(state)
+        else:
+            dispatched = self.core.dispatch_next()
+            if dispatched is not None:
+                self._publish_event(dispatched)
+                if dispatched.state == "DISPATCHED":
+                    self._dispatch_active_task_to_nav()
+
+            state = String()
+            state.data = json.dumps(self.core.snapshot())
+            self.state_pub.publish(state)
+
+    def _get_stats_callback(self, request: Trigger.Request, response: Trigger.Response) -> Trigger.Response:
+        del request
+        response.success = True
+        snapshot = (
+            self._multi_core.snapshot()
+            if self._multi_core is not None
+            else self.core.snapshot()
+        )
+        response.message = json.dumps(snapshot)
+        return response
+
+    def _publish_event(self, event: StatusEvent) -> None:
+        self._publish_status(
+            task_id=event.task_id,
+            state=event.state,
+            detail=event.detail,
+            progress=event.progress,
+            robot_id=event.robot_id,
+        )
+        if event.state in NOTIFIABLE_STATES:
+            self._publish_dashboard_notification(
+                category="task_state_changed",
+                level=self._notif_level_for_state(event.state),
+                title=f"Task {event.state.capitalize()}",
+                message=f"Task {event.task_id}: {event.detail}",
+                task_id=event.task_id,
+                metadata={"to_state": event.state},
+            )
+
+
+    @staticmethod
+    def _notif_level_for_state(state: str) -> str:
+        if state in {"FAILED", "CANCELED"}:
+            return "error"
+        if state == "SUCCEEDED":
+            return "success"
+        if state == "PAUSED":
+            return "warning"
+        return "info"
+
+    def _publish_dashboard_notification(
+        self,
+        *,
+        category: str,
+        level: str,
+        title: str,
+        message: str,
+        task_id: str = "",
+        incident_key: str = "",
+        metadata: dict[str, Any] | None = None,
+    ) -> None:
+        try:
+            notif = build_notification(
+                category=category,
+                level=level,
+                title=title,
+                message=message,
+                task_id=task_id,
+                incident_key=incident_key,
+                metadata=metadata,
+                now_fn=time.time,
+            )
+            if not self._notif_throttle.should_publish(notif):
+                self.get_logger().debug(
+                    f"Throttled notification category={category} task_id={task_id}"
+                )
+                return
+            ros_msg = String()
+            ros_msg.data = notif.to_json()
+            self.dashboard_notif_pub.publish(ros_msg)
+        except Exception as exc:
+            self.get_logger().error(
+                f"Failed to publish dashboard notification "
+                f"category={category} task_id={task_id}: {exc}"
+            )
+
+    def _dispatch_active_task_to_nav(self) -> None:
+        active_task = self.core.active_task
+        if active_task is None:
+            return
+
+        if active_task.nav_action == "publish_report":
+            self._execute_report_task(active_task)
+            return
+
+        try:
+            if active_task.nav_action == "navigate_to_pose":
+                goal_msg = NavigateToPose.Goal()
+                goal_msg.pose = self._build_pose(active_task.raw_payload["goal"])
+                send_goal_future = self.nav_to_pose_client.send_goal_async(
+                    goal_msg,
+                    feedback_callback=(
+                        lambda feedback_msg, task_id=active_task.task_id: self._on_nav_feedback(
+                            task_id,
+                            feedback_msg,
+                        )
+                    ),
+                )
+            elif active_task.nav_action == "navigate_through_poses":
+                goal_msg = NavigateThroughPoses.Goal()
+                goal_msg.poses = [
+                    self._build_pose(pose_dict) for pose_dict in active_task.raw_payload["poses"]
+                ]
+                send_goal_future = self.nav_through_poses_client.send_goal_async(
+                    goal_msg,
+                    feedback_callback=(
+                        lambda feedback_msg, task_id=active_task.task_id: self._on_nav_feedback(
+                            task_id,
+                            feedback_msg,
+                        )
+                    ),
+                )
+            else:
+                raise RuntimeError(f"Unsupported nav action mapping: {active_task.nav_action}")
+        except Exception as exc:
+            self._mark_task_failed_if_active(
+                active_task.task_id,
+                f"Failed to send Nav2 goal: {exc}",
+            )
+            return
+
+        self._pending_goal_task_id = active_task.task_id
+        self._pending_goal_future = send_goal_future
+        self._pending_cancel_requested = False
+        self._active_goal_sent_s = time.monotonic()
+        send_goal_future.add_done_callback(
+            lambda future, task_id=active_task.task_id: self._on_nav_goal_response(task_id, future)
+        )
+
+    def _dispatch_multi_robot_task(self, robot_id: str) -> None:
+        if self._multi_core is None:
+            return
+        active_task = self._multi_core.get_active_task(robot_id)
+        if active_task is None:
+            return
+
+        if active_task.nav_action == "publish_report":
+            self._execute_report_task(active_task)
+            return
+
+        nav_clients = self._per_robot_nav_clients.get(robot_id)
+        if nav_clients is None:
+            nav_clients = {
+                "navigate_to_pose": self.nav_to_pose_client,
+                "navigate_through_poses": self.nav_through_poses_client,
+            }
+
+        try:
+            if active_task.nav_action == "navigate_to_pose":
+                client = nav_clients.get("navigate_to_pose", self.nav_to_pose_client)
+                goal_msg = NavigateToPose.Goal()
+                goal_msg.pose = self._build_pose(active_task.raw_payload["goal"])
+                send_goal_future = client.send_goal_async(
+                    goal_msg,
+                    feedback_callback=(
+                        lambda feedback_msg, task_id=active_task.task_id: self._on_nav_feedback(
+                            task_id, feedback_msg,
+                        )
+                    ),
+                )
+            elif active_task.nav_action == "navigate_through_poses":
+                client = nav_clients.get("navigate_through_poses", self.nav_through_poses_client)
+                goal_msg = NavigateThroughPoses.Goal()
+                goal_msg.poses = [
+                    self._build_pose(pose_dict) for pose_dict in active_task.raw_payload["poses"]
+                ]
+                send_goal_future = client.send_goal_async(
+                    goal_msg,
+                    feedback_callback=(
+                        lambda feedback_msg, task_id=active_task.task_id: self._on_nav_feedback(
+                            task_id, feedback_msg,
+                        )
+                    ),
+                )
+            else:
+                raise RuntimeError(f"Unsupported nav action mapping: {active_task.nav_action}")
+        except Exception as exc:
+            self.get_logger().error(
+                f"Failed to send multi-robot Nav2 goal for {robot_id}: {exc}"
+            )
+            try:
+                self._multi_core.mark_terminal(
+                    robot_id, "FAILED", f"Failed to send Nav2 goal: {exc}",
+                )
+            except CommandRejectedError:
+                pass
+            return
+
+        self._per_robot_goal_state[robot_id] = {
+            "pending_task_id": active_task.task_id,
+            "pending_future": send_goal_future,
+            "cancel_requested": False,
+            "active_goal_handle": None,
+            "active_task_id": None,
+            "goal_sent_s": time.monotonic(),
+        }
+        send_goal_future.add_done_callback(
+            lambda future, rid=robot_id, task_id=active_task.task_id: (
+                self._on_multi_robot_goal_response(rid, task_id, future)
+            )
+        )
+
+    def _on_multi_robot_goal_response(
+        self, robot_id: str, task_id: str, future: Any,
+    ) -> None:
+        if self._multi_core is None:
+            return
+
+        goal_state = self._per_robot_goal_state.get(robot_id, {})
+        is_current = (
+            goal_state.get("pending_task_id") == task_id
+            and goal_state.get("pending_future") is future
+        )
+        cancel_requested = goal_state.get("cancel_requested", False) if is_current else False
+
+        if is_current:
+            goal_state["pending_task_id"] = None
+            goal_state["pending_future"] = None
+            goal_state["cancel_requested"] = False
+
+        try:
+            goal_handle = future.result()
+        except Exception as exc:
+            if is_current:
+                try:
+                    event = self._multi_core.mark_terminal(
+                        robot_id, "FAILED", f"Nav2 goal response failed: {exc}",
+                    )
+                    self._publish_event(event)
+                except CommandRejectedError:
+                    pass
+            return
+
+        if not goal_handle.accepted:
+            if is_current:
+                try:
+                    event = self._multi_core.mark_terminal(
+                        robot_id, "FAILED", "Nav2 goal rejected by action server",
+                    )
+                    self._publish_event(event)
+                except CommandRejectedError:
+                    pass
+            return
+
+        if not is_current or cancel_requested:
+            self._cancel_goal_handle(
+                goal_handle,
+                reason="stale or canceled multi-robot goal" if not is_current else "operator cancel",
+            )
+            return
+
+        goal_state["active_goal_handle"] = goal_handle
+        goal_state["active_task_id"] = task_id
+        result_future = goal_handle.get_result_async()
+        result_future.add_done_callback(
+            lambda res_fut, rid=robot_id, tid=task_id: (
+                self._on_multi_robot_nav_result(rid, tid, res_fut)
+            )
+        )
+        try:
+            event = self._multi_core.mark_active(robot_id)
+            self._publish_event(event)
+        except CommandRejectedError:
+            pass
+
+    def _on_multi_robot_nav_result(
+        self, robot_id: str, task_id: str, result_future: Any,
+    ) -> None:
+        if self._multi_core is None:
+            return
+
+        goal_state = self._per_robot_goal_state.get(robot_id, {})
+        if goal_state.get("active_task_id") == task_id:
+            goal_state["active_goal_handle"] = None
+            goal_state["active_task_id"] = None
+            goal_state["goal_sent_s"] = None
+
+        try:
+            wrapped_result = result_future.result()
+        except Exception as exc:
+            try:
+                event = self._multi_core.mark_terminal(
+                    robot_id, "FAILED", f"Nav2 result failed: {exc}",
+                )
+                self._publish_event(event)
+            except CommandRejectedError:
+                pass
+            return
+
+        terminal_state, detail = self._map_nav_result_status(wrapped_result.status)
+        try:
+            event = self._multi_core.mark_terminal(robot_id, terminal_state, detail)
+            self._publish_event(event)
+        except CommandRejectedError:
+            pass
+
+    def _execute_report_task(self, active_task: ValidatedTask) -> None:
+        report_payload = {
+            "task_id": active_task.task_id,
+            "incident_key": str(active_task.raw_payload.get("incident_key", "")),
+            "task_type": active_task.task_type,
+            "report_data": active_task.raw_payload.get("report_data", {}),
+            "status": "completed",
+            "timestamp_s": time.time(),
+        }
+        report_msg = String()
+        report_msg.data = json.dumps(report_payload)
+        self.security_reports_pub.publish(report_msg)
+
+        try:
+            robot_id = active_task.robot_id
+            if robot_id and self._multi_core is not None:
+                event = self._multi_core.mark_terminal(
+                    robot_id, "SUCCEEDED", "Report published",
+                )
+            else:
+                event = self.core.mark_terminal("SUCCEEDED", "Report published")
+        except CommandRejectedError:
+            return
+        self._publish_event(event)
+
+    def _on_nav_goal_response(self, task_id: str, future: Any) -> None:
+        is_current_pending = (
+            self._pending_goal_task_id == task_id
+            and self._pending_goal_future is future
+        )
+        cancel_requested_while_pending = (
+            self._pending_cancel_requested if is_current_pending else False
+        )
+        if is_current_pending:
+            self._clear_pending_goal_tracking()
+
+        try:
+            goal_handle = future.result()
+        except Exception as exc:
+            if is_current_pending and self.core.active_task_id == task_id:
+                self._mark_task_failed_if_active(task_id, f"Nav2 goal response failed: {exc}")
+            return
+
+        if not goal_handle.accepted:
+            if is_current_pending and self.core.active_task_id == task_id:
+                self._mark_task_failed_if_active(task_id, "Nav2 goal rejected by action server")
+            return
+
+        if not is_current_pending:
+            self._cancel_goal_handle(
+                goal_handle,
+                reason="stale goal response callback",
+            )
+            return
+
+        if cancel_requested_while_pending:
+            self._cancel_goal_handle(
+                goal_handle,
+                reason="operator command while waiting for goal response",
+            )
+            return
+
+        if self.core.active_task_id != task_id:
+            self._cancel_goal_handle(
+                goal_handle,
+                reason="task no longer active when goal response arrived",
+            )
+            return
+
+        self._active_goal_task_id = task_id
+        self._active_goal_handle = goal_handle
+        result_future = goal_handle.get_result_async()
+        result_future.add_done_callback(
+            lambda result_fut, current_task_id=task_id: self._on_nav_result(
+                current_task_id,
+                result_fut,
+            )
+        )
+        try:
+            self._publish_event(self.core.mark_active())
+        except CommandRejectedError:
+            return
+
+    def _on_nav_result(self, task_id: str, result_future: Any) -> None:
+        if self._active_goal_task_id == task_id:
+            self._clear_active_goal_tracking()
+        if self.core.active_task_id != task_id:
+            return
+
+        try:
+            wrapped_result = result_future.result()
+        except Exception as exc:
+            self._mark_task_failed_if_active(task_id, f"Nav2 result failed: {exc}")
+            return
+
+        terminal_state, detail = self._map_nav_result_status(wrapped_result.status)
+        try:
+            event = self.core.mark_terminal(terminal_state, detail)
+        except CommandRejectedError:
+            return
+        self._publish_event(event)
+
+    def _on_nav_feedback(self, task_id: str, feedback_msg: Any) -> None:
+        if self.core.active_task_id != task_id:
+            return
+
+        feedback = getattr(feedback_msg, "feedback", None)
+        if feedback is None:
+            detail = "Nav2 feedback received"
+        else:
+            distance_remaining = getattr(feedback, "distance_remaining", None)
+            if distance_remaining is None:
+                detail = "Nav2 feedback received"
+            else:
+                detail = f"Nav2 distance_remaining={float(distance_remaining):.3f}"
+
+        self._publish_status(
+            task_id=task_id,
+            state="ACTIVE",
+            detail=detail,
+            progress=0.0,
+        )
+        self._publish_dashboard_notification(
+            category="robot_action_monitor",
+            level="info",
+            title="Navigation Progress",
+            message=detail,
+            task_id=task_id,
+            metadata={"nav_detail": detail},
+        )
+
+    def _mark_task_failed_if_active(self, task_id: str, detail: str) -> None:
+        if self.core.active_task_id != task_id:
+            return
+        self._clear_active_goal_tracking()
+        try:
+            event = self.core.mark_terminal("FAILED", detail)
+        except CommandRejectedError:
+            return
+        self._publish_event(event)
+
+    def _enforce_goal_timeout(self) -> None:
+        self._enforce_single_robot_goal_timeout()
+        self._enforce_multi_robot_goal_timeouts()
+
+    def _enforce_single_robot_goal_timeout(self) -> None:
+        if self.core.active_task_id is None:
+            return
+        if self._active_goal_sent_s is None:
+            return
+        elapsed_s = time.monotonic() - self._active_goal_sent_s
+        if elapsed_s < self.goal_timeout_s:
+            return
+
+        active_task_id = self.core.active_task_id
+        if active_task_id is None:
+            return
+
+        self._cancel_active_nav_goal(reason=f"goal timeout ({self.goal_timeout_s:.1f}s)")
+        try:
+            timeout_event = self.core.mark_terminal(
+                "FAILED",
+                f"Goal timeout exceeded after {self.goal_timeout_s:.1f}s",
+            )
+        except CommandRejectedError:
+            return
+        self._publish_event(timeout_event)
+
+    def _enforce_multi_robot_goal_timeouts(self) -> None:
+        if self._multi_core is None:
+            return
+
+        now = time.monotonic()
+        for rid, goal_state in list(self._per_robot_goal_state.items()):
+            sent_s = goal_state.get("goal_sent_s")
+            if sent_s is None:
+                continue
+            if (now - sent_s) < self.goal_timeout_s:
+                continue
+
+            goal_handle = goal_state.get("active_goal_handle")
+            if goal_handle is not None:
+                self._cancel_goal_handle(
+                    goal_handle, reason=f"multi-robot goal timeout for {rid}",
+                )
+
+            goal_state["active_goal_handle"] = None
+            goal_state["active_task_id"] = None
+            goal_state["goal_sent_s"] = None
+
+            try:
+                event = self._multi_core.mark_terminal(
+                    rid, "FAILED",
+                    f"Goal timeout exceeded after {self.goal_timeout_s:.1f}s",
+                )
+                self._publish_event(event)
+            except CommandRejectedError:
+                pass
+
+    def _cancel_goals_for_task(self, task_id: str, command: str) -> None:
+        """Cancel Nav2 goals for the given task across single- and multi-robot tracking."""
+        reason = f"operator command: {command}"
+
+        # Single-robot tracking
+        if (
+            self._active_goal_task_id is not None
+            and self._active_goal_task_id == task_id
+        ):
+            self._cancel_active_nav_goal(reason=reason)
+        if (
+            self._pending_goal_task_id is not None
+            and self._pending_goal_task_id == task_id
+        ):
+            self._pending_cancel_requested = True
+
+        # Multi-robot tracking
+        for rid, goal_state in self._per_robot_goal_state.items():
+            if goal_state.get("active_task_id") == task_id:
+                goal_handle = goal_state.get("active_goal_handle")
+                if goal_handle is not None:
+                    self._cancel_goal_handle(goal_handle, reason=f"{reason} (robot {rid})")
+                goal_state["active_goal_handle"] = None
+                goal_state["active_task_id"] = None
+                goal_state["goal_sent_s"] = None
+            elif goal_state.get("pending_task_id") == task_id:
+                goal_state["cancel_requested"] = True
+
+    def _cancel_active_nav_goal(self, reason: str) -> None:
+        if self._active_goal_handle is None:
+            return
+        self._cancel_goal_handle(self._active_goal_handle, reason=reason)
+        self._clear_active_goal_tracking()
+
+    def _cancel_goal_handle(self, goal_handle: Any, reason: str) -> None:
+        try:
+            cancel_future = goal_handle.cancel_goal_async()
+            cancel_future.add_done_callback(
+                lambda _: self.get_logger().info(f"Active goal cancel requested ({reason})")
+            )
+        except Exception as exc:
+            self.get_logger().warning(f"Failed to request active goal cancel ({reason}): {exc}")
+
+    def _clear_active_goal_tracking(self) -> None:
+        self._active_goal_handle = None
+        self._active_goal_task_id = None
+        self._active_goal_sent_s = None
+
+    def _clear_pending_goal_tracking(self) -> None:
+        self._pending_goal_task_id = None
+        self._pending_goal_future = None
+        self._pending_cancel_requested = False
+        if self._active_goal_task_id is None:
+            self._active_goal_sent_s = None
+
+    def _build_pose(self, pose_payload: dict[str, Any]) -> PoseStamped:
+        pose = PoseStamped()
+        pose.header.frame_id = str(pose_payload.get("frame_id", "map"))
+        pose.header.stamp = self.get_clock().now().to_msg()
+        pose.pose.position.x = float(pose_payload.get("x", 0.0))
+        pose.pose.position.y = float(pose_payload.get("y", 0.0))
+        pose.pose.position.z = float(pose_payload.get("z", 0.0))
+
+        yaw = float(pose_payload.get("yaw", 0.0))
+        pose.pose.orientation = self._quaternion_from_yaw(yaw)
+        return pose
+
+    @staticmethod
+    def _quaternion_from_yaw(yaw: float) -> Quaternion:
+        half_yaw = 0.5 * yaw
+        return Quaternion(
+            x=0.0,
+            y=0.0,
+            z=math.sin(half_yaw),
+            w=math.cos(half_yaw),
+        )
+
+    @staticmethod
+    def _map_nav_result_status(status_code: int) -> tuple[str, str]:
+        if status_code == GoalStatus.STATUS_SUCCEEDED:
+            return "SUCCEEDED", "Nav2 goal succeeded"
+        if status_code == GoalStatus.STATUS_CANCELED:
+            return "CANCELED", "Nav2 goal canceled"
+        return "FAILED", f"Nav2 goal failed (status={status_code})"
+
+    def _map_callback(self, msg: OccupancyGrid) -> None:
+        del msg
+        self._last_map_msg_s = time.monotonic()
+
+    def _tf_callback(self, msg: TFMessage) -> None:
+        del msg
+        self._last_tf_msg_s = time.monotonic()
+
+    def _tf_static_callback(self, msg: TFMessage) -> None:
+        del msg
+        self._last_tf_static_msg_s = time.monotonic()
+
+    def _security_event_callback(self, msg: String) -> None:
+        payload = self._safe_parse_json(msg.data)
+        if payload is None:
+            self.get_logger().warn("Received security event with invalid JSON payload")
+            return
+
+        incident_key = str(payload.get("incident_key", "")).strip()
+        detail = (
+            f"Security event received for incident_key={incident_key}"
+            if incident_key
+            else "Security event received"
+        )
+        self.get_logger().info(detail)
+
+    def _refresh_dispatch_readiness(self) -> None:
+        now_s = time.monotonic()
+        # Treat /map as latched static readiness: once a map is received, readiness stays true.
+        map_ready = self._last_map_msg_s is not None
+        tf_latest_s: float | None = None
+        if self._last_tf_msg_s is not None and self._last_tf_static_msg_s is not None:
+            tf_latest_s = max(self._last_tf_msg_s, self._last_tf_static_msg_s)
+        else:
+            tf_latest_s = self._last_tf_msg_s or self._last_tf_static_msg_s
+        tf_ready = self._is_fresh(tf_latest_s, now_s, self.tf_stale_timeout_s)
+        nav_ready = self._nav_action_servers_ready()
+
+        readiness_kwargs = {
+            "map_ready": (not self.require_map) or map_ready,
+            "tf_ready": (not self.require_tf) or tf_ready,
+            "nav_ready": nav_ready,
+        }
+        self.core.update_readiness(**readiness_kwargs)
+
+        if self._multi_core is not None:
+            for rid in self._multi_core.robot_ids:
+                self._multi_core.update_readiness(rid, **readiness_kwargs)
+
+    @staticmethod
+    def _is_fresh(last_seen_s: float | None, now_s: float, stale_timeout_s: float) -> bool:
+        if last_seen_s is None:
+            return False
+        return (now_s - last_seen_s) <= stale_timeout_s
+
+    def _nav_action_servers_ready(self) -> bool:
+        if not self.require_nav_ready:
+            return True
+
+        to_pose_ready = self.nav_to_pose_client.wait_for_server(timeout_sec=0.0)
+        through_poses_ready = self.nav_through_poses_client.wait_for_server(timeout_sec=0.0)
+        return to_pose_ready and through_poses_ready
+
+    def _publish_status(
+        self,
+        task_id: str,
+        state: str,
+        detail: str,
+        progress: float,
+        robot_id: str | None = None,
+    ) -> None:
+        payload: dict[str, Any] = {
+            "task_id": task_id,
+            "state": state,
+            "detail": detail,
+            "progress": float(progress),
+            "timestamp_s": time.time(),
+            "robot_id": robot_id,
+        }
+        msg = String()
+        msg.data = json.dumps(payload)
+        self.status_pub.publish(msg)
+
+    @staticmethod
+    def _safe_parse_json(raw: str) -> dict[str, Any] | None:
+        try:
+            parsed = json.loads(raw)
+            return parsed if isinstance(parsed, dict) else None
+        except Exception:
+            return None
+
+
+def main(args: list[str] | None = None) -> None:
+    rclpy.init(args=args)
+    try:
+        node = RobotTaskExecutorNode()
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        if rclpy.ok():
+            rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()

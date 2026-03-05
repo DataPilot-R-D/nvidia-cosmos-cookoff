@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # =============================================================================
+  # Web Client - Next.js Dashboard
+  # =============================================================================
+  web-client:
+    build:
+      context: ../apps/web-client
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_WS_URL=ws://websocket-server:8080
+      - NEXT_PUBLIC_APP_NAME=Security Robot Command Center
+    depends_on:
+      websocket-server:
+        condition: service_healthy
+    networks:
+      - robot-network
+    restart: unless-stopped
+
+  # =============================================================================
+  # WebSocket Server - Node.js
+  # =============================================================================
+  websocket-server:
+    build:
+      context: ../apps/websocket-server
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - WS_CORS_ORIGIN=http://localhost:3000,http://web-client:3000
+      - LOG_LEVEL=info
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - robot-network
+    restart: unless-stopped
+
+  # =============================================================================
+  # ROS Bridge - Python
+  # =============================================================================
+  ros-bridge:
+    build:
+      context: ../apps/ros-bridge
+      dockerfile: Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WS_SERVER_URL=ws://websocket-server:8080
+      - LOG_LEVEL=INFO
+      - ROS_DOMAIN_ID=0
+    depends_on:
+      websocket-server:
+        condition: service_healthy
+    # Use host network for ROS 2 DDS discovery (optional)
+    # network_mode: host
+    networks:
+      - robot-network
+    # Uncomment for hardware access (sensors, cameras)
+    # privileged: true
+    # volumes:
+    #   - /dev:/dev
+    restart: unless-stopped
+
+  # =============================================================================
+  # go2rtc - Video proxy (RTSP -> WebRTC/MSE)
+  # =============================================================================
+  go2rtc:
+    build:
+      context: ../infra/go2rtc
+      dockerfile: Dockerfile
+    environment:
+      - GO2RTC_RTSP_SOURCE=${GO2RTC_RTSP_SOURCE:-rtsp://localhost:8554/camera1}
+    ports:
+      - '1984:1984'
+      - '8554:8554'
+    volumes:
+      - ../infra/go2rtc/go2rtc.yaml:/config/go2rtc.yaml:ro
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:1984/api']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - robot-network
+    restart: unless-stopped
+
+networks:
+  robot-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# Optional: Named volumes for persistent data
+# volumes:
+#   robot-data:

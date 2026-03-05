@@ -1,0 +1,30 @@
+# go2rtc configuration for SRAS
+# Video pipeline: ROS2 camera -> FFmpeg NVENC -> RTSP -> go2rtc -> WebRTC -> browsers
+#
+# Deploy to: /opt/go2rtc/go2rtc.yaml on isaac-sim-1
+# Requires: ros2_to_rtsp.py bridge running to push RTSP stream
+
+streams:
+  robot0_camera:
+    - rtsp://127.0.0.1:8554/robot0_camera
+
+webrtc:
+  listen: ":10000"
+  ice_lite: true
+  candidates:
+    - "stun:stun.l.google.com:19302"
+    - "stun:stun1.l.google.com:19302"
+  audio: false
+  video_codecs: [H264]
+
+api:
+  listen: ":1984"
+  # Restrict CORS; override per environment when deploying.
+  origin: "http://localhost:3000"
+
+rtsp:
+  listen: ":8554"
+  default_query: "video"
+
+log:
+  level: info

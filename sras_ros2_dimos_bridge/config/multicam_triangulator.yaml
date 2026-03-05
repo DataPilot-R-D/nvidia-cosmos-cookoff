@@ -1,0 +1,51 @@
+multicam_triangulator_node:
+  ros__parameters:
+    world_frame: "map"
+
+    inference_interval_ms: 5000
+    min_score: 0.00  # Model nie potrafi przydzielać score'ów
+    max_reprojection_error_px: 300.0  # Wysoki próg z powodu nieprecyzyjnych pozycji kamer w TF
+    bbox_point: "center"            # center | bottom_center
+
+    association_strategy: "greedy"  # greedy | hungarian
+    max_pairs_per_class: 50
+
+    tf_timeout_ms: 80
+
+    approximate_sync:
+      queue_size: 20
+      slop_ms: 60
+
+    output:
+      detections3d_topic: "/triangulated/detections_3d"
+      markers_topic: "/triangulated/markers"
+      json_topic: "/triangulated/detections_json"
+
+    cosmos_api:
+      base_url: "http://localhost:8899"   # OpenAI-like
+      api_key: ""                         # opcjonalnie
+      model: "nvidia/Cosmos-Reason2-2B"
+      endpoint_type: "chat_completions"   # chat_completions | responses
+      timeout_ms: 60000
+      max_retries: 2
+      max_tokens: 1024
+
+    cameras:
+#      - "cam_front"
+      - "cam_left"
+      - "cam_right"
+
+#    camera_cam_front:
+#      image_topic: "/cctv2/rgb"
+#      camera_info_topic: "/cctv2/camera_info"
+#      optical_frame: "cctv2_optical_frame"
+
+    camera_cam_left:
+      image_topic: "/cctv1/rgb"
+      camera_info_topic: "/cctv1/camera_info"
+      optical_frame: "cctv1_optical_frame"
+
+    camera_cam_right:
+      image_topic: "/cctv0/rgb"
+      camera_info_topic: "/cctv0/camera_info"
+      optical_frame: "cctv0_optical_frame"

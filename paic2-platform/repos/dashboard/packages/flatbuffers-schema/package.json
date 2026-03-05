@@ -1,0 +1,19 @@
+{
+  "name": "@workspace/flatbuffers-schema",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./generated/ros_messages.ts",
+  "types": "./generated/ros_messages.ts",
+  "exports": {
+    ".": "./generated/ros_messages.ts",
+    "./ros-flat-buffers": "./generated/ros-flat-buffers.ts"
+  },
+  "scripts": {
+    "build": "flatc --ts -o ./generated ros_messages.fbs",
+    "clean": "rm -rf generated"
+  },
+  "dependencies": {
+    "flatbuffers": "^25.2.10"
+  }
+}

@@ -1,0 +1,11 @@
+sras_shelf_tip_risk:
+  ros__parameters:
+    asset_states_topic: /perception/asset_states
+    blindspot_events_topic: /reasoning/blindspot_events
+    risk_assessments_topic: /reasoning/risk_assessments
+    assessment_interval_s: 2.0
+    shelf_tilt_deg: 18.0
+    shelf_position: [6.2, 1.4, 0.75]
+    window_position: [9.8, -4.4, 2.2]
+    window_open_offset_m: 0.8
+    zone_id: shelf_zone

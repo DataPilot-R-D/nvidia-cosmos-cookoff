@@ -1,0 +1,1423 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Dark Tactical Theme - CSS Variables
+ *
+ * Colors extracted from Pencil Design System (DashboardDP.pen)
+ * Font: Inter (7-9px for labels, uppercase)
+ * Border-radius: 2px
+ */
+
+@layer base {
+  :root {
+    /* Pencil Design System - Exact Values */
+    --bg-primary: #0D0D0D;
+    --bg-secondary: #1A1A1A;
+    --bg-card: #2A2A2A;
+    --bg-surface: #3A3A3A;
+
+    --border-default: #555555;
+    --border-subtle: #333333;
+
+    --text-primary: #FFFFFF;
+    --text-secondary: #CCCCCC;
+    --text-tertiary: #999999;
+    --text-muted: #888888;
+    --text-disabled: #555555;
+
+    --accent-primary: #8B6F47;
+    --accent-danger: #FF0000;
+    --accent-warning: #FFAA00;
+
+    --radius-sm: 2px;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border-default);
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom Scrollbar - Tactical Style */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #555555 #1A1A1A;
+  }
+}
+
+@layer components {
+  /* ============================================
+   * Card Components - Pencil Design System
+   * Background: #2A2A2A, Border: #555555, Radius: 2px
+   * ============================================ */
+  .card-tactical {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+  }
+
+  .card-tactical-hover {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.2s ease;
+  }
+
+  .card-tactical-hover:hover {
+    border-color: var(--text-muted);
+  }
+
+  /* ============================================
+   * Button Components - Command Center Scale
+   * Primary: #8B6F47 fill, white text
+   * Secondary: transparent, #555555 border
+   * ============================================ */
+  .btn-primary {
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: 1px solid var(--border-default);
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+  }
+
+  .btn-danger {
+    background-color: var(--accent-danger);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: none;
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--text-tertiary);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn-ghost:hover {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  /* ============================================
+   * Status Indicators - Command Center Scale
+   * Active/Online: #8B6F47 (orange)
+   * Offline: #555555 (gray)
+   * Alert: #FF0000 (red)
+   * ============================================ */
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-indicator-lg {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-online {
+    background-color: var(--accent-primary);
+  }
+
+  .status-offline {
+    background-color: var(--border-default);
+  }
+
+  .status-warning {
+    background-color: var(--accent-warning);
+  }
+
+  .status-idle {
+    background-color: var(--text-muted);
+  }
+
+  .status-patrol {
+    background-color: var(--accent-primary);
+  }
+
+  .status-alert {
+    background-color: var(--accent-danger);
+  }
+
+  /* ============================================
+   * Typography - Command Center Scale
+   * Label/Large: 18px, 700, tracking 2px, uppercase
+   * Label/Medium: 14px, 600, tracking 1px
+   * Body: 14px, normal
+   * Caption: 12px, normal
+   * ============================================ */
+  .text-tactical-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+
+  .text-tactical-label-sm {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+
+  .text-tactical-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+
+  .text-tactical-caption {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  .text-tactical-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: var(--text-primary);
+  }
+
+  /* Input Components */
+  .input-tactical {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    transition: border-color 0.2s ease;
+  }
+
+  .input-tactical::placeholder {
+    color: var(--text-disabled);
+  }
+
+  .input-tactical:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+  }
+
+  /* Panel Components */
+  .panel-tactical {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Grid Background */
+  .bg-tactical-grid {
+    background-color: var(--bg-primary);
+    background-image:
+      linear-gradient(rgba(85, 85, 85, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(85, 85, 85, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Menu Items - Command Center Scale */
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    height: auto;
+    min-height: 48px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    transition: all 0.2s ease;
+  }
+
+  .menu-item:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .menu-item-active {
+    background-color: rgba(139, 111, 71, 0.25);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .menu-item-danger {
+    color: var(--accent-danger);
+  }
+
+  .menu-item-danger:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+  }
+
+  /* ============================================
+   * OS-like Menu Items - Compact Technical Style
+   * ============================================ */
+  .menu-item-os {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all 0.15s ease;
+    background: transparent;
+    border: none;
+    text-align: left;
+  }
+
+  .menu-item-os:hover {
+    color: var(--text-secondary);
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+
+  .menu-item-os-active {
+    background-color: rgba(139, 111, 71, 0.15);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .menu-item-os-danger {
+    color: var(--accent-danger);
+  }
+
+  .menu-item-os-danger:hover {
+    background-color: rgba(255, 0, 0, 0.08);
+  }
+
+  /* ============================================
+   * High-Contrast Liquid Glass System
+   * Glassmorphism with high contrast text
+   * ============================================ */
+
+  /* Base glass utilities */
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.80);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .glass-darker {
+    background: rgba(17, 24, 39, 0.90);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .glass-light {
+    background: rgba(0, 0, 0, 0.40);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .glass-border {
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+
+  /* ============================================
+   * Window Frame - High-Contrast Liquid Glass
+   * Glassmorphism with white text on dark glass
+   * ============================================ */
+  .window-frame {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    position: relative;
+  }
+
+  .window-frame:hover {
+    border-color: var(--border-default);
+  }
+
+  /* Glass Window variant */
+  .glass-window {
+    background: rgba(0, 0, 0, 0.40);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: var(--radius-sm);
+    position: relative;
+    /* overflow: visible to allow dropdown menus to render outside title bar */
+    overflow: visible;
+  }
+
+  .glass-window:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Glass Header - Darker glass for title bar */
+  .glass-header {
+    background: rgba(0, 0, 0, 0.80);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Glass Body - Lighter glass for content */
+  .glass-body {
+    background: rgba(0, 0, 0, 0.40);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .window-title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    padding: 0 10px 0 14px;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-subtle);
+    cursor: move;
+    user-select: none;
+    /* Ensure title bar and dropdowns render above content */
+    position: relative;
+    z-index: 20;
+  }
+
+  /* Glass title bar variant */
+  .window-title-bar.glass-header {
+    background: rgba(0, 0, 0, 0.80);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .window-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* High contrast white title */
+  .window-title.text-white {
+    color: #FFFFFF;
+  }
+
+  .window-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .window-control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .window-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 2px;
+    color: var(--text-disabled);
+    transition: all 0.15s ease;
+  }
+
+  .window-dropdown-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+  }
+
+  /* High contrast white dropdown button */
+  .window-dropdown-btn.text-white {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .window-dropdown-btn.text-white:hover {
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.10);
+  }
+
+  .window-dropdown-label {
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .window-dropdown-icon {
+    width: 8px;
+    height: 8px;
+    transition: transform 0.2s ease;
+  }
+
+  .window-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 180px;
+    max-width: 240px;
+    margin-top: 4px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  /* Glass dropdown menu variant */
+  .window-dropdown-menu.glass-menu {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  }
+
+  .glass-menu .window-dropdown-item-label {
+    color: #FFFFFF;
+  }
+
+  .glass-menu .window-dropdown-item-topic {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .window-dropdown-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .window-dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .window-dropdown-item-active {
+    background-color: rgba(139, 111, 71, 0.2);
+  }
+
+  .window-dropdown-item-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .window-dropdown-item-topic {
+    font-size: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-disabled);
+  }
+
+  .window-close-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    color: var(--text-disabled);
+    transition: all 0.15s ease;
+  }
+
+  .window-close-btn:hover {
+    background-color: rgba(255, 0, 0, 0.3);
+    color: var(--text-primary);
+  }
+
+  /* High contrast white close button */
+  .window-close-btn.text-white {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .window-close-btn.text-white:hover {
+    color: #FFFFFF;
+    background-color: rgba(255, 0, 0, 0.4);
+  }
+
+  .window-close-icon {
+    width: 8px;
+    height: 8px;
+  }
+
+  .window-content {
+    flex: 1;
+    overflow: hidden;
+    padding: 12px;
+    /* Content below title bar in stacking context */
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Glass body content area */
+  .window-content.glass-body {
+    background: rgba(0, 0, 0, 0.40);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* ============================================
+   * Dashboard Shell - Liquid Glass UI
+   * FAB, Side Menu, Layout Management
+   * ============================================ */
+
+  /* FAB (Floating Action Button) */
+  .fab-add-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 50;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .fab-add-panel:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 24px rgba(249, 115, 22, 0.4);
+  }
+
+  .fab-add-panel:active {
+    transform: scale(0.95);
+  }
+
+  /* Panel Menu (from FAB) */
+  .panel-menu {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    min-width: 220px;
+    background: rgba(0, 0, 0, 0.90);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    z-index: 51;
+    overflow: hidden;
+  }
+
+  .panel-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .panel-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .panel-menu-item-icon {
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Side Menu - Collapsible Glass Panel */
+  .side-menu {
+    width: 240px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.80);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-right: 1px solid rgba(255, 255, 255, 0.10);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, width 0.3s ease;
+  }
+
+  .side-menu.collapsed {
+    width: 64px;
+  }
+
+  .side-menu-header {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .side-menu-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+  }
+
+  .side-menu-footer {
+    padding: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Layout Management */
+  .layout-name-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+  }
+
+  .layout-name-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .layout-name-input:focus {
+    outline: none;
+    border-color: rgba(249, 115, 22, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .save-layout-btn {
+    width: 100%;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    border: none;
+    border-radius: 4px;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .save-layout-btn:hover {
+    background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+  }
+
+  .save-layout-btn:active {
+    transform: translateY(0);
+  }
+
+  /* ============================================
+   * Sidebar Tabs - Dynamic Tab System
+   * Liquid Glass styling with active highlighting
+   * ============================================ */
+
+  .sidebar-tabs {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    margin: 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .tab-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 40px;
+  }
+
+  .empty-state {
+    padding: 16px;
+    text-align: center;
+  }
+
+  .tab-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+
+  .tab-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .tab-item:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .tab-item.tab-active {
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.20);
+  }
+
+  .tab-name {
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tab-name-input {
+    flex: 1;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    border-radius: 2px;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .tab-name-input:focus {
+    outline: none;
+    border-color: rgba(249, 115, 22, 0.6);
+  }
+
+  .tab-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .tab-item:hover .tab-actions,
+  .tab-item:focus .tab-actions {
+    opacity: 1;
+  }
+
+  .tab-action-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .tab-action-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #FFFFFF;
+  }
+
+  .tab-delete-btn:hover {
+    background: rgba(255, 0, 0, 0.2);
+    color: #FF5555;
+  }
+
+  .add-tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .add-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+  }
+
+  /* Menu Toggle Button */
+  .menu-toggle {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.10);
+  }
+
+  /* Side menu labels */
+  .menu-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ============================================
+   * Interactive Joystick
+   * CSS translate on active state
+   * Direction indicators
+   * ============================================ */
+  .joystick-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .joystick-container:focus {
+    outline: 1px solid var(--accent-primary);
+    outline-offset: 4px;
+  }
+
+  .joystick-outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--border-default);
+    transition: border-color 0.15s ease;
+  }
+
+  .joystick-active .joystick-outer {
+    border-color: var(--accent-primary);
+  }
+
+  .joystick-middle {
+    position: absolute;
+    inset: 12%;
+    border-radius: 50%;
+    border: 1px solid var(--border-subtle);
+    opacity: 0.5;
+  }
+
+  .joystick-inner {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-card) 100%);
+    border: 1px solid var(--border-default);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease-out, box-shadow 0.15s ease;
+  }
+
+  .joystick-active .joystick-inner {
+    box-shadow: 0 2px 12px rgba(139, 111, 71, 0.4);
+    border-color: var(--accent-primary);
+  }
+
+  .joystick-center {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--border-subtle);
+    transition: background-color 0.15s ease;
+  }
+
+  .joystick-active .joystick-center {
+    background-color: var(--accent-primary);
+  }
+
+  .joystick-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Direction indicators */
+  .joystick-directions {
+    position: absolute;
+    inset: -8px;
+  }
+
+  .joystick-direction {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--border-subtle);
+    opacity: 0;
+    transition: all 0.15s ease;
+  }
+
+  .joystick-direction.active {
+    opacity: 1;
+    background-color: var(--accent-primary);
+    box-shadow: 0 0 6px var(--accent-primary);
+  }
+
+  .joystick-dir-up {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .joystick-dir-down {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .joystick-dir-left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .joystick-dir-right {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* ============================================
+   * Control Buttons with Press Feedback
+   * ============================================ */
+  .control-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 2px;
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    user-select: none;
+  }
+
+  .control-btn:hover {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+  }
+
+  .control-btn:active {
+    transform: translateY(1px);
+    background-color: var(--bg-surface);
+    border-color: var(--accent-primary);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .control-btn-primary {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+  }
+
+  .control-btn-primary:hover {
+    background-color: #9d7e52;
+    border-color: #9d7e52;
+  }
+
+  .control-btn-primary:active {
+    background-color: #7a6139;
+    transform: translateY(1px);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .control-btn-danger {
+    background-color: var(--accent-danger);
+    border-color: var(--accent-danger);
+    color: var(--text-primary);
+  }
+
+  .control-btn-danger:hover {
+    background-color: #cc0000;
+  }
+
+  .control-btn-danger:active {
+    background-color: #990000;
+    transform: translateY(1px);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ============================================
+ * React Grid Layout - Custom Placeholder
+ * Subtle semi-transparent styling
+ * ============================================ */
+.react-grid-layout {
+  position: relative;
+}
+
+.react-grid-placeholder {
+  background-color: rgba(139, 111, 71, 0.15) !important;
+  border: 1px dashed var(--accent-primary) !important;
+  border-radius: var(--radius-sm) !important;
+  opacity: 1 !important;
+  transition: all 0.15s ease !important;
+}
+
+/* Dragging state */
+.react-grid-item.react-draggable-dragging {
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  opacity: 0.9;
+}
+
+/* Resizing state */
+.react-grid-item.resizing {
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* =============================================================================
+   Advanced Resize Handles - All 8 Directions (OS-like behavior)
+   ============================================================================= */
+
+/* Base handle styling - invisible zones */
+.react-resizable-handle {
+  position: absolute;
+  background: transparent !important;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.react-grid-item:hover .react-resizable-handle {
+  opacity: 1;
+}
+
+/* Corner handles - 12x12px zones */
+.react-resizable-handle-se,
+.react-resizable-handle-sw,
+.react-resizable-handle-ne,
+.react-resizable-handle-nw {
+  width: 12px;
+  height: 12px;
+}
+
+/* Edge handles - full width/height, thin */
+.react-resizable-handle-n,
+.react-resizable-handle-s {
+  width: 100%;
+  height: 8px;
+  left: 0;
+}
+
+.react-resizable-handle-e,
+.react-resizable-handle-w {
+  width: 8px;
+  height: 100%;
+  top: 0;
+}
+
+/* Position: Corners */
+.react-resizable-handle-se {
+  right: 0;
+  bottom: 0;
+  cursor: se-resize;
+}
+
+.react-resizable-handle-sw {
+  left: 0;
+  bottom: 0;
+  cursor: sw-resize;
+}
+
+.react-resizable-handle-ne {
+  right: 0;
+  top: 0;
+  cursor: ne-resize;
+}
+
+.react-resizable-handle-nw {
+  left: 0;
+  top: 0;
+  cursor: nw-resize;
+}
+
+/* Position: Edges */
+.react-resizable-handle-n {
+  top: 0;
+  cursor: n-resize;
+}
+
+.react-resizable-handle-s {
+  bottom: 0;
+  cursor: s-resize;
+}
+
+.react-resizable-handle-e {
+  right: 0;
+  cursor: e-resize;
+}
+
+.react-resizable-handle-w {
+  left: 0;
+  cursor: w-resize;
+}
+
+/* Visual indicator for SE corner (most common) */
+.react-resizable-handle-se::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--border-default);
+  border-bottom: 2px solid var(--border-default);
+  transition: border-color 0.2s ease;
+}
+
+.react-grid-item:hover .react-resizable-handle-se::after {
+  border-color: var(--accent-primary);
+}
+
+/* Visual indicators for other corners (subtle) */
+.react-resizable-handle-sw::after,
+.react-resizable-handle-ne::after,
+.react-resizable-handle-nw::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.react-resizable-handle-sw::after {
+  left: 4px;
+  bottom: 4px;
+  border-left-color: var(--border-default);
+  border-bottom-color: var(--border-default);
+}
+
+.react-resizable-handle-ne::after {
+  right: 4px;
+  top: 4px;
+  border-right-color: var(--border-default);
+  border-top-color: var(--border-default);
+}
+
+.react-resizable-handle-nw::after {
+  left: 4px;
+  top: 4px;
+  border-left-color: var(--border-default);
+  border-top-color: var(--border-default);
+}
+
+/* Hover effect for corner indicators */
+.react-grid-item:hover .react-resizable-handle-sw::after {
+  border-left-color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
+}
+
+.react-grid-item:hover .react-resizable-handle-ne::after {
+  border-right-color: var(--accent-primary);
+  border-top-color: var(--accent-primary);
+}
+
+.react-grid-item:hover .react-resizable-handle-nw::after {
+  border-left-color: var(--accent-primary);
+  border-top-color: var(--accent-primary);
+}
+
+/* Edge hover indicators (subtle line) */
+.react-resizable-handle-n::after,
+.react-resizable-handle-s::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 2px;
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.react-resizable-handle-n::after {
+  top: 2px;
+}
+
+.react-resizable-handle-s::after {
+  bottom: 2px;
+}
+
+.react-resizable-handle-e::after,
+.react-resizable-handle-w::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 24px;
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.react-resizable-handle-e::after {
+  right: 2px;
+}
+
+.react-resizable-handle-w::after {
+  left: 2px;
+}
+
+/* Show edge indicators on hover */
+.react-grid-item:hover .react-resizable-handle-n::after,
+.react-grid-item:hover .react-resizable-handle-s::after,
+.react-grid-item:hover .react-resizable-handle-e::after,
+.react-grid-item:hover .react-resizable-handle-w::after {
+  background-color: var(--accent-primary);
+}
+
+/* React Flow Customizations - Tactical Theme */
+.react-flow__node {
+  font-family: 'Inter', sans-serif;
+}
+
+.react-flow__edge-path {
+  stroke: #8B6F47;
+  stroke-width: 2;
+}
+
+.react-flow__background {
+  background-color: #0D0D0D;
+}
+
+/* Toast slide-in animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Skeleton shimmer */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

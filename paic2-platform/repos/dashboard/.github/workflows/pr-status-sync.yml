@@ -1,0 +1,68 @@
+name: PR Status Sync
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, closed]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: read
+    steps:
+      - name: Sync PR status to linked issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || '';
+            const action = context.payload.action;
+
+            // Extract linked issue numbers
+            const issueRefs = body.match(/(?:closes|fixes|resolves)\s+#(\d+)/gi) || [];
+            const issueNums = issueRefs.map(ref => parseInt(ref.match(/#(\d+)/)[1]));
+
+            if (issueNums.length === 0) {
+              console.log('No linked issues found');
+              return;
+            }
+
+            for (const num of issueNums) {
+              try {
+                if (action === 'opened' || action === 'ready_for_review') {
+                  // PR opened → notify issue + remove agent-working
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    issue_number: num,
+                    body: `🔍 PR #${pr.number} is ready for review.\n\nLink: ${pr.html_url}`
+                  });
+                  await github.rest.issues.removeLabel({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    issue_number: num, name: 'agent-working'
+                  }).catch(() => {});
+
+                } else if (action === 'closed' && pr.merged) {
+                  // PR merged → mark done
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    issue_number: num,
+                    body: `✅ PR #${pr.number} merged. Issue will be closed automatically.`
+                  });
+                  await github.rest.issues.removeLabel({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    issue_number: num, name: 'agent-working'
+                  }).catch(() => {});
+
+                } else if (action === 'closed' && !pr.merged) {
+                  // PR closed without merge
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    issue_number: num,
+                    body: `❌ PR #${pr.number} was closed without merging.`
+                  });
+                }
+              } catch (e) {
+                console.log(`Error processing issue #${num}: ${e.message}`);
+              }
+            }

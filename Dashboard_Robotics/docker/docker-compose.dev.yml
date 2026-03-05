@@ -1,0 +1,61 @@
+version: '3.8'
+
+# Development overrides for docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  web-client:
+    build:
+      context: ../apps/web-client
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_ENABLE_DEBUG=true
+      - NEXT_PUBLIC_ENABLE_MOCK_DATA=true
+    volumes:
+      - ../apps/web-client:/app
+      - /app/node_modules
+      - /app/.next
+    command: pnpm dev
+
+  websocket-server:
+    build:
+      context: ../apps/websocket-server
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+    volumes:
+      - ../apps/websocket-server:/app
+      - /app/node_modules
+    command: pnpm dev
+
+  ros-bridge:
+    build:
+      context: ../apps/ros-bridge
+      dockerfile: Dockerfile.dev
+    environment:
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ../apps/ros-bridge:/app
+
+  go2rtc:
+    build:
+      context: ../infra/go2rtc
+      dockerfile: Dockerfile
+    environment:
+      - GO2RTC_RTSP_SOURCE=${GO2RTC_RTSP_SOURCE:-rtsp://localhost:8554/camera1}
+    ports:
+      - '1984:1984'
+      - '8554:8554'
+    volumes:
+      - ../infra/go2rtc/go2rtc.yaml:/config/go2rtc.yaml:ro
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:1984/api']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - robot-network
+    restart: unless-stopped

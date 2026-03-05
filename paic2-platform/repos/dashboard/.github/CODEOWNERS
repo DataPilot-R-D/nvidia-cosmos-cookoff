@@ -1,0 +1,5 @@
+# Gate: all changes require review from maintainer before merge.
+# This file is advisory on GitHub Free — enforced by team convention.
+# See .github/GATE.md for the full merge procedure.
+
+* @piotrgerke95

@@ -1,0 +1,13 @@
+std_msgs/Header header
+string assessment_id
+uint8 risk_level
+uint8 RISK_LOW=0
+uint8 RISK_MEDIUM=1
+uint8 RISK_HIGH=2
+uint8 RISK_CRITICAL=3
+float64 confidence
+string description
+string[] source_detections
+string recommended_action
+string zone_id
+builtin_interfaces/Time timestamp_assessed

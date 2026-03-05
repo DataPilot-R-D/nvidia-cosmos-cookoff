@@ -1,0 +1,4 @@
+roslibpy>=1.7.0
+PyYAML>=6.0
+PyGObject>=3.42.0
+numpy>=1.24.0

@@ -1,0 +1,6 @@
+sras_robot_situation_assessor:
+  ros__parameters:
+    assessment_interval_s: 3.0
+    proximity_threshold: 2.0
+    detections_topic: /perception/detections_3d
+    blindspot_events_topic: /reasoning/blindspot_events

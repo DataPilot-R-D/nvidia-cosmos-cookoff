@@ -1,0 +1,37 @@
+temporal_memory_node:
+  ros__parameters:
+    # Output directory for temporal memory artifacts
+    output_dir: "/home/ubuntu/vlm_temporal/temporal_memory"
+    
+    # Frame processing parameters
+    fps: 1.0                      # Process 1 frame per second
+    window_s: 2.0                 # 2-second analysis windows
+    stride_s: 2.0                 # New window every 2 seconds
+    summary_interval_s: 10.0      # Update rolling summary every 10 seconds
+    max_frames_per_window: 3      # Maximum 3 frames per window
+    
+    # Persistence
+    persistent_memory: true       # Keep graph database across sessions
+    clear_memory_on_start: false  # Don't wipe database on restart
+
+    # VLM backend: smolvlm_local (fully local, ~3-4GB VRAM, fast)
+    # Other options:
+    # - openai (requires OPENAI_API_KEY)
+    # - qwen (requires ALIBABA_API_KEY)
+    # - qwen2.5_local (requires ~16GB VRAM)
+    # - moondream_local (fully local, ~2-3GB VRAM, weaker structured outputs)
+    # - moondream_hosted (requires MOONDREAM_API_KEY)
+    vlm_backend: "smolvlm_local"
+
+    # Optional model name override
+    # Default: "HuggingFaceTB/SmolVLM-Instruct"
+    vlm_model_name: ""
+    
+    # Max tokens for VLM responses (important for structured outputs)
+    max_tokens: 2000 
+    
+    # ROS2 topics
+    camera_topic: "/robot0/front_cam/rgb"
+    query_topic: "/temporal_memory/query"
+    result_topic: "/temporal_memory/result"
+    entities_topic: "/temporal_memory/entities"

@@ -1,0 +1,40 @@
+version: '3.8'
+
+# Development overrides for docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  web-client:
+    build:
+      context: ../apps/web-client
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_ENABLE_DEBUG=true
+      - NEXT_PUBLIC_ENABLE_MOCK_DATA=true
+    volumes:
+      - ../apps/web-client:/app
+      - /app/node_modules
+      - /app/.next
+    command: pnpm dev
+
+  websocket-server:
+    build:
+      context: ../apps/websocket-server
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+    volumes:
+      - ../apps/websocket-server:/app
+      - /app/node_modules
+    command: pnpm dev
+
+  ros-bridge:
+    build:
+      context: ../apps/ros-bridge
+      dockerfile: Dockerfile.dev
+    environment:
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ../apps/ros-bridge:/app

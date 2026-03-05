@@ -1,0 +1,850 @@
+{
+  "agent": {
+    "mismatches": {
+      "track_a_colocated_pairs": [
+        [
+          "payload mismatch"
+        ],
+        [
+          "payload mismatch"
+        ],
+        [
+          "payload mismatch"
+        ]
+      ],
+      "track_a_group_by_timestamp": [
+        [],
+        [],
+        []
+      ],
+      "track_a_relabel_candidates": [
+        [
+          "candidates[0]: source_timestamp: expected numeric value 1771345677.1569738, got None",
+          "candidates[0]: target_id: expected 6, got 3",
+          "candidates[0]: target_timestamp: expected numeric value 1771345682.5338242, got None",
+          "candidates[0]: object_distance_3d: expected 1.0496592384102403, got 0.0",
+          "candidates[0]: bbox_iou: expected 0.1203576341127923, got 1.0",
+          "candidates[1]: source_id: expected 3, got 6",
+          "candidates[1]: source_timestamp: expected numeric value 1771345677.1569738, got None",
+          "candidates[1]: target_id: expected 6, got 9",
+          "candidates[1]: target_timestamp: expected numeric value 1771345682.5338242, got None",
+          "candidates[1]: object_distance_3d: expected 1.0496592384102403, got 0.0",
+          "candidates[1]: bbox_iou: expected 0.1203576341127923, got 1.0"
+        ],
+        [
+          "candidates[0]: source_timestamp: expected numeric value 1771345677.1569738, got None",
+          "candidates[0]: target_id: expected 6, got 3",
+          "candidates[0]: target_timestamp: expected numeric value 1771345682.5338242, got None",
+          "candidates[0]: object_distance_3d: expected 1.0496592384102403, got 0.0",
+          "candidates[0]: bbox_iou: expected 0.1203576341127923, got 1.0",
+          "candidates[1]: source_id: expected 3, got 6",
+          "candidates[1]: source_timestamp: expected numeric value 1771345677.1569738, got None",
+          "candidates[1]: target_id: expected 6, got 9",
+          "candidates[1]: target_timestamp: expected numeric value 1771345682.5338242, got None",
+          "candidates[1]: object_distance_3d: expected 1.0496592384102403, got 0.0",
+          "candidates[1]: bbox_iou: expected 0.1203576341127923, got 1.0"
+        ],
+        [
+          "candidates[0]: source_timestamp: expected numeric value 1771345677.1569738, got None",
+          "candidates[0]: target_id: expected 6, got 3",
+          "candidates[0]: target_timestamp: expected numeric value 1771345682.5338242, got None",
+          "candidates[0]: object_distance_3d: expected 1.0496592384102403, got 0.0",
+          "candidates[0]: bbox_iou: expected 0.1203576341127923, got 1.0",
+          "candidates[1]: source_id: expected 3, got 6",
+          "candidates[1]: source_timestamp: expected numeric value 1771345677.1569738, got None",
+          "candidates[1]: target_id: expected 6, got 9",
+          "candidates[1]: target_timestamp: expected numeric value 1771345682.5338242, got None",
+          "candidates[1]: object_distance_3d: expected 1.0496592384102403, got 0.0",
+          "candidates[1]: bbox_iou: expected 0.1203576341127923, got 1.0"
+        ]
+      ],
+      "track_a_spatial_extremes": [
+        [
+          "nearest: id: expected 5, got 6",
+          "nearest: distance_3d: expected 2.5445327951742187, got 1.0000000000000002",
+          "farthest: distance_3d: expected 12.369205110581952, got 13.7171",
+          "nearest.object_name mismatch"
+        ],
+        [
+          "nearest: id: expected 5, got 6",
+          "nearest: distance_3d: expected 2.5445327951742187, got 1.0000000000000002",
+          "farthest: distance_3d: expected 12.369205110581952, got 13.7171",
+          "nearest.object_name mismatch"
+        ],
+        [
+          "nearest: id: expected 5, got 6",
+          "nearest: distance_3d: expected 2.5445327951742187, got 1.0000000000000002",
+          "farthest: distance_3d: expected 12.369205110581952, got 13.7171",
+          "nearest.object_name mismatch"
+        ]
+      ],
+      "track_a_summary": [
+        [],
+        [],
+        []
+      ],
+      "track_b_largest_scene_cluster": [
+        [
+          "timestamp: expected 1771429598.6261687, got 1771429616.2139637",
+          "object_names mismatch"
+        ],
+        [
+          "timestamp: expected 1771429598.6261687, got 1771429616.2139637",
+          "object_names mismatch"
+        ],
+        [
+          "timestamp: expected 1771429598.6261687, got 1771429616.2139637",
+          "object_names mismatch"
+        ]
+      ],
+      "track_b_object_persistence": [
+        [
+          "payload mismatch"
+        ],
+        [
+          "payload mismatch"
+        ],
+        [
+          "payload mismatch"
+        ]
+      ],
+      "track_b_summary": [
+        [
+          "distinct_object_names: expected 16, got 12",
+          "distinct_timestamps: expected 6, got 5"
+        ],
+        [
+          "distinct_object_names: expected 16, got 12",
+          "distinct_timestamps: expected 6, got 5"
+        ],
+        [
+          "distinct_object_names: expected 16, got 12",
+          "distinct_timestamps: expected 6, got 5"
+        ]
+      ],
+      "track_b_timestamp_hash_consistency": [
+        [
+          "unique_frame_hashes: expected 6, got 5",
+          "hash_group_row_counts mismatch"
+        ],
+        [
+          "unique_frame_hashes: expected 6, got 5",
+          "hash_group_row_counts mismatch"
+        ],
+        [
+          "unique_frame_hashes: expected 6, got 5",
+          "hash_group_row_counts mismatch"
+        ]
+      ]
+    },
+    "responses": {
+      "track_a_colocated_pairs": [
+        {
+          "pairs": []
+        },
+        {
+          "pairs": []
+        },
+        {
+          "pairs": []
+        }
+      ],
+      "track_a_group_by_timestamp": [
+        {
+          "1771345677.1569738": [
+            "wall",
+            "electrical outlet",
+            "control panel",
+            "label",
+            "pipe"
+          ],
+          "1771345682.5338242": [
+            "electrical box",
+            "white brick wall",
+            "horizontal beam",
+            "wall-mounted sign"
+          ]
+        },
+        {
+          "1771345677.1569738": [
+            "wall",
+            "electrical outlet",
+            "control panel",
+            "label",
+            "pipe"
+          ],
+          "1771345682.5338242": [
+            "electrical box",
+            "white brick wall",
+            "horizontal beam",
+            "wall-mounted sign"
+          ]
+        },
+        {
+          "1771345677.1569738": [
+            "wall",
+            "electrical outlet",
+            "control panel",
+            "label",
+            "pipe"
+          ],
+          "1771345682.5338242": [
+            "electrical box",
+            "white brick wall",
+            "horizontal beam",
+            "wall-mounted sign"
+          ]
+        }
+      ],
+      "track_a_relabel_candidates": [
+        {
+          "candidates": [
+            {
+              "bbox_iou": 1.0,
+              "object_distance_3d": 0.0,
+              "source_id": 2,
+              "target_id": 3
+            },
+            {
+              "bbox_iou": 1.0,
+              "object_distance_3d": 0.0,
+              "source_id": 6,
+              "target_id": 9
+            }
+          ]
+        },
+        {
+          "candidates": [
+            {
+              "bbox_iou": 1.0,
+              "object_distance_3d": 0.0,
+              "source_id": 2,
+              "target_id": 3
+            },
+            {
+              "bbox_iou": 1.0,
+              "object_distance_3d": 0.0,
+              "source_id": 6,
+              "target_id": 9
+            }
+          ]
+        },
+        {
+          "candidates": [
+            {
+              "bbox_iou": 1.0,
+              "object_distance_3d": 0.0,
+              "source_id": 2,
+              "target_id": 3
+            },
+            {
+              "bbox_iou": 1.0,
+              "object_distance_3d": 0.0,
+              "source_id": 6,
+              "target_id": 9
+            }
+          ]
+        }
+      ],
+      "track_a_spatial_extremes": [
+        {
+          "farthest": {
+            "distance_3d": 13.7171,
+            "id": 8,
+            "object_name": "horizontal beam"
+          },
+          "nearest": {
+            "distance_3d": 1.0000000000000002,
+            "id": 6,
+            "object_name": "electrical box"
+          }
+        },
+        {
+          "farthest": {
+            "distance_3d": 13.7171,
+            "id": 8,
+            "object_name": "horizontal beam"
+          },
+          "nearest": {
+            "distance_3d": 1.0000000000000002,
+            "id": 6,
+            "object_name": "electrical box"
+          }
+        },
+        {
+          "farthest": {
+            "distance_3d": 13.7171,
+            "id": 8,
+            "object_name": "horizontal beam"
+          },
+          "nearest": {
+            "distance_3d": 1.0000000000000002,
+            "id": 6,
+            "object_name": "electrical box"
+          }
+        }
+      ],
+      "track_a_summary": [
+        {
+          "confidence_max": 0.5,
+          "confidence_min": 0.5,
+          "invalid_bbox_count": 0,
+          "row_count": 9,
+          "timestamp_max": 1771345682.5338242,
+          "timestamp_min": 1771345677.1569738
+        },
+        {
+          "confidence_max": 0.5,
+          "confidence_min": 0.5,
+          "invalid_bbox_count": 0,
+          "row_count": 9,
+          "timestamp_max": 1771345682.5338242,
+          "timestamp_min": 1771345677.1569738
+        },
+        {
+          "confidence_max": 0.5,
+          "confidence_min": 0.5,
+          "invalid_bbox_count": 0,
+          "row_count": 9,
+          "timestamp_max": 1771345682.5338242,
+          "timestamp_min": 1771345677.1569738
+        }
+      ],
+      "track_b_largest_scene_cluster": [
+        {
+          "object_names": [
+            "metallic cart",
+            "storage rack",
+            "purple boxes",
+            "white brick wall",
+            "fire extinguisher"
+          ],
+          "size": 6,
+          "timestamp": 1771429616.2139637
+        },
+        {
+          "object_names": [
+            "metallic cart",
+            "storage rack",
+            "purple boxes",
+            "white brick wall",
+            "fire extinguisher"
+          ],
+          "size": 6,
+          "timestamp": 1771429616.2139637
+        },
+        {
+          "object_names": [
+            "metallic cart",
+            "storage rack",
+            "purple boxes",
+            "white brick wall",
+            "fire extinguisher"
+          ],
+          "size": 6,
+          "timestamp": 1771429616.2139637
+        }
+      ],
+      "track_b_object_persistence": [
+        {
+          "bracket": 1,
+          "brown cardboard box": 1,
+          "fire extinguisher": 1,
+          "gray wall": 1,
+          "horizontal bar": 1,
+          "metal shelving unit": 1,
+          "metallic cart": 1,
+          "orange horizontal beam": 1,
+          "purple boxes": 2,
+          "shelf": 1,
+          "storage rack": 3,
+          "structural beam": 1,
+          "support column": 1,
+          "vertical beam": 1,
+          "wall": 1,
+          "white brick wall": 1
+        },
+        {
+          "bracket": 1,
+          "brown cardboard box": 1,
+          "fire extinguisher": 1,
+          "gray wall": 1,
+          "horizontal bar": 1,
+          "metal shelving unit": 1,
+          "metallic cart": 1,
+          "orange horizontal beam": 1,
+          "purple boxes": 2,
+          "shelf": 1,
+          "storage rack": 3,
+          "structural beam": 1,
+          "support column": 1,
+          "vertical beam": 1,
+          "wall": 1,
+          "white brick wall": 1
+        },
+        {
+          "bracket": 1,
+          "brown cardboard box": 1,
+          "fire extinguisher": 1,
+          "gray wall": 1,
+          "horizontal bar": 1,
+          "metal shelving unit": 1,
+          "metallic cart": 1,
+          "orange horizontal beam": 1,
+          "purple boxes": 2,
+          "shelf": 1,
+          "storage rack": 3,
+          "structural beam": 1,
+          "support column": 1,
+          "vertical beam": 1,
+          "wall": 1,
+          "white brick wall": 1
+        }
+      ],
+      "track_b_summary": [
+        {
+          "blob_len_max": 38168,
+          "blob_len_min": 33107,
+          "distinct_object_names": 12,
+          "distinct_timestamps": 5,
+          "row_count": 20,
+          "rows_with_blob": 20,
+          "timestamp_max": 1771429616.2139637,
+          "timestamp_min": 1771429579.3890905
+        },
+        {
+          "blob_len_max": 38168,
+          "blob_len_min": 33107,
+          "distinct_object_names": 12,
+          "distinct_timestamps": 5,
+          "row_count": 20,
+          "rows_with_blob": 20,
+          "timestamp_max": 1771429616.2139637,
+          "timestamp_min": 1771429579.3890905
+        },
+        {
+          "blob_len_max": 38168,
+          "blob_len_min": 33107,
+          "distinct_object_names": 12,
+          "distinct_timestamps": 5,
+          "row_count": 20,
+          "rows_with_blob": 20,
+          "timestamp_max": 1771429616.2139637,
+          "timestamp_min": 1771429579.3890905
+        }
+      ],
+      "track_b_timestamp_hash_consistency": [
+        {
+          "each_timestamp_single_hash": true,
+          "hash_group_row_counts": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "unique_frame_hashes": 5
+        },
+        {
+          "each_timestamp_single_hash": true,
+          "hash_group_row_counts": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "unique_frame_hashes": 5
+        },
+        {
+          "each_timestamp_single_hash": true,
+          "hash_group_row_counts": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "unique_frame_hashes": 5
+        }
+      ]
+    },
+    "runs": 3,
+    "status": "ok"
+  },
+  "artifacts": [
+    {
+      "name": "message.csv",
+      "path": "/Users/szymonpaluch/Projects/DataPilot/cosmos-hackathon/data/sensor_samples/cosmos2/message.csv",
+      "sha256": "1592fd8412fca8aa844dc65934b288c5d9bf0e322b84f01e2e01c0a840f801ac"
+    },
+    {
+      "name": "objects.db",
+      "path": "/Users/szymonpaluch/Projects/DataPilot/cosmos-hackathon/data/sensor_samples/cosmos2/objects.db",
+      "sha256": "3b91c8b36499d64b36564f6edd9b47724a0b029fad8de4661027cefca0084285"
+    }
+  ],
+  "generated_at_utc": "2026-02-18T23:13:42.566718+00:00",
+  "multimodal": {
+    "avg_f1_image_enriched": 0.4,
+    "avg_f1_metadata_only": 0.2,
+    "case_count": 2,
+    "conflict_detection_rate": 0.0,
+    "decoy_false_positive_rate_image": 1.0,
+    "decoy_false_positive_rate_metadata_only": 0.5,
+    "f1_lift_image_minus_metadata": 0.2,
+    "overall_pass": false,
+    "per_case": [
+      {
+        "case_id": "track_b_ts_0",
+        "conflict_test": {
+          "correct": false,
+          "expected_metadata_consistent": false,
+          "image_timestamp": 1771429579.3890905,
+          "metadata_timestamp": 1771429583.3130214,
+          "payload": {
+            "image_timestamp": 1771429579.3890905,
+            "metadata_consistent": true,
+            "metadata_timestamp": 1771429583.3130214,
+            "visible_objects": [
+              "storage rack",
+              "wall",
+              "structural beam",
+              "horizontal bar"
+            ]
+          }
+        },
+        "decoy_objects": [
+          "shelf",
+          "wall",
+          "structural beam"
+        ],
+        "image_enriched": {
+          "decoy_false_positives": 3,
+          "payload": {
+            "metadata_consistent": true,
+            "timestamp": 1771429579.3890905,
+            "visible_objects": [
+              "storage rack",
+              "shelf",
+              "wall",
+              "structural beam"
+            ]
+          },
+          "score": {
+            "f1": 0.4,
+            "fn": 0,
+            "fp": 3,
+            "precision": 0.25,
+            "recall": 1.0,
+            "tp": 1
+          }
+        },
+        "metadata_only": {
+          "decoy_false_positives": 0,
+          "payload": {
+            "metadata_consistent": true,
+            "timestamp": 1771429579.3890905,
+            "visible_objects": []
+          },
+          "score": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "tp": 0
+          }
+        },
+        "oracle_objects": [
+          "storage rack"
+        ],
+        "timestamp": 1771429579.3890905
+      },
+      {
+        "case_id": "track_b_ts_1",
+        "conflict_test": {
+          "correct": false,
+          "expected_metadata_consistent": false,
+          "image_timestamp": 1771429583.3130214,
+          "metadata_timestamp": 1771429579.3890905,
+          "payload": {
+            "image_timestamp": 1771429583.3130214,
+            "metadata_consistent": true,
+            "metadata_timestamp": 1771429579.3890905,
+            "visible_objects": [
+              "storage rack",
+              "shelf",
+              "wall",
+              "structural beam"
+            ]
+          }
+        },
+        "decoy_objects": [
+          "wall",
+          "structural beam",
+          "horizontal bar"
+        ],
+        "image_enriched": {
+          "decoy_false_positives": 3,
+          "payload": {
+            "metadata_consistent": true,
+            "timestamp": 1771429583.3130214,
+            "visible_objects": [
+              "storage rack",
+              "wall",
+              "structural beam",
+              "horizontal bar"
+            ]
+          },
+          "score": {
+            "f1": 0.4,
+            "fn": 0,
+            "fp": 3,
+            "precision": 0.25,
+            "recall": 1.0,
+            "tp": 1
+          }
+        },
+        "metadata_only": {
+          "decoy_false_positives": 3,
+          "payload": {
+            "metadata_consistent": true,
+            "timestamp": 1771429583.3130214,
+            "visible_objects": [
+              "storage rack",
+              "wall",
+              "structural beam",
+              "horizontal bar"
+            ]
+          },
+          "score": {
+            "f1": 0.4,
+            "fn": 0,
+            "fp": 3,
+            "precision": 0.25,
+            "recall": 1.0,
+            "tp": 1
+          }
+        },
+        "oracle_objects": [
+          "storage rack"
+        ],
+        "timestamp": 1771429583.3130214
+      }
+    ],
+    "threshold_results": {
+      "avg_f1_image_enriched": false,
+      "conflict_detection_rate": false,
+      "decoy_false_positive_rate_image": false,
+      "f1_lift_image_minus_metadata": true
+    },
+    "thresholds": {
+      "max_decoy_false_positive_rate_image": 0.25,
+      "min_avg_f1_image_enriched": 0.6,
+      "min_conflict_detection_rate": 0.8,
+      "min_f1_lift_image_minus_metadata": 0.05
+    }
+  },
+  "oracle": {
+    "track_a_colocated_pairs": {
+      "pairs": [
+        {
+          "left_id": 2,
+          "left_object_name": "electrical outlet",
+          "right_id": 3,
+          "right_object_name": "control panel",
+          "timestamp": 1771345677.1569738
+        },
+        {
+          "left_id": 6,
+          "left_object_name": "electrical box",
+          "right_id": 9,
+          "right_object_name": "wall-mounted sign",
+          "timestamp": 1771345682.5338242
+        }
+      ]
+    },
+    "track_a_group_by_timestamp": {
+      "1771345677.1569738": [
+        "wall",
+        "electrical outlet",
+        "control panel",
+        "label",
+        "pipe"
+      ],
+      "1771345682.5338242": [
+        "electrical box",
+        "white brick wall",
+        "horizontal beam",
+        "wall-mounted sign"
+      ]
+    },
+    "track_a_relabel_candidates": {
+      "candidates": [
+        {
+          "bbox_iou": 0.1203576341127923,
+          "object_distance_3d": 1.0496592384102403,
+          "source_id": 2,
+          "source_object_name": "electrical outlet",
+          "source_timestamp": 1771345677.1569738,
+          "target_id": 6,
+          "target_object_name": "electrical box",
+          "target_timestamp": 1771345682.5338242
+        },
+        {
+          "bbox_iou": 0.1203576341127923,
+          "object_distance_3d": 1.0496592384102403,
+          "source_id": 3,
+          "source_object_name": "control panel",
+          "source_timestamp": 1771345677.1569738,
+          "target_id": 6,
+          "target_object_name": "electrical box",
+          "target_timestamp": 1771345682.5338242
+        }
+      ]
+    },
+    "track_a_spatial_extremes": {
+      "farthest": {
+        "distance_3d": 12.369205110581952,
+        "id": 8,
+        "object_name": "horizontal beam"
+      },
+      "nearest": {
+        "distance_3d": 2.5445327951742187,
+        "id": 5,
+        "object_name": "pipe"
+      }
+    },
+    "track_a_summary": {
+      "confidence_max": 0.5,
+      "confidence_min": 0.5,
+      "invalid_bbox_count": 0,
+      "row_count": 9,
+      "timestamp_max": 1771345682.5338242,
+      "timestamp_min": 1771345677.1569738
+    },
+    "track_b_largest_scene_cluster": {
+      "object_names": [
+        "wall",
+        "structural beam",
+        "horizontal bar",
+        "vertical beam",
+        "bracket",
+        "support column"
+      ],
+      "size": 6,
+      "timestamp": 1771429598.6261687
+    },
+    "track_b_object_persistence": {
+      "bracket": 1,
+      "brown cardboard box": 1,
+      "fire extinguisher": 1,
+      "gray wall": 1,
+      "horizontal bar": 1,
+      "metal shelving unit": 1,
+      "metallic cart": 1,
+      "orange horizontal beam": 1,
+      "purple boxes": 2,
+      "shelf": 1,
+      "storage rack": 4,
+      "structural beam": 1,
+      "support column": 1,
+      "vertical beam": 1,
+      "wall": 1,
+      "white brick wall": 1
+    },
+    "track_b_summary": {
+      "blob_len_max": 38168,
+      "blob_len_min": 33107,
+      "distinct_object_names": 16,
+      "distinct_timestamps": 6,
+      "row_count": 20,
+      "rows_with_blob": 20,
+      "timestamp_max": 1771429616.2139637,
+      "timestamp_min": 1771429579.3890905
+    },
+    "track_b_timestamp_hash_consistency": {
+      "each_timestamp_single_hash": true,
+      "hash_group_row_counts": [
+        1,
+        1,
+        2,
+        5,
+        5,
+        6
+      ],
+      "unique_frame_hashes": 6
+    }
+  },
+  "v2_vs_v3": {
+    "aggregate": {
+      "case_count": 4,
+      "early_exit_count": 1,
+      "early_exit_rate": 0.25,
+      "estimated_call_reduction_pct": 35.0,
+      "v2_avg_calls_per_frame": 5.0,
+      "v3_avg_calls_per_frame": 3.25
+    },
+    "assumptions": {
+      "v2_model_calls_per_frame": 5,
+      "v3_model_calls_deep_path": 4,
+      "v3_model_calls_early_exit": 1
+    },
+    "cases": [
+      {
+        "alert_level": "green",
+        "confidence": 0.95,
+        "has_signal_conflict": false,
+        "name": "routine_green_high_confidence",
+        "v2_model_calls": 5,
+        "v3_model_calls": 1,
+        "v3_route_path": [
+          "detect_fast",
+          "risk_gate",
+          "act_minimal",
+          "end"
+        ]
+      },
+      {
+        "alert_level": "green",
+        "confidence": 0.45,
+        "has_signal_conflict": false,
+        "name": "green_low_confidence",
+        "v2_model_calls": 5,
+        "v3_model_calls": 4,
+        "v3_route_path": [
+          "detect_fast",
+          "risk_gate",
+          "understand_deep"
+        ]
+      },
+      {
+        "alert_level": "yellow",
+        "confidence": 0.92,
+        "has_signal_conflict": false,
+        "name": "yellow_high_confidence",
+        "v2_model_calls": 5,
+        "v3_model_calls": 4,
+        "v3_route_path": [
+          "detect_fast",
+          "risk_gate",
+          "understand_deep"
+        ]
+      },
+      {
+        "alert_level": "green",
+        "confidence": 0.93,
+        "has_signal_conflict": true,
+        "name": "green_high_conflict",
+        "v2_model_calls": 5,
+        "v3_model_calls": 4,
+        "v3_route_path": [
+          "detect_fast",
+          "risk_gate",
+          "understand_deep"
+        ]
+      }
+    ]
+  }
+}

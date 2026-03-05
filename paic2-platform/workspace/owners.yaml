@@ -1,0 +1,39 @@
+domains:
+  dashboard:
+    owner_team: dashboard
+    repos:
+      - repos/dashboard
+  reasoning:
+    owner_team: reasoning
+    repos:
+      - repos/planner
+      - repos/dimos-bridge
+      - repos/cosmos-poc
+  execution:
+    owner_team: execution
+    repos:
+      - repos/executor
+  integration:
+    owner_team: integration
+    repos:
+      - repos/bringup
+  simulation:
+    owner_team: simulation
+    repos:
+      - repos/go2-omniverse
+
+global_ownership:
+  contracts:
+    owners:
+      - dashboard
+      - reasoning
+      - execution
+      - integration
+  architecture_docs:
+    owners:
+      - integration
+      - dashboard
+      - reasoning
+  release_lock:
+    owners:
+      - integration

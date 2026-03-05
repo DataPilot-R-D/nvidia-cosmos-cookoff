@@ -1,0 +1,49 @@
+name: "📋 Task"
+description: "Generic task — optimized for AI agent execution"
+title: "[Task] "
+labels: ["type:chore"]
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: "Objective"
+      description: "What needs to be done? One clear sentence."
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: "Detailed Instructions"
+      description: "Step-by-step if possible. The more detail, the better for agents."
+      placeholder: |
+        1. In `apps/web-client/src/...`, modify...
+        2. Update types in `packages/shared/...`
+        3. Add tests in `apps/web-client/__tests__/...`
+
+  - type: textarea
+    id: done-criteria
+    attributes:
+      label: "Definition of Done"
+      value: |
+        - [ ] Implementation complete
+        - [ ] Tests pass (`pnpm test`)
+        - [ ] Lint clean (`pnpm lint`)
+        - [ ] Types check (`pnpm typecheck`)
+        - [ ] No regressions
+
+  - type: textarea
+    id: files
+    attributes:
+      label: "Files to Modify"
+      description: "List specific files/paths the agent should touch"
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: "Estimated Complexity"
+      options:
+        - "Low (~1-2h)"
+        - "Medium (~3-8h)"
+        - "High (~1-3d)"
+      default: 0

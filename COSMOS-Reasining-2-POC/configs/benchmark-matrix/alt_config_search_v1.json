@@ -1,0 +1,49 @@
+{
+  "name": "alt_config_search_v1",
+  "description": "Alternative benchmark search across reasoning mode, max tokens, and modality.",
+  "configs": [
+    {
+      "name": "all_reasoning_default_mt1200",
+      "mode": "all",
+      "reasoning_mode": "default",
+      "max_tokens": 1200,
+      "timeout_seconds": 180
+    },
+    {
+      "name": "all_reasoning_off_mt600",
+      "mode": "all",
+      "reasoning_mode": "off",
+      "max_tokens": 600,
+      "timeout_seconds": 180
+    },
+    {
+      "name": "all_reasoning_on_mt1800",
+      "mode": "all",
+      "reasoning_mode": "on",
+      "max_tokens": 1800,
+      "timeout_seconds": 240
+    },
+    {
+      "name": "frames_reasoning_off_mt600",
+      "mode": "frames",
+      "reasoning_mode": "off",
+      "max_tokens": 600,
+      "timeout_seconds": 180
+    },
+    {
+      "name": "frames_reasoning_on_mt1200",
+      "mode": "frames",
+      "reasoning_mode": "on",
+      "max_tokens": 1200,
+      "timeout_seconds": 180
+    },
+    {
+      "name": "videos_reasoning_on_mt1200",
+      "mode": "videos",
+      "reasoning_mode": "on",
+      "max_tokens": 1200,
+      "timeout_seconds": 180
+    }
+  ]
+}
+

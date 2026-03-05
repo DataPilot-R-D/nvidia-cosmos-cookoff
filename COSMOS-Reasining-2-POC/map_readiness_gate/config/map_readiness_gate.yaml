@@ -1,0 +1,9 @@
+sras_map_readiness_gate:
+  ros__parameters:
+    map_topic: /map
+    tf_topic: /tf
+    nav2_lifecycle_topic: /nav2_lifecycle_manager/transition_event
+    readiness_topic: /robot/nav_readiness
+    max_map_age_s: 300.0
+    max_tf_age_s: 5.0
+    check_interval_s: 1.0

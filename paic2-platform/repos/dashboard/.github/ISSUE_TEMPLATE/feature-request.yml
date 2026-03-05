@@ -1,0 +1,85 @@
+name: "✨ Feature Request"
+description: "Propose a new feature for Dashboard Robotics"
+title: "[Feature] "
+labels: ["type:feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Request
+        Fill in as much detail as possible. The more context, the faster an agent can implement it.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "What should be built? Be specific."
+      placeholder: "Add a real-time 3D visualization of robot joint states using Three.js..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "Acceptance Criteria"
+      description: "How do we know this is done? Use checkboxes."
+      value: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: file-hints
+    attributes:
+      label: "File Hints"
+      description: "Which files/directories are likely involved?"
+      placeholder: |
+        - apps/web-client/src/components/visualization/
+        - apps/websocket-server/src/handlers/
+        - packages/shared/types/
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: "Constraints & Notes"
+      description: "Technical constraints, performance requirements, dependencies"
+      placeholder: |
+        - Must work with MessagePack binary protocol
+        - Should handle 60fps updates from ROS
+        - No new dependencies over 50KB gzipped
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: "Area"
+      options:
+        - Frontend (web-client)
+        - Backend (websocket-server)
+        - Shared packages
+        - Infrastructure
+        - ROS Integration
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority (suggested)"
+      options:
+        - "P0 - Critical"
+        - "P1 - High"
+        - "P2 - Medium"
+        - "P3 - Low"
+      default: 2
+
+  - type: dropdown
+    id: agent-assignable
+    attributes:
+      label: "Can an AI agent implement this?"
+      options:
+        - "Yes - fully automatable"
+        - "Partially - needs human review of approach"
+        - "No - human only"
+      default: 0

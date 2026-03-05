@@ -1,0 +1,74 @@
+# Planner multi-robot test config for isaac-sim-1
+# Phase 2: Real navigation with map requirement enabled
+# Key changes from default:
+#   - multi_robot_enabled: true
+#   - cosmos_assignment_enabled: false (deterministic fallback)
+#   - require_map: true (map is live from SLAM)
+#   - robot_fleet: robot0 (quadruped) + h1_0 (humanoid), both nav2_ready
+
+robot_task_planner_node:
+  ros__parameters:
+    blindspot_topic: /reasoning/blindspot_events
+    risk_topic: /reasoning/risk_assessments
+    task_status_topic: /robot/task_status
+    map_topic: /map
+    task_request_topic: /reasoning/task_requests
+
+    planner_state_topic: ~/planner_state
+    set_task_state_topic: /ui/set_task_state
+    planner_tick_hz: 2.0
+
+    incident_ttl_s: 600.0
+    dedup_window_s: 60.0
+    queue_max_size: 300
+    max_active_tasks: 10
+    # Auto-approve ALL tasks for testing (default 0.55 would block high-severity)
+    auto_approve_max_severity: 1.0
+    default_task_priority: 0.5
+
+    # Phase 2: enable map requirement (SLAM is live)
+    require_map: true
+    map_stale_timeout_s: 5.0
+    require_nav_ready: false
+
+    langgraph_enabled: false
+    deep_conf_threshold: 0.8
+    max_reentries: 2
+
+    cosmos_enabled: false
+    cosmos_api_base: ""
+    cosmos_model: nvidia/cosmos-reason-2
+    cosmos_timeout_s: 3.0
+    cosmos_max_retries: 1
+    cosmos_use_reasoning: false
+
+    use_json_transport_fallback: true
+    planner_journal_enabled: false
+    planner_journal_path: data/planner_journal.db
+
+    detection_topic: /triangulated/detections_json
+    odom_topic: /odom
+    detection_buffer_window_s: 10.0
+    detection_position_shift_m: 1.5
+    detection_sustained_frames: 3
+    detection_cosmos_enabled: false
+    detection_min_score: 0.3
+    detection_alert_on_change: true
+
+    # Multi-robot configuration (ENABLED, deterministic fallback)
+    multi_robot_enabled: true
+    max_active_tasks_per_robot: 1
+    cosmos_assignment_enabled: false
+    cosmos_assignment_timeout_s: 3.0
+
+    # Fleet config (flat params — ROS2 can't handle nested YAML lists)
+    robot_fleet_ids: ["robot0", "h1_0"]
+
+    robot0_type: quadruped
+    robot0_odom_topic: /robot0/odom
+    robot0_nav2_ready: true
+
+    h1_0_type: humanoid
+    h1_0_odom_topic: /h1_0/odom
+    # h1_0 has Nav2 action servers in Isaac Sim — both robots can navigate
+    h1_0_nav2_ready: true

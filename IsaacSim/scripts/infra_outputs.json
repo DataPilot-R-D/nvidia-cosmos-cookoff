@@ -1,0 +1,38 @@
+[
+    {
+        "OutputKey": "InstanceProfileName",
+        "OutputValue": "isaacsim-ec2-profile"
+    },
+    {
+        "OutputKey": "VpcId",
+        "OutputValue": "vpc-0943e498a1af4cbc7"
+    },
+    {
+        "OutputKey": "TrainSecurityGroupId",
+        "OutputValue": "sg-06620fe85e539f739"
+    },
+    {
+        "OutputKey": "EfsFileSystemId",
+        "OutputValue": "fs-034b26e59d1670013"
+    },
+    {
+        "OutputKey": "EfsAccessPointId",
+        "OutputValue": "fsap-0521e9558650f93ee"
+    },
+    {
+        "OutputKey": "PrivateSubnet2Id",
+        "OutputValue": "subnet-0a37cf272f3ad456e"
+    },
+    {
+        "OutputKey": "PrivateSubnet1Id",
+        "OutputValue": "subnet-0a555b80d9479a887"
+    },
+    {
+        "OutputKey": "DevSecurityGroupId",
+        "OutputValue": "sg-075c80b222a90fb31"
+    },
+    {
+        "OutputKey": "ArtifactsBucketName",
+        "OutputValue": "isaacsim-043509841182-eu-central-1-artifacts"
+    }
+]

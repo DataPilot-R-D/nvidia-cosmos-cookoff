@@ -1,0 +1,17 @@
+vlm_query_service:
+  ros__parameters:
+    # VLM backend to use:
+    # - openai (requires OPENAI_API_KEY)
+    # - qwen (requires ALIBABA_API_KEY)
+    # - moondream_local (fully local, requires torch+transformers)
+    # - moondream_hosted (requires MOONDREAM_API_KEY)
+    vlm_backend: "openai"
+
+    # Optional: override model name for some backends
+    # moondream_local default: vikhyatk/moondream2
+    vlm_model_name: ""
+    
+    # ROS2 topics
+    camera_topic: "/camera/image_raw"
+    query_topic: "/vlm/query"
+    result_topic: "/vlm/result"

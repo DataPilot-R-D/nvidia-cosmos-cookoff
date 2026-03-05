@@ -1,0 +1,55 @@
+{
+  "$schema": "./policies.schema.json",
+  "version": "1.0.0",
+  "description": "RBAC policy configuration for Security Robot Command Center",
+  "roles": {
+    "admin": {
+      "description": "Full access to all features",
+      "permissions": [
+        "teleop",
+        "navigation",
+        "estop",
+        "camera:control",
+        "map:set-goal",
+        "incident:manage",
+        "settings:edit",
+        "audit:read"
+      ]
+    },
+    "operator": {
+      "description": "Operational control — teleop, navigation, cameras, incidents",
+      "permissions": [
+        "teleop",
+        "navigation",
+        "estop",
+        "camera:control",
+        "map:set-goal",
+        "incident:manage"
+      ]
+    },
+    "viewer": {
+      "description": "Read-only access — monitoring only",
+      "permissions": []
+    }
+  },
+  "actionMap": {
+    "teleop": "teleop",
+    "cmd_vel": "teleop",
+    "nav_goal": "navigation",
+    "navigate": "navigation",
+    "estop": "estop",
+    "e_stop": "estop",
+    "camera_control": "camera:control",
+    "map_set_goal": "map:set-goal",
+    "incident_manage": "incident:manage",
+    "incident_create": "incident:manage",
+    "settings_edit": "settings:edit",
+    "set_rosbridge_url": "settings:edit",
+    "alert": "estop",
+    "audit_read": "audit:read"
+  },
+  "defaults": {
+    "unmappedAction": "deny",
+    "unknownUser": "deny"
+  }
+}

@@ -1,0 +1,11 @@
+openai
+anthropic
+httpx
+requests
+pytest
+pytest-asyncio
+python-dotenv
+Pillow
+numpy
+opencv-python
+python-socketio[asyncio_client]

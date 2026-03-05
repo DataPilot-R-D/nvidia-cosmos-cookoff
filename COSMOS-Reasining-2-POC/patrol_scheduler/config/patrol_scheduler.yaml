@@ -1,0 +1,9 @@
+sras_patrol_scheduler:
+  ros__parameters:
+    patrol_interval_s: 120.0
+    patrol_priority: 2
+    patrol_timeout_s: 300.0
+    auto_approved: true
+    check_interval_s: 10.0
+    nav_readiness_topic: /robot/nav_readiness
+    task_requests_topic: /reasoning/task_requests

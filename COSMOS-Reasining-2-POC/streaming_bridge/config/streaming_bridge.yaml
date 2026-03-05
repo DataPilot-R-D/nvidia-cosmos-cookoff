@@ -1,0 +1,7 @@
+sras_streaming_bridge:
+  ros__parameters:
+    rtsp_base_url: rtsp://localhost:8554
+    status_interval_s: 5.0
+    streams:
+      - '{"stream_id":"front_camera","image_topic":"/camera/front/image_raw","fps":15,"width":640,"height":480,"encoding":"h264","rtsp_path":"front_camera"}'
+      - '{"stream_id":"rear_camera","image_topic":"/camera/rear/image_raw","fps":15,"width":640,"height":480,"encoding":"h264","rtsp_path":"rear_camera"}'

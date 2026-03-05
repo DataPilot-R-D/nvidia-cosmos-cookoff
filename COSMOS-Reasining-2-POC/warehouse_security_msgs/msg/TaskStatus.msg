@@ -1,0 +1,16 @@
+std_msgs/Header header
+string task_id
+uint8 status
+uint8 STATUS_QUEUED=0
+uint8 STATUS_APPROVED=1
+uint8 STATUS_DISPATCHED=2
+uint8 STATUS_ACTIVE=3
+uint8 STATUS_PAUSED=4
+uint8 STATUS_COMPLETED=5
+uint8 STATUS_FAILED=6
+uint8 STATUS_CANCELED=7
+uint8 STATUS_TIMED_OUT=8
+float64 progress_pct
+geometry_msgs/PoseStamped current_pose
+string status_message
+builtin_interfaces/Time timestamp_updated
