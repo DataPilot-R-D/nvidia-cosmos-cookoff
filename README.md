@@ -41,9 +41,6 @@ We ran 93 tests across Cosmos Reason2-2B and 8B models, evaluating surveillance 
 | Video motion tracking | 3.5/5 | Correct direction + speed from video; fails from sequential frames |
 | Cause-effect reasoning | 4/5 | Sound physics explanations |
 | TTFT (streaming) | 5/5 | 181-224ms to first token -- real-time viable |
-| Change detection | 2/5 | Targeted prompts only; general prompts hallucinate |
-| Counting | 2.5/5 | Simple objects OK, complex scenes inconsistent |
-| Distance estimation | 1.5/5 | Close objects ~7% error, far objects 72-79% error |
 
 **Critical discoveries:**
 - **Reasoning mode is a double-edged sword:** helps change detection (+1 star), but destroys person detection (5/5 -> 3/5 with false positives). **Our mitigation:** use reasoning selectively — enable it for scene analysis and threat assessment, disable it for person detection. This gives us the best of both worlds.
