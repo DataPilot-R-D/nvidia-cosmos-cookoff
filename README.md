@@ -92,16 +92,19 @@ We extended Cosmos Reason2-2B with a LoRA adapter trained on 667 real thermal im
 | **Person Detection** | 53.3% | **96.2%** | **+42.9 pp** |
 | **Smoke Detection** | 78.6% | **99.2%** | **+20.6 pp** |
 
-The hardest category -- people obscured by heavy smoke -- improved from 55.6% to 91.1%.
+The hardest category -- people obscured by heavy smoke -- improved from 55.6% to 91.1%. Zero false positives on smoke-only images (C_real: 100% correct).
 
-- 278 MB adapter (vs 4.5 GB base model)
-- 20 minutes training on RTX 3090
-- $0.30 per training run
-- Zero false positives on smoke-only images
+We iterated through 4 versions to find the champion:
+- **v3** (synthetic data, 512px): 93% -- proved LoRA works
+- **v5** (mixed data, 1024px): 79% -- **regression** (higher resolution hurts thermal)
+- **v6a** (real data only, 512px): **96.2%** -- **champion** (real >> synthetic)
+- **v6b** (mixed data, 512px): 94% -- confirms synthetic data is a net negative
+
+Key specs: 278 MB adapter (vs 4.5 GB base), 20 min training, $0.30/run, 164 real thermal training images, 131-image test set with human QA review (94.5% approval on 200 images).
 
 **This proves Cosmos is extensible** -- domain-specific LoRA adapters can push its capabilities far beyond zero-shot for Physical AI applications.
 
-**Input:** Thermal camera images | **Output:** Person detection + smoke density + threat assessment
+**Input:** Thermal camera images (FLIR/KAIST) | **Output:** Person detection + smoke density + threat assessment
 
 ### Additional: Command & Control Dashboard
 
