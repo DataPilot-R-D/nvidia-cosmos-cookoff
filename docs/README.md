@@ -1,6 +1,6 @@
-# SRAS Docs
+# PAIC2 Docs
 
-This folder is a practical knowledge base (runbooks + "where is what") for SRAS robotics infrastructure and ROS 2 components.
+This folder is a practical knowledge base (runbooks + "where is what") for PAIC2 robotics infrastructure and ROS 2 components.
 
 If you are looking for the big-picture architecture, start with `REASONING_LAYER_ARCHITECTURE.md`.
 

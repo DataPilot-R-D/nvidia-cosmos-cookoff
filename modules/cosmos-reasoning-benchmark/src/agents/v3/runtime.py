@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 def check_window_status(window_id: str = "main") -> dict[str, str]:
     """Check whether a window is open or closed."""
-    # TODO: integrate with SRAS sensor data
+    # Future work: integrate with SRAS sensor data
     return {"window_id": window_id, "status": "unknown", "source": "placeholder"}
 
 

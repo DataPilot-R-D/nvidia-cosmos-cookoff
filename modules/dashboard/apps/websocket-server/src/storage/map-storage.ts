@@ -272,7 +272,7 @@ export async function saveMap(input: SaveMapInput): Promise<MapMetadata> {
     const yaml = generateYaml(mapData, pgmPath)
     writeFileSync(yamlPath, yaml)
 
-    console.log(`[map-storage] Exported map files: ${pgmPath}, ${yamlPath}`)
+    // map files exported: pgmPath, yamlPath
   } catch (exportError) {
     console.error('[map-storage] Failed to export map files:', exportError)
     // Don't fail the save - DB entry is still valid

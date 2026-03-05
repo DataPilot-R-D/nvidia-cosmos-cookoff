@@ -16,10 +16,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='ubuntu',
-    maintainer_email='ubuntu@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='DataPilot R&D',
+    maintainer_email='dev@datapilot.io',
+    description='SRAS ROS 2 launch stack — rosbridge, SLAM, Nav2 bringup for Unitree Go2',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',

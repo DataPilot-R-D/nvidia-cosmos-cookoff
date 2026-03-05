@@ -2,7 +2,7 @@
 
 ## Scenario Overview
 
-SRAS (Security Robot Automation System) is upgraded from a single-robot system to a
+PAIC2 (Physical AI Command & Control) is upgraded from a single-robot system to a
 multi-robot fleet for a museum theft scenario:
 
 - **2 thieves** detected by CCTV triangulation via `/triangulated/detections_json`

@@ -28,7 +28,7 @@ Below is a pragmatic ROS2 architecture that fits your scenario and hackathon con
 
 ### Not implemented yet (still target architecture)
 
-* The 5 custom SRAS reasoning nodes in this document are **not** present as standalone ROS packages in current sub-repos:
+* The 5 custom PAIC2 reasoning nodes in this document are **not** present as standalone ROS packages in current sub-repos:
   * `spatial_object_recognition_node`
   * `cctv_visibility_monitor_node`
   * `robot_task_planner_node`

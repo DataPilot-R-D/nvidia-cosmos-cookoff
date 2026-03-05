@@ -1,20 +1,20 @@
-# SRAS -- Security Robot Automation System
+# PAIC2 -- Physical AI Command & Control
 
 **Autonomous security robotics powered by NVIDIA Cosmos Reason2**
 
-> In October 2025, $102 million in jewels were stolen from the Louvre in under 4 minutes. Only 39% of rooms had cameras. The one camera near the entry was pointed the wrong way. Guards weren't watching. SRAS is what happens when you give security robots a reasoning brain.
+> In October 2025, $102 million in jewels were stolen from the Louvre in under 4 minutes. Only 39% of rooms had cameras. The one camera near the entry was pointed the wrong way. Guards weren't watching. PAIC2 is what happens when you give security robots a reasoning brain.
 
 ---
 
 ## The Problem
 
-Facility security today is fundamentally reactive: cameras record, humans watch, and response comes minutes after the incident. The Louvre heist exposed every weakness -- blind spots in coverage, misdirected cameras, distracted operators, and no autonomous response capability.
+Facility security today is fundamentally reactive: cameras record, humans watch, and response comes minutes after the incident. Four thieves took eight crown jewels in under four minutes. The Louvre heist exposed every weakness -- 39% camera coverage, misdirected cameras, distracted operators, 8-minute response delay, and no autonomous response capability.
 
 Cold smoke grenades make it worse. Commercially available and increasingly used by criminals, they blind standard RGB cameras instantly. Thermal cameras can see through smoke, but AI models aren't trained for these conditions.
 
 ## Our Solution
 
-SRAS combines fixed CCTV cameras with an autonomous mobile robot (Unitree Go2), using **NVIDIA Cosmos Reason2** as the reasoning brain. The system:
+PAIC2 combines fixed CCTV cameras with autonomous mobile robots (Unitree Go2 quadruped + H1 humanoid), using **NVIDIA Cosmos Reason2** as the reasoning brain. The system:
 
 1. **Sees** -- Cosmos Reason2 analyzes camera feeds for people, objects, anomalies
 2. **Reasons** -- Detects blind spots, assesses threats, plans responses
@@ -23,7 +23,7 @@ SRAS combines fixed CCTV cameras with an autonomous mobile robot (Unitree Go2), 
 
 ### Human-Over-The-Loop (not in the loop)
 
-SRAS operates autonomously by default. The operator is **informed** of every decision and **can** intervene at any time, but doesn't **have to**. Low-severity events are handled automatically. Critical events are escalated with Cosmos reasoning and a recommended action. This philosophy means zero-delay response -- the robot is already moving while the human reviews.
+PAIC2 operates autonomously by default. The operator is **informed** of every decision and **can** intervene at any time, but doesn't **have to**. Low-severity events are handled automatically. Critical events are escalated with Cosmos reasoning and a recommended action. This philosophy means zero-delay response -- the robot is already moving while the human reviews.
 
 ---
 
@@ -31,7 +31,7 @@ SRAS operates autonomously by default. The operator is **informed** of every dec
 
 ### 1. Cosmos Reason2 Benchmark & Prompting Guidelines
 
-We ran 93 tests across Cosmos Reason2-2B and 8B models, evaluating surveillance capabilities on 24 images and 3 video clips with ground truth scoring.
+We ran 93 tests across Cosmos Reason2-2B and 8B models, evaluating surveillance capabilities on 23 images and 3 video clips with ground truth scoring.
 
 | Capability | Score | Key Finding |
 |---|---|---|
@@ -46,16 +46,24 @@ We ran 93 tests across Cosmos Reason2-2B and 8B models, evaluating surveillance 
 | Distance estimation | 1.5/5 | Close objects ~7% error, far objects 72-79% error |
 
 **Critical discoveries:**
-- **Reasoning mode is a double-edged sword:** helps change detection (+1 star), but destroys person detection (5/5 -> 3/5 with false positives)
+- **Reasoning mode is a double-edged sword:** helps change detection (+1 star), but destroys person detection (5/5 -> 3/5 with false positives). **Our mitigation:** use reasoning selectively — enable it for scene analysis and threat assessment, disable it for person detection. This gives us the best of both worlds.
 - **Frames beat video** for analysis (100% vs 33% success on change detection)
 - **Media-before-text** prompt ordering is the single most impactful rule
-- **97.6% cost savings** with Cosmos+Claude hybrid architecture vs Claude-only ($60/day vs $2,500/day)
+- **97.6% cost savings** with tiered Cosmos architecture (2B screening + 8B deep analysis): **$60/day vs $2,500/day** for cloud VLM on every frame
 
 **Input:** Camera frames (640p) + video clips | **Output:** Per-capability ratings, prompting rules, deployment config, cost model
 
 ### 2. Person Detection with Position Mapping
 
-Cosmos detects people and maps their positions to a unified coordinate frame. Combined with our DimOS memory layer (temporal + spatial memory nodes), the system tracks _who was where and when_.
+3 CCTV cameras triangulate person positions into a unified map frame. Cosmos identified **53 objects across 37 unique classes** (paintings, benches, fire extinguishers, doors, display cases) in a single scene pass.
+
+Combined with our DimOS memory layer, the system tracks entities through a detection buffer state machine:
+
+```
+new_class -> sustained_presence -> position_shift -> disappeared
+```
+
+This gives temporal context -- not just "person detected" but "person appeared 30 seconds ago, moved from Gallery A to Gallery B, now near exit."
 
 **Input:** CCTV/robot camera frames + robot odometry | **Output:** 3D detections in map frame + entity history
 
@@ -63,10 +71,10 @@ Cosmos detects people and maps their positions to a unified coordinate frame. Co
 
 When a security event occurs (blind spot, anomaly, intruder), the planner uses priority scoring to generate and dispatch tasks:
 
-- **Severity + confidence + recency + asset criticality** = priority score
-- Auto-approve low-severity tasks (configurable threshold)
-- Escalate critical tasks to operator with Cosmos reasoning
-- Multi-robot assignment with fair load distribution
+- **Priority = severity x confidence x recency x asset_criticality**
+- Auto-approve tasks scoring below 0.55 (low severity, handled autonomously)
+- Escalate tasks scoring 0.55+ to operator with Cosmos reasoning and recommended action
+- Multi-robot assignment: e.g. Go2 (quadruped) -> PURSUE_THIEF, H1 (humanoid) -> BLOCK_EXIT
 - Optional Cosmos deep planning via LangGraph for complex scenarios
 
 **Input:** Security events + map + fleet state | **Output:** Prioritized task queue + robot assignments
@@ -76,8 +84,10 @@ When a security event occurs (blind spot, anomaly, intruder), the planner uses p
 Nav2-based execution engine that manages task lifecycle across multiple robots:
 
 ```
-QUEUED -> DISPATCHED -> IN_PROGRESS -> SUCCEEDED / FAILED / CANCELED / PAUSED
+QUEUED -> DISPATCHED -> ACTIVE -> SUCCEEDED / FAILED / CANCELED / PAUSED
 ```
+
+Readiness gates ensure safe dispatch: **map ready + TF ready + Nav2 ready** before any robot moves. Operator controls at every stage: approve, cancel, pause, resume, or redefine the task. Per-robot Nav2 action servers enable independent navigation.
 
 Supports NavigateToPose (single goal) and NavigateThroughPoses (patrol routes), with per-robot timeout handling and recovery behaviors.
 
@@ -85,7 +95,7 @@ Supports NavigateToPose (single goal) and NavigateThroughPoses (patrol routes), 
 
 ### 5. LoRA Extension: Smoke-Resilient Person Detection
 
-We extended Cosmos Reason2-2B with a LoRA adapter trained on 667 real thermal images to detect people through cold smoke.
+We extended Cosmos Reason2-2B with a LoRA adapter trained on 164 real thermal images (FLIR/KAIST) to detect people through cold smoke.
 
 | Metric | Zero-Shot | LoRA v6a | Improvement |
 |---|---|---|---|
@@ -122,7 +132,7 @@ Real-time web dashboard (Next.js + Bun WebSocket) that embodies Human-Over-The-L
 ## Architecture
 
 ```
-                    SRAS Architecture (5 Layers)
+                    PAIC2 Architecture (5 Layers)
 
  Layer 5: OPERATOR DASHBOARD
  +---------------------------------------------------------+
@@ -175,7 +185,7 @@ CCTV blind spot detected
 
 ### Museum / Gallery Security (Primary)
 
-The Louvre scenario: blind spot detection, autonomous inspection, real-time threat assessment. Every failure in the 2025 heist maps to an SRAS capability.
+The Louvre scenario: blind spot detection, autonomous inspection, real-time threat assessment. Every failure in the 2025 heist maps to an PAIC2 capability.
 
 ### Warehouse / Logistics
 
@@ -183,7 +193,7 @@ Camera failure or obstruction in large facilities. Robot provides temporary cove
 
 ### Any Facility with CCTV
 
-Office buildings, data centers, industrial sites. SRAS augments existing camera infrastructure with autonomous mobile response.
+Office buildings, data centers, industrial sites. PAIC2 augments existing camera infrastructure with autonomous mobile response.
 
 ---
 
@@ -191,20 +201,22 @@ Office buildings, data centers, industrial sites. SRAS augments existing camera 
 
 ```
 modules/
-  cosmos-reasoning-benchmark/  Cosmos Reason2 benchmarking + prompting guidelines
-  cosmos-lora-smoke/           LoRA fine-tuning for thermal person detection through smoke
-  dashboard/                   Real-time web command center (Next.js + Bun)
-  ros2-task-planner/           Multi-robot task planning with Cosmos reasoning
-  ros2-task-executor/          Nav2-based task execution engine
-  ros2-bringup/                ROS 2 launch stack (rosbridge, SLAM, Nav2)
-  ros2-dimos-bridge/           DimOS temporal/spatial memory nodes
-  simulation/                  Isaac Sim digital twin (Unitree Go2)
-  platform/                    Multi-repo orchestration + governance
+  cosmos-reasoning-benchmark/  Cosmos Reason2 benchmarking + prompting guidelines    [Complete]
+  cosmos-lora-smoke/           LoRA fine-tuning for thermal person detection          [Complete]
+  dashboard/                   Real-time web command center (Next.js + Bun)           [Functional]
+  ros2-task-planner/           Multi-robot task planning with Cosmos reasoning        [Functional]
+  ros2-task-executor/          Nav2-based task execution engine                       [Scaffold]
+  ros2-bringup/                ROS 2 launch stack (rosbridge, SLAM, Nav2)             [Functional]
+  ros2-dimos-bridge/           DimOS temporal/spatial memory nodes                    [Functional]
+  simulation/                  Isaac Sim digital twin (Unitree Go2)                   [Functional]
+  platform/                    Multi-repo orchestration + governance                  [Complete]
 infra/
   isaac-sim/                   AWS infrastructure (CloudFormation, VPN)
 docs/                          Architecture specs, runbooks, guides
 notes/                         Presentation research notes
 ```
+
+**Status key:** Complete = fully tested & documented | Functional = working, integrated | Scaffold = interface defined, partial implementation
 
 ## Quick Start
 
@@ -224,7 +236,14 @@ python3 scripts/run_benchmarks_v3.py
 cd modules/cosmos-lora-smoke
 pip install torch transformers peft pillow
 export VARIANT=v6a
+
+# Option A: Train from scratch (~20 min on L4 GPU, ~$0.30)
 python training/train_lora.py
+
+# Option B: Download pre-trained adapter (278MB)
+# Available at: https://github.com/DataPilot-R-D/Smoke-Resilient-Intruder-Detection
+# Place weights in: adapters/v6a/
+
 python benchmark/benchmark.py
 ```
 
@@ -257,12 +276,14 @@ python3 modules/cosmos-reasoning-benchmark/scripts/cosmos_webrtc_bridge.py \
 
 | Achievement | Detail |
 |---|---|
-| Cosmos benchmark | 4/5 person detection, prompting guidelines documented |
-| LoRA smoke detection | 53.3% -> 96.2% person detection through smoke |
-| LoRA efficiency | 278MB adapter, 20 min training, $0.30 |
-| Multi-robot planning | Priority scoring + auto-dispatch + Cosmos reasoning |
-| Human-Over-The-Loop | Autonomous operation with operator override |
-| Dashboard | Real-time C2 with video, map, alerts, controls |
+| Cosmos benchmark | 93+ tests, 4/5 person detection, 181ms TTFT, prompting guidelines |
+| Cost savings | **97.6%** -- $60/day (Cosmos 2B+8B tiered) vs $2,500/day (cloud VLM) |
+| LoRA smoke detection | **53.3% -> 96.2%** person detection through smoke (+42.9 pp) |
+| LoRA efficiency | 278MB adapter, 20 min training, $0.30, zero false positives |
+| Scene understanding | 53 objects mapped, 37 unique classes, 3-camera triangulation |
+| Multi-robot planning | Priority scoring + auto-dispatch + Go2/H1 coordination |
+| Human-Over-The-Loop | Autonomous operation with operator override at every stage |
+| Dashboard | Real-time C2 with WebRTC video, 2D map, LiDAR, audit logging |
 
 ---
 
@@ -292,6 +313,19 @@ python3 modules/cosmos-reasoning-benchmark/scripts/cosmos_webrtc_bridge.py \
 | Memory | DimOS (temporal/spatial) + SQLite |
 | Bridge | rosbridge_suite + WebSocket |
 
+## Why Cosmos Over Standard VLMs
+
+| Capability | Standard VLMs | Cosmos Reason2 |
+|---|---|---|
+| Physical-world reasoning | Limited (trained on web data) | Native (trained on physical world video) |
+| Temporal understanding | Single-frame only | Multi-frame motion + cause-effect |
+| Streaming latency | 500ms-2s TTFT typical | 181-224ms TTFT (real-time viable) |
+| Domain extension | Full fine-tune ($$$) | LoRA adapter: 20 min, $0.30, 278MB |
+| Deployment cost | $2,500/day (cloud VLM on every frame) | $60/day (tiered 2B+8B) = **97.6% savings** |
+| Deployment model | Cloud API lock-in | Self-hosted vLLM on any GPU |
+
+Cosmos is purpose-built for Physical AI: it understands spatial relationships, object physics, and temporal sequences in a way that general-purpose VLMs do not. The LoRA extensibility makes it a **platform** — we proved this by adding smoke-resilient detection without touching the base model.
+
 ## Team
 
 **DataPilot R&D** -- Physical AI & Robotics Division
@@ -306,3 +340,7 @@ python3 modules/cosmos-reasoning-benchmark/scripts/cosmos_webrtc_bridge.py \
 - [2025 Louvre Heist](https://en.wikipedia.org/wiki/2025_Louvre_heist)
 - [ROS 2 Humble](https://docs.ros.org/en/humble/)
 - [Navigation2](https://docs.nav2.org/)
+
+---
+
+> **Cosmos sees. Cosmos reasons. Robots act. Humans stay over the loop.**

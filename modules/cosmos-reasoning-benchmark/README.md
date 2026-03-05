@@ -1,7 +1,7 @@
 # Cosmos Hackathon — DataPilot R&D
 
 > **NVIDIA Cosmos Cookoff** hackathon repo for the DataPilot R&D team.
-> Benchmarking **Cosmos Reason2-8B** for real-time video surveillance in the SRAS security robot.
+> Benchmarking **Cosmos Reason2-8B** for real-time video surveillance in the PAIC2 security robot.
 
 ## Architecture
 
@@ -34,7 +34,7 @@ cosmos-hackathon/
 │   ├── connectors/
 │   │   └── cosmos_client.py       # OpenAI-compatible Cosmos API client
 │   ├── agents/
-│   │   └── surveillance_agent.py  # SRAS surveillance agent logic
+│   │   └── surveillance_agent.py  # PAIC2 surveillance agent logic
 │   └── benchmarks/
 │       └── run_benchmarks.py      # Benchmark runner
 │
@@ -117,7 +117,7 @@ cosmos-hackathon/
 4. **Disable reasoning for person detection** — reasoning causes false positives
 5. **Sampling:** `temp=0.6, top_p=0.95` with reasoning; `temp=0.7, top_p=0.8, presence_penalty=1.5` without
 
-### Recommended SRAS Architecture
+### Recommended PAIC2 Architecture
 
 - **Cosmos** as fast "eyes": every 2s frame analysis, $0/day
 - **Claude** as "brain": every 30s reasoning cycle, ~$60/day
@@ -298,5 +298,5 @@ Graceful shutdown with Ctrl+C — prints session summary and saves to disk.
 - [Cosmos Cookbook](https://nvidia-cosmos.github.io/cosmos-cookbook/)
 - [Cosmos Reason2 Prompt Guide](https://nvidia-cosmos.github.io/cosmos-cookbook/core_concepts/prompt_guide/reason_guide.html)
 - [VSS Recipe](https://nvidia-cosmos.github.io/cosmos-cookbook/recipes/inference/reason2/vss/inference.html)
-- [DataPilot SRAS Project Board](https://github.com/orgs/DataPilot-R-D/projects/7)
+- [DataPilot PAIC2 Project Board](https://github.com/orgs/DataPilot-R-D/projects/7)
 - [Cosmos Hackathon Board](https://github.com/orgs/DataPilot-R-D/projects/8)

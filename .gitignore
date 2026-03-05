@@ -3,3 +3,24 @@
 .env.*
 !.env.example
 
+# Python virtual environments
+.venv*/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+
+# Large binaries
+*.bin
+*.safetensors
+
+# IDE
+.idea/
+.vscode/
+
+# Netlify
+.netlify/

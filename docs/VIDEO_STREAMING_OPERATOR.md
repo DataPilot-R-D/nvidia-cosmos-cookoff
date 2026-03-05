@@ -1,4 +1,4 @@
-# Operator Video Streaming (Isaac Sim / Go2 -> SRAS Dashboard)
+# Operator Video Streaming (Isaac Sim / Go2 -> PAIC2 Dashboard)
 
 Last verified: 2026-02-10
 
@@ -42,7 +42,7 @@ Browser 1..6 (hardware H.264 decode, <video> element)
 
 ## Key Finding (Important)
 
-Viewing the SRAS dashboard inside **VNC on the EC2 instance** is not a reliable way to judge camera FPS/latency.
+Viewing the PAIC2 dashboard inside **VNC on the EC2 instance** is not a reliable way to judge camera FPS/latency.
 
 VNC re-encodes the entire desktop, adding its own compression and frame drops. Even if the camera stream is perfect, VNC makes it look choppy.
 
@@ -107,7 +107,7 @@ sudo kill $(pgrep go2rtc)
 sudo /opt/go2rtc/go2rtc -config /opt/go2rtc/go2rtc.yaml -d
 ```
 
-### SRAS Dashboard
+### PAIC2 Dashboard
 
 - Frontend WebRTC: `apps/web-client/lib/hooks/use-camera-stream.ts`, `use-webrtc.ts`
 - Backend signaling: `apps/websocket-server/src/handlers/webrtc.ts`

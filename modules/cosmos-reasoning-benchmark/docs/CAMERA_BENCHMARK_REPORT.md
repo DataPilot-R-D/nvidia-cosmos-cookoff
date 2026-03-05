@@ -118,7 +118,7 @@ The 2.0s average for frames_no_reasoning fits within a 2s capture interval — n
 - **Don't** with Cosmos 2B — too unreliable
 - Revisit with Cosmos 7B/14B when available (larger models handle reasoning better)
 
-## Architecture Implication for SRAS
+## Architecture Implication for PAIC2
 
 ```
 Camera → Frame capture (2s interval)

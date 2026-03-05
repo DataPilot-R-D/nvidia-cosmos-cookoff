@@ -332,7 +332,7 @@ def sub_keyboard_event(event, *args, **kwargs) -> bool:
 
 def move_copter(copter):
 
-    # TODO tmp solution for test
+    # Future work: replace with configurable copter movement pipeline
     if custom_rl_env.base_command["0"] == [0, 0, 0]:
         copter_move_cmd = torch.tensor(
             [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], device="cuda:0"
@@ -515,7 +515,7 @@ def run_sim():
     elif args_cli.with_h1:
         env_cfg = DualRobotWithH1EnvCfg()
 
-    # TODO need to think about better copter integration.
+    # Future work: copter integration via configurable spawn pipeline
     # copter_cfg = CRAZYFLIE_CFG
     # copter_cfg.spawn.func(
     #     "/World/Crazyflie/Robot_1", copter_cfg.spawn, translation=(1.5, 0.5, 2.42)

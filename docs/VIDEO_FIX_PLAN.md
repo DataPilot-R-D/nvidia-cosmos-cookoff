@@ -258,7 +258,7 @@ if __name__ == '__main__':
 Edit `/opt/go2rtc/go2rtc.yaml` to add stream source:
 
 ```yaml
-# go2rtc configuration for SRAS
+# go2rtc configuration for PAIC2
 streams:
   robot0_camera:
     - rtsp://127.0.0.1:8554/robot0_camera
@@ -395,7 +395,7 @@ nvidia-smi --query-gpu=encoder.stats.sessionCount,encoder.stats.averageFps --for
 
 ---
 
-## Phase 3: Update SRAS Dashboard Configuration (10 min)
+## Phase 3: Update PAIC2 Dashboard Configuration (10 min)
 
 ### 3.1 Update go2rtc client URL (if port changed)
 

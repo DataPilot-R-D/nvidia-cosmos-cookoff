@@ -19,7 +19,7 @@ import WebSocket from 'ws'
 // Configuration
 // =============================================================================
 
-const DEFAULT_URL = 'ws://18.156.176.87:9090'
+const DEFAULT_URL = process.env.ROSBRIDGE_URL ?? 'ws://localhost:9090'
 const CONNECTION_TIMEOUT = 10000
 const TOPIC_TIMEOUT = 15000
 const SCAN_TIMEOUT = 20000

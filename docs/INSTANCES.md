@@ -4,7 +4,7 @@ Last verified: 2026-02-10
 
 This is a snapshot of **running** EC2 instances in AWS account `043509841182` across regions.
 
-## SRAS-related
+## PAIC2-related
 
 | Name | Region | InstanceId | Type | State | Public IP |
 |---|---|---|---|---|---|

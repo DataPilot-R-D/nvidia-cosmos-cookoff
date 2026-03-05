@@ -171,7 +171,7 @@ export function registerVisionLlmHandlers(
  */
 export async function handleVisionLlmResult(msg: Record<string, unknown>): Promise<boolean> {
   if (!ioRef || !loggerRef) {
-    console.log('>>> handleVisionLlmResult called but ioRef or loggerRef is null')
+    // ioRef or loggerRef not initialized yet — skip silently
     return false
   }
 

@@ -6,7 +6,7 @@
 **Hardware:** AWS EC2, NVIDIA L4 24GB, vLLM 0.15.1
 **Context:** 8192 tokens
 **Deploy:** `--max-model-len 8192 --reasoning-parser qwen3 --gpu-memory-utilization 0.95`
-**Test data:** Real room footage from SRAS surveillance prototype (1080p video, 640p frames)
+**Test data:** Real room footage from PAIC2 surveillance prototype (1080p video, 640p frames)
 
 ---
 
@@ -97,7 +97,7 @@ Combined with `--reasoning-parser qwen3` vLLM flag.
 
 ---
 
-## Recommended SRAS Architecture
+## Recommended PAIC2 Architecture
 
 ```
 Camera Feed (30fps)

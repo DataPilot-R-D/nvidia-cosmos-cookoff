@@ -277,7 +277,7 @@ def publish_camera_data(annotators, camera_names, udp_publisher, fx, fy, cx, cy,
 
 def publish_lidar_data(lidar_annotators, robot_names, udp_publisher, frame_count):
     """Publish lidar point clouds via UDP"""
-    # TODO: Implement lidar data publishing
+    # Future work: lidar data publishing via PointCloud2
     # This will require extending the UDP publisher to handle PointCloud2 messages
     pass
 
