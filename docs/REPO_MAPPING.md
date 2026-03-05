@@ -1,78 +1,49 @@
-# Repo Mapping (GitHub ↔ server ↔ ROS2 packages)
+# Module Mapping (monorepo modules -> server -> ROS 2 packages)
 
-Last verified: 2026-02-10
+Last updated: 2026-03-05
 
-This is the “where does this code live” mapping.
+This is the "where does this code live" mapping for the hackathon monorepo.
 
-## GitHub repos (SRAS ROS2 components)
+## Monorepo modules
 
-- Bringup stack (navigation + mapping + rosbridge wiring):
-  - GitHub: `DataPilot-R-D/sras_ros2_bringup`
-  - Local clone (this machine): `./sras_ros2_bringup`
-  - Server path in ROS2 workspace: `/home/ubuntu/ros2_ws/src/sras_bringup`
-  - Note (important): on the server, `/home/ubuntu/ros2_ws/src/sras_bringup` was **not** a git repo at the time of verification.
+| Module | Description | Server path (ROS 2 workspace) |
+|---|---|---|
+| `modules/ros2-bringup` | Bringup stack (navigation + mapping + rosbridge) | `/home/ubuntu/ros2_ws/src/sras_bringup` |
+| `modules/ros2-dimos-bridge` | DimOS VLM bridge (temporal/spatial memory, reasoning) | `/home/ubuntu/ros2_ws/src/ros2_dimos_bridge` |
+| `modules/ros2-task-executor` | Robot task execution via Nav2 | `/home/ubuntu/ros2_ws/src/sras_ros2_robot_task_executor` |
+| `modules/ros2-task-planner` | Robot task planning with guardrails | `/home/ubuntu/ros2_ws/src/sras_ros2_robot_task_planner` |
+| `modules/cosmos-reasoning-benchmark` | Cosmos Reason2 benchmarking + bridge integrations | N/A (runs separately) |
+| `modules/dashboard` | Web dashboard + websocket/rosbridge | N/A (runs on operator machine) |
+| `modules/simulation` | Isaac Sim / robot simulation (go2_omniverse) | `/home/ubuntu/go2_omniverse` |
+| `modules/platform` | Platform orchestration, CI/CD, workspace tooling | N/A |
+| `infra/isaac-sim` | AWS Isaac Sim instance setup, CFN, VPN | N/A |
 
-- DimOS VLM bridge (temporal/spatial memory, reasoning):
-  - GitHub: `DataPilot-R-D/sras_ros2_dimos_bridge`
-  - Local clone (this machine): `./sras_ros2_dimos_bridge`
-  - Server repo: `/home/ubuntu/ros2_ws/src/ros2_dimos_bridge` (git, on `main`)
-  - Note: there were uncommitted changes on the server (modified `spatial_memory_node.py`, `temporal_memory_node.py`, plus extra configs).
-
-## Other ROS2 deps present on the server
+## Other ROS 2 deps present on the server
 
 In `/home/ubuntu/ros2_ws/src`:
 
-- `simulation_interfaces`
-  - Git: `https://github.com/ros-simulation/simulation_interfaces.git`
-  - State: detached HEAD at tag/commit `1.1.0`
+- `simulation_interfaces` — `https://github.com/ros-simulation/simulation_interfaces.git` (tag `1.1.0`)
+- `m-explore-ros2` — `https://github.com/robo-friends/m-explore-ros2.git` (`main`, local modification to `explore/config/params.yaml`)
 
-- `m-explore-ros2`
-  - Git: `https://github.com/robo-friends/m-explore-ros2.git`
-  - State: `main` with a local modification to `explore/config/params.yaml`
-
-Also present but **not** git repos (at time of verification, 2026-02-10):
+Also present but not git repos:
 
 - `vision_llm_srv`
 - `sras_qos_tools`
 - `my_srvs`
-- `sras_bringup` (see above)
 
-Recommendation: create/identify canonical GitHub repos for these packages, or move them under existing SRAS repos, so the server can be reproduced from git.
+Package names (from `package.xml`):
 
-Package names (from `package.xml` on the server):
+- `vision_llm_srv` -> package `vision_llm_srv`
+- `sras_qos_tools` -> package `sras_qos_tools`
+- `my_srvs` -> package `my_srvs` (interfaces)
 
-- folder `vision_llm_srv` → package `vision_llm_srv`
-- folder `sras_qos_tools` → package `sras_qos_tools`
-- folder `my_srvs` → package `my_srvs` (interfaces)
+## Dev workflow
 
-## Simulation code
-
-- `/home/ubuntu/go2_omniverse`
-  - Git remote: `https://github.com/abizovnuralem/go2_omniverse/`
-  - Branch: `added_copter` (local modifications + untracked helper scripts)
-
-This is not in the `DataPilot-R-D/*` org. If this becomes core SRAS infrastructure, it should be forked into the org and pinned to a known commit/tag.
-
-## Proposed “single source of truth” for the server workspace
-
-Add a `ros2_ws.repos` file (vcstool format) and use:
-
-```bash
-sudo apt-get update && sudo apt-get install -y python3-vcstool
-mkdir -p ~/ros2_ws/src
-vcs import ~/ros2_ws/src < ros2_ws.repos
-colcon build
-```
-
-This makes server bootstrap deterministic and avoids “mystery copied folders”.
-
-## Recommended dev workflow (pragmatic)
-
-1. Make changes in git (local machine) and push to GitHub.
+1. Make changes in this monorepo and push.
 2. On the server, pull updates into the workspace:
 
 ```bash
-cd ~/ros2_ws/src/ros2_dimos_bridge
+cd ~/ros2_ws/src/<package>
 git pull
 ```
 
@@ -85,6 +56,4 @@ colcon build --packages-select dimos_vlm_bridge sras_bringup vision_llm_srv sras
 source ~/ros2_ws/install/setup.bash
 ```
 
-4. Restart the relevant launch (or restart `systemd` services if/when those exist).
-
-If you must hotfix directly on the server, commit or stash immediately and push back to GitHub to avoid divergence.
+4. Restart the relevant launch.
