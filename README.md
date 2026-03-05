@@ -185,7 +185,7 @@ CCTV blind spot detected
 
 ### Museum / Gallery Security (Primary)
 
-The Louvre scenario: blind spot detection, autonomous inspection, real-time threat assessment. Every failure in the 2025 heist maps to an PAIC2 capability.
+The Louvre scenario: blind spot detection, autonomous inspection, real-time threat assessment. Every failure in the 2025 heist maps to a PAIC2 capability.
 
 ### Warehouse / Logistics
 
@@ -244,6 +244,13 @@ This is a multi-module Physical AI system. Not every module needs to run on the 
 
 ## Setup
 
+> **Fastest demo:** To see Cosmos reasoning in action without robots or ROS, run [Module 1: Cosmos Benchmark](#1-cosmos-benchmark--prompting-guidelines) — it only needs a GPU endpoint and Python.
+
+```bash
+git clone https://github.com/DataPilot-R-D/nvidia-cosmos-cookoff.git
+cd nvidia-cosmos-cookoff
+```
+
 ### 1. Cosmos Benchmark & Prompting Guidelines
 
 Runs standalone. Requires a Cosmos API endpoint (vLLM on RunPod or self-hosted).
@@ -257,22 +264,23 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 # Bootstrap a RunPod instance with Cosmos (optional — skip if self-hosting)
+# --bootstrap-service provisions the vLLM pod; --export writes connection details to .env
 python3 scripts/runpod_cosmos.py ensure --bootstrap-service --export
 
 # Run benchmarks
 python3 scripts/run_benchmarks_v3.py
 ```
 
-**Key env vars:** `COSMOS_API_BASE`, `COSMOS_MODEL` (default: `nvidia/Cosmos-Reason2-8B`), `RUNPOD_API_KEY`, `HF_ACCESS_TOKEN`
+**Key env vars:** **COSMOS_API_BASE**, **COSMOS_MODEL** (default: `nvidia/Cosmos-Reason2-8B`), **RUNPOD_API_KEY**, **HF_ACCESS_TOKEN**
 
 ### 2. LoRA Smoke Detection
 
-Requires a GPU for training. CPU-only for inference (slow) or GPU for real-time.
+Requires a GPU for training. GPU strongly recommended for inference; CPU inference is impractically slow for 2B+ parameter models.
 
 ```bash
 cd modules/cosmos-lora-smoke
 python3 -m venv .venv && source .venv/bin/activate
-pip install torch transformers peft pillow numpy
+pip install torch>=2.1 transformers>=4.38 peft>=0.8 pillow numpy
 
 export VARIANT=v6a
 
@@ -300,6 +308,7 @@ Requires Ubuntu 22.04 with ROS 2 Humble installed. Runs on the robot host or a c
 # Build all ROS 2 packages
 source /opt/ros/humble/setup.bash
 cd ~/ros2_ws/src
+# Package names (sras_*) are ROS 2 package identifiers — they differ from module directory names
 ln -s /path/to/modules/ros2-bringup sras_bringup
 ln -s /path/to/modules/ros2-task-planner sras_robot_task_planner
 ln -s /path/to/modules/ros2-task-executor sras_robot_task_executor
@@ -323,7 +332,8 @@ ros2 run sras_robot_task_executor robot_task_executor_node
 **DimOS memory layer** (optional, separate terminal):
 ```bash
 ros2 launch dimos_vlm_bridge temporal_memory.launch.py
-# Requires VLM backend: set OPENAI_API_KEY or use --ros-args -p vlm_backend:=moondream_local
+# Requires VLM backend: set OPENAI_API_KEY (default) or use a local model:
+# --ros-args -p vlm_backend:=moondream_local (Moondream — lightweight, no API key needed)
 ```
 
 ### 4. Dashboard
@@ -334,13 +344,13 @@ Runs anywhere with network access to the WebSocket server. No GPU needed.
 cd modules/dashboard
 pnpm install    # Requires pnpm 10+, Node.js 22+
 
-# Set environment
+# Set environment (see also apps/web-client/.env.example and apps/websocket-server/.env.example)
 export ROS_BRIDGE_URL=ws://your-robot-host:9090  # rosbridge address
 
 # Start all apps (web client :3000 + websocket server :8081)
 pnpm dev
 
-# Or with Docker
+# Or with Docker (path is relative to modules/dashboard/)
 docker compose -f docker/docker-compose.yml up
 ```
 
@@ -387,6 +397,16 @@ python3 modules/cosmos-reasoning-benchmark/scripts/cosmos_webrtc_bridge.py \
  │ Cosmos bridge             │
  └──────────────────────────┘
 ```
+
+### Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `Connection refused` on `:8899` | vLLM not ready yet (Cosmos models take 2-5 min to load) | Wait for `Uvicorn running on` in vLLM logs |
+| `Connection refused` on `:9090` | rosbridge not running | `ros2 launch rosbridge_server rosbridge_websocket_launch.xml` |
+| Nav2 timeout / robot not moving | TF tree incomplete or map not loaded | Check `ros2 topic echo /tf` and verify map YAML path |
+| Dashboard shows no video | WebRTC ICE failure across networks | Ensure go2rtc is running (`:1984`) and ports are accessible |
+| LoRA training OOM | Insufficient VRAM for batch size | Reduce `per_device_train_batch_size` in `training/config.yaml` |
 
 ---
 
