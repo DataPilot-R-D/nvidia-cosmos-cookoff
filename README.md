@@ -31,18 +31,27 @@ SRAS operates autonomously by default. The operator is **informed** of every dec
 
 ### 1. Cosmos Reason2 Benchmark & Prompting Guidelines
 
-We systematically evaluated Cosmos Reason2-8B on 24 test images and 3 video clips for surveillance tasks.
+We ran 93 tests across Cosmos Reason2-2B and 8B models, evaluating surveillance capabilities on 24 images and 3 video clips with ground truth scoring.
 
 | Capability | Score | Key Finding |
 |---|---|---|
-| Scene description | 4/5 | Detailed, accurate room descriptions |
-| Person detection | 4/5 | Best WITHOUT reasoning mode (reasoning causes false positives) |
-| Relative positioning | 4/5 | "Person near desk, left side of frame" |
-| Video motion tracking | 3.5/5 | Tracks movement across frames |
+| Scene description | 4/5 | Identifies 10-15 objects per frame, accurate materials/colors |
+| Person detection | 4/5 | **5/5 without reasoning, 3/5 with** (reasoning causes false positives) |
+| Relative positioning | 4/5 | 4/4 correct on LEFT/RIGHT/BEHIND tests |
+| Video motion tracking | 3.5/5 | Correct direction + speed from video; fails from sequential frames |
+| Cause-effect reasoning | 4/5 | Sound physics explanations |
+| TTFT (streaming) | 5/5 | 181-224ms to first token -- real-time viable |
+| Change detection | 2/5 | Targeted prompts only; general prompts hallucinate |
+| Counting | 2.5/5 | Simple objects OK, complex scenes inconsistent |
+| Distance estimation | 1.5/5 | Close objects ~7% error, far objects 72-79% error |
 
-**Critical discovery:** Cosmos `<think>` reasoning mode causes hallucinated person detections. We document when to use reasoning vs. direct mode -- a practical guide for anyone deploying Cosmos for surveillance.
+**Critical discoveries:**
+- **Reasoning mode is a double-edged sword:** helps change detection (+1 star), but destroys person detection (5/5 -> 3/5 with false positives)
+- **Frames beat video** for analysis (100% vs 33% success on change detection)
+- **Media-before-text** prompt ordering is the single most impactful rule
+- **97.6% cost savings** with Cosmos+Claude hybrid architecture vs Claude-only ($60/day vs $2,500/day)
 
-**Input:** Camera frames (640p) | **Output:** Structured scene descriptions + prompting best practices
+**Input:** Camera frames (640p) + video clips | **Output:** Per-capability ratings, prompting rules, deployment config, cost model
 
 ### 2. Person Detection with Position Mapping
 
