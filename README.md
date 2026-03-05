@@ -218,56 +218,174 @@ notes/                         Presentation research notes
 
 **Status key:** Complete = fully tested & documented | Functional = working, integrated | Scaffold = interface defined, partial implementation
 
-## Quick Start
+## Prerequisites
 
-### Cosmos Benchmark
+This is a multi-module Physical AI system. Not every module needs to run on the same machine. The typical deployment uses 2-3 machines:
+
+| Requirement | What needs it | Notes |
+|---|---|---|
+| **NVIDIA GPU (24GB+ VRAM)** | Cosmos inference, LoRA training, Isaac Sim | RTX 3090, L4, L40S, or RTX 4090 |
+| **ROS 2 Humble** | Task planner, executor, bringup, DimOS bridge | Ubuntu 22.04 required |
+| **Unitree Go2** (or Isaac Sim) | Physical robot or simulated twin | Connected via ROS 2 |
+| **Node.js 22+ / Bun 1.3+** | Dashboard | Also needs pnpm 10+ |
+| **Python 3.10+** | All Python modules | Separate venvs recommended |
+| **Cosmos API endpoint** | Benchmark, reasoning | vLLM on RunPod or self-hosted |
+
+### GPU sizing
+
+| Task | Min VRAM | Recommended |
+|---|---|---|
+| Cosmos Reason2-2B inference | 8 GB | 16 GB |
+| Cosmos Reason2-8B inference | 24 GB | 40 GB (L40S) |
+| LoRA training (2B) | 24 GB | 24 GB (L4, RTX 3090) |
+| Isaac Sim | 16 GB | 24 GB (RTX 4090) |
+
+---
+
+## Setup
+
+### 1. Cosmos Benchmark & Prompting Guidelines
+
+Runs standalone. Requires a Cosmos API endpoint (vLLM on RunPod or self-hosted).
 
 ```bash
 cd modules/cosmos-reasoning-benchmark
 cp .env.example .env
+# Edit .env: set COSMOS_API_BASE, RUNPOD_API_KEY, HF_ACCESS_TOKEN
+
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+
+# Bootstrap a RunPod instance with Cosmos (optional — skip if self-hosting)
+python3 scripts/runpod_cosmos.py ensure --bootstrap-service --export
+
+# Run benchmarks
 python3 scripts/run_benchmarks_v3.py
 ```
 
-### LoRA Smoke Detection
+**Key env vars:** `COSMOS_API_BASE`, `COSMOS_MODEL` (default: `nvidia/Cosmos-Reason2-8B`), `RUNPOD_API_KEY`, `HF_ACCESS_TOKEN`
+
+### 2. LoRA Smoke Detection
+
+Requires a GPU for training. CPU-only for inference (slow) or GPU for real-time.
 
 ```bash
 cd modules/cosmos-lora-smoke
-pip install torch transformers peft pillow
+python3 -m venv .venv && source .venv/bin/activate
+pip install torch transformers peft pillow numpy
+
 export VARIANT=v6a
 
 # Option A: Train from scratch (~20 min on L4 GPU, ~$0.30)
 python training/train_lora.py
 
 # Option B: Download pre-trained adapter (278MB)
-# Available at: https://github.com/DataPilot-R-D/Smoke-Resilient-Intruder-Detection
+# https://github.com/DataPilot-R-D/Smoke-Resilient-Intruder-Detection
 # Place weights in: adapters/v6a/
 
+# Run benchmark against 131-image test set
 python benchmark/benchmark.py
 ```
 
-### ROS 2 Stack
+**Training config:** `training/config.yaml` — LoRA rank 16, alpha 32, 3 epochs, bf16 precision, 512px images
+
+### 3. ROS 2 Stack (Bringup + Planner + Executor)
+
+Requires Ubuntu 22.04 with ROS 2 Humble installed. Runs on the robot host or a connected machine.
 
 ```bash
+# Install ROS 2 Humble (if not already)
+# https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+
+# Build all ROS 2 packages
 source /opt/ros/humble/setup.bash
-source ~/ros2_ws/install/setup.bash
-ros2 launch sras_bringup go2_stack.launch.py
+cd ~/ros2_ws/src
+ln -s /path/to/modules/ros2-bringup sras_bringup
+ln -s /path/to/modules/ros2-task-planner sras_robot_task_planner
+ln -s /path/to/modules/ros2-task-executor sras_robot_task_executor
+ln -s /path/to/modules/ros2-dimos-bridge dimos_vlm_bridge
+cd ~/ros2_ws
+colcon build
+
+# Launch the full stack (rosbridge + SLAM + Nav2 + LiDAR)
+source install/setup.bash
+ros2 launch sras_bringup go2_stack.launch.py \
+  map:=/path/to/your/map.yaml \
+  nav2_params:=/path/to/nav2_params.yaml
+
+# In separate terminals:
+ros2 run sras_robot_task_planner robot_task_planner_node
+ros2 run sras_robot_task_executor robot_task_executor_node
 ```
 
-### Dashboard
+**What this launches:** rosbridge (:9090), slam_toolbox, Nav2, pointcloud_to_laserscan, cmd_vel relay, camera throttling
+
+**DimOS memory layer** (optional, separate terminal):
+```bash
+ros2 launch dimos_vlm_bridge temporal_memory.launch.py
+# Requires VLM backend: set OPENAI_API_KEY or use --ros-args -p vlm_backend:=moondream_local
+```
+
+### 4. Dashboard
+
+Runs anywhere with network access to the WebSocket server. No GPU needed.
 
 ```bash
 cd modules/dashboard
-pnpm install
+pnpm install    # Requires pnpm 10+, Node.js 22+
+
+# Set environment
+export ROS_BRIDGE_URL=ws://your-robot-host:9090  # rosbridge address
+
+# Start all apps (web client :3000 + websocket server :8081)
 pnpm dev
+
+# Or with Docker
+docker compose -f docker/docker-compose.yml up
 ```
 
-### Cosmos-to-Dashboard Bridge
+**Ports:** Web UI on `:3000`, WebSocket server on `:8081`, rosbridge on `:9090`, go2rtc on `:1984`
+
+### 5. Isaac Sim (Simulation)
+
+Required only if running without a physical robot. Needs a powerful GPU workstation or cloud instance (we use AWS g6.4xlarge with L40).
+
+```bash
+# Install Isaac Sim 4.5 + Isaac Lab
+# https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/pip_installation.html
+
+cd modules/simulation
+./run_sim.sh          # Go2 with keyboard control (WASD)
+./run_sim_g1.sh       # G1 humanoid
+./run_louvre_demo.sh   # Museum scenario
+```
+
+**ROS 2 topics published by sim:** `/robot0/odom`, `/robot0/front_cam/rgb` (2Hz), `/robot0/point_cloud2_L1` (1Hz), `/robot0/imu`, `/tf`
+
+### 6. Cosmos-to-Dashboard Bridge
+
+Connects a running Cosmos endpoint to the dashboard for live scene analysis.
 
 ```bash
 python3 modules/cosmos-reasoning-benchmark/scripts/cosmos_webrtc_bridge.py \
-  --ws-url http://localhost:8080 --interval 2.0
+  --ws-url http://localhost:8081 --interval 2.0
+```
+
+### Typical deployment topology
+
+```
+ Machine A (GPU server / RunPod)         Machine B (Robot host / Sim)
+ ┌──────────────────────────┐           ┌──────────────────────────┐
+ │ Cosmos vLLM (:8899)      │           │ ROS 2 Humble             │
+ │ LoRA inference            │◄─────────│  ros2-bringup            │
+ └──────────────────────────┘   API     │  ros2-task-planner       │
+                                        │  ros2-task-executor      │
+ Machine C (any laptop/desktop)         │  ros2-dimos-bridge       │
+ ┌──────────────────────────┐           │  rosbridge (:9090)       │
+ │ Dashboard (:3000)        │◄─────────│  Isaac Sim (or Go2)      │
+ │ WS Server (:8081)        │    WS     └──────────────────────────┘
+ │ Cosmos bridge             │
+ └──────────────────────────┘
 ```
 
 ---
