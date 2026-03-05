@@ -1,0 +1,147 @@
+1
+00:00:00,000 --> 00:00:05,000
+SRAS. The Security Robot Automation System.
+Powered by NVIDIA Cosmos Reason2.
+
+2
+00:00:05,000 --> 00:00:11,000
+A hundred and two million dollars.
+That's how much disappeared from the Louvre in under four minutes.
+
+3
+00:00:11,000 --> 00:00:19,000
+October 2025. Four thieves. Eight crown jewels. Gone.
+Thirty-nine percent camera coverage. A guard looking the wrong way.
+No AI. No robot. No second chance.
+
+4
+00:00:19,000 --> 00:00:25,000
+What if the museum had a brain that never sleeps,
+and a body that can go anywhere a guard can't?
+
+5
+00:00:25,000 --> 00:00:33,000
+SRAS combines every fixed camera in the building
+with a Unitree Go2 mobile robot —
+all reasoning in real time through NVIDIA Cosmos Reason2.
+
+6
+00:00:33,000 --> 00:00:41,000
+Five layers: raw sensors, perception, reasoning, planning, human dashboard.
+The robot acts. The human stays in control.
+We call this Human-Over-The-Loop.
+
+7
+00:00:41,000 --> 00:00:45,000
+Always informed. Always able to intervene.
+The machine works. The human decides.
+
+8
+00:00:45,000 --> 00:00:55,000
+Here's how it flows in real life.
+A blind spot is flagged. Cosmos reasons about the threat.
+The planner scores priority and dispatches the robot.
+On arrival, Cosmos analyzes the scene and alerts the operator.
+Zero human steps needed — until the moment they matter.
+
+9
+00:00:55,000 --> 00:01:05,000
+We didn't just trust the model. We tested it.
+Ninety-three scenarios. Twenty-three images. Three live videos.
+This is what Cosmos Reason2 actually does under pressure.
+
+10
+00:01:05,000 --> 00:01:12,000
+Scene understanding and person detection: four out of five.
+First token in a hundred and eighty-one milliseconds.
+That's fast enough for real security.
+
+11
+00:01:12,000 --> 00:01:20,000
+Critical finding: turn on deep reasoning — and person detection drops.
+More thinking. More false positives.
+Our tiered setup — two-B plus eight-B — solves this at sixty dollars a day.
+Ninety-seven point six percent cheaper than cloud VLMs.
+
+12
+00:01:20,000 --> 00:01:28,000
+Three ceiling cameras. One map frame.
+When a person walks in, SRAS doesn't just see them —
+it triangulates exactly where they are.
+
+13
+00:01:28,000 --> 00:01:36,000
+The detection buffer watches four state transitions:
+new class, sustained presence, position shift, disappeared.
+Nothing slips through untracked.
+
+14
+00:01:36,000 --> 00:01:45,000
+Meanwhile, the robot's own camera has already mapped the floor.
+Fifty-three objects. Thirty-seven classes.
+Paintings, doors, fire extinguishers — the planner knows every asset in the building.
+
+15
+00:01:45,000 --> 00:01:55,000
+Every alert gets a priority score.
+Severity, confidence, recency, asset value — multiplied together.
+Low scores auto-approve and resolve silently.
+High scores go straight to the operator.
+The robot never wastes a second on a shadow.
+
+16
+00:01:55,000 --> 00:02:03,000
+When the threat is real, Cosmos assigns the right robot to the right job.
+The quadruped pursues. The humanoid blocks the exit.
+Each matched to what it does best.
+
+17
+00:02:03,000 --> 00:02:12,000
+Every task moves through a gated lifecycle:
+queued, dispatched, active, succeeded.
+The operator can approve, pause, or cancel at any point.
+Full control. Full audit trail. Nothing happens without a decision.
+
+18
+00:02:12,000 --> 00:02:21,000
+Now here's the hard part. Cold smoke blinds cameras.
+Standard thermal detection of people through smoke: fifty-three percent.
+That's barely better than a guess.
+
+19
+00:02:21,000 --> 00:02:30,000
+We trained a custom LoRA adapter.
+A hundred and sixty-four real thermal images.
+Twenty minutes of training. Thirty cents.
+New result: ninety-six point two percent.
+
+20
+00:02:30,000 --> 00:02:38,000
+Zero false positives on smoke-only scenes.
+People hidden inside smoke — went from fifty-five to ninety-one percent.
+That's not a fine-tune. That's a transformation.
+For thirty cents.
+
+21
+00:02:38,000 --> 00:02:45,000
+Everything feeds into a single command center.
+Live camera feeds over WebRTC.
+A 2D map tracking every robot in real time.
+
+22
+00:02:45,000 --> 00:02:53,000
+A full 3D view from RViz — LiDAR, TF frames, robot position.
+Every alert carries the Cosmos reasoning that triggered it.
+Approve, cancel, pause — or let the system run.
+
+23
+00:02:53,000 --> 00:02:58,000
+Cosmos isn't one model. It's a platform you extend.
+Ninety-six point two percent smoke detection.
+Trained in twenty minutes for thirty cents.
+Ninety-seven point six percent cheaper than the cloud.
+
+24
+00:02:58,000 --> 00:03:03,000
+Cosmos sees. Cosmos reasons. Robots act. Humans decide.
+We are DataPilot.
