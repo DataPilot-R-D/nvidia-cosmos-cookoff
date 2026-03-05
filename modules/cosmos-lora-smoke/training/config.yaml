@@ -1,0 +1,44 @@
+# LoRA Training Configuration — v6a (Champion)
+# Cosmos Reason2-2B fine-tuning for thermal smoke detection
+
+model:
+  base: "nvidia/Cosmos-Reason2-2B"
+  precision: bf16
+
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+training:
+  epochs: 3
+  learning_rate: 2e-4
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  max_seq_length: 1024
+  image_size: 512
+  warmup_ratio: 0.03
+  weight_decay: 0.0
+  optimizer: adamw_torch
+
+data:
+  variant: v6a  # v6a = real thermal only (champion), v6b = mixed
+  format: jsonl
+  categories:
+    A: "smoke + people"
+    B: "people only"
+    C: "smoke only"
+
+hardware:
+  tested_on: "NVIDIA RTX 3090 (24GB VRAM)"
+  training_time: "~20 minutes"
+  adapter_size: "278 MB"
+  cost: "~$0.30 (cloud GPU)"

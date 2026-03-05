@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+*.egg-info/
+dist/
+build/
+.venv/
+
+# Secrets
+.env
+
+# ML artifacts
+*.safetensors
+*.bin
+*.pt
+!yolov8n.pt
+
+# Agent template tooling (dp-plugins / agent-pack-template)
+plugins/
+scripts/
+adapters/
+dp-plugins
+dp-plugins.cmd
+install
+install.cmd
+.dp-plugins/
+.dp-plugins.lock
+.claude-plugin/
+.gemini/
+.codex/
+
+# Claude Code workspace
+.claude/
+
+# Internal docs
+internal-docs/
+
+# QA review images (duże pliki, nie do repo)
+review_pack/
